@@ -57,6 +57,43 @@ class CouchDBClient: NSObject {
 			return httpCli.send(httpReq)
 		}
 	}
+	
+	func update(dbName: String, uri: String, body: HTTPBody, worker: Worker ) -> Future<CouchUpdateResponse>? {
+		let client = HTTPClient.connect(
+			scheme: .http,
+			hostname: couchHost,
+			port: couchPort,
+			connectTimeout: TimeAmount.seconds(30),
+			on: worker
+		) { (error) in
+			print(error)
+		}
+		
+		let url = self.couchBaseURL + "/" + dbName + "/" + uri
+		
+		return client.flatMap({ (httpCli) -> Future<HTTPResponse> in
+			let httpReq = HTTPRequest(
+				method: .PUT,
+				url: url,
+				version: HTTPVersion(major: 1, minor: 1),
+				headers: HTTPHeaders([("Content-Type","application/json")]),
+				body: body
+			)
+			return httpCli.send(httpReq)
+		}).flatMap({ (response) -> EventLoopFuture<CouchUpdateResponse> in
+			guard let data = response.body.data else {
+				let response = CouchUpdateResponse(ok: false, id: "", rev: "")
+				return worker.future(response)
+			}
+			
+			let decoder = JSONDecoder()
+			decoder.dateDecodingStrategy = .secondsSince1970
+			let updateResponse = try decoder.decode(CouchUpdateResponse.self, from: data)
+			
+			return worker.future(updateResponse)
+		})
+		
+	}
 }
 
 
