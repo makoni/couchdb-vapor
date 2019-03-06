@@ -1,7 +1,9 @@
-import XCTest
-
+#if os(Linux)
 @testable import CouchDBClientTests
 
-var tests = [XCTestCaseEntry]()
-tests += CouchDBClientTests.allTests
-XCTMain(tests)
+import XCTest
+
+XCTMain([
+	testCase(CouchDBClientTests.allTests)
+	])
+#endif
