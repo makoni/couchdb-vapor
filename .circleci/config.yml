@@ -1,18 +1,13 @@
 version: 2
 
 jobs:
-  linux:
+  build:
     docker:
       - image: vapor/swift:5.0
     steps:
       - checkout
       - run: swift build
       - run: swift test
-  linux-release:
-    docker:
-      - image: vapor/swift:5.0
-    steps:
-      - checkout
       - run: swift build -c release
 
 workflows:
