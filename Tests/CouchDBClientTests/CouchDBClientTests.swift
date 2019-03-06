@@ -1,7 +1,7 @@
 import XCTest
 @testable import CouchDBClient
 
-final class couchdb_vaporTests: XCTestCase {
+final class CouchDBClientTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct

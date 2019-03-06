@@ -1,7 +1,7 @@
 import XCTest
 
-import CouchDBClient
+@testable import CouchDBClientTests
 
 var tests = [XCTestCaseEntry]()
-tests += couchdb_vaporTests.allTests()
+tests += CouchDBClientTests.allTests()
 XCTMain(tests)
