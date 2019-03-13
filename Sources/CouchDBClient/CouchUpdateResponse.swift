@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct CouchUpdateResponse: Codable {
+public struct CouchUpdateResponse: Codable {
 	var ok: Bool
 	var id: String
 	var rev: String
@@ -21,7 +21,7 @@ struct CouchUpdateResponse: Codable {
 }
 
 
-extension CouchUpdateResponse {
+public extension CouchUpdateResponse {
 	init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		

@@ -9,7 +9,7 @@ import Foundation
 import HTTP
 
 
-class CouchDBClient: NSObject {
+public class CouchDBClient: NSObject {
 	
 	// MARK: - Private properties
 	
@@ -35,7 +35,7 @@ class CouchDBClient: NSObject {
 	
 	
 	// MARK: - Public methods
-	func get(dbName: String, uri: String, query: [String: Any]? = nil, worker: Worker) -> Future<HTTPResponse>? {
+	public func get(dbName: String, uri: String, query: [String: Any]? = nil, worker: Worker) -> Future<HTTPResponse>? {
 		let client = HTTPClient.connect(
 			scheme: .http,
 			hostname: couchHost,
@@ -58,7 +58,7 @@ class CouchDBClient: NSObject {
 		}
 	}
 	
-	func update(dbName: String, uri: String, body: HTTPBody, worker: Worker ) -> Future<CouchUpdateResponse>? {
+	public func update(dbName: String, uri: String, body: HTTPBody, worker: Worker ) -> Future<CouchUpdateResponse>? {
 		let client = HTTPClient.connect(
 			scheme: .http,
 			hostname: couchHost,
