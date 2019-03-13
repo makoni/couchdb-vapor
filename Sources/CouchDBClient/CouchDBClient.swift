@@ -27,7 +27,7 @@ public class CouchDBClient: NSObject {
 
 
 	// MARK: - Init
-	override init() {
+	public override init() {
 		super.init()
 		
 		self.couchBaseURL = self.buildBaseUrl()
