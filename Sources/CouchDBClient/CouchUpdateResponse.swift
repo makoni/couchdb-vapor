@@ -9,9 +9,9 @@ import Foundation
 
 
 public struct CouchUpdateResponse: Codable {
-	var ok: Bool
-	var id: String
-	var rev: String
+	public var ok: Bool
+	public var id: String
+	public var rev: String
 	
 	enum CodingKeys: String, CodingKey {
 		case ok
