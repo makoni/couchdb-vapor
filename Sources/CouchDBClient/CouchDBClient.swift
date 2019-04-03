@@ -35,16 +35,30 @@ public class CouchDBClient: NSObject {
 	
 	
 	// MARK: - Public methods
+	public func getAllDBs(worker: Worker) -> Future<[String]?> {
+		let client = createClient(forWorker: worker)
+		
+		let url = self.couchBaseURL + "/_all_dbs"
+		
+		return client.flatMap({ (httpCli) -> Future<HTTPResponse> in
+			let httpReq = HTTPRequest(
+				method: .GET,
+				url: url)
+			return httpCli.send(httpReq)
+		}).flatMap({ (response) -> EventLoopFuture<[String]?> in
+			guard let data = response.body.data else {
+				return worker.future(nil)
+			}
+			
+			let decoder = JSONDecoder()
+			let response = try decoder.decode([String].self, from: data)
+			
+			return worker.future(response)
+		})
+	}
+
 	public func get(dbName: String, uri: String, query: [String: Any]? = nil, worker: Worker) -> Future<HTTPResponse>? {
-		let client = HTTPClient.connect(
-			scheme: .http,
-			hostname: couchHost,
-			port: couchPort,
-			connectTimeout: TimeAmount.seconds(30),
-			on: worker
-		) { (error) in
-			print(error)
-		}
+		let client = createClient(forWorker: worker)
 		
 		let queryString = buildQuery(fromQuery: query)
 		
@@ -59,15 +73,7 @@ public class CouchDBClient: NSObject {
 	}
 	
 	public func update(dbName: String, uri: String, body: HTTPBody, worker: Worker ) -> Future<CouchUpdateResponse>? {
-		let client = HTTPClient.connect(
-			scheme: .http,
-			hostname: couchHost,
-			port: couchPort,
-			connectTimeout: TimeAmount.seconds(30),
-			on: worker
-		) { (error) in
-			print(error)
-		}
+		let client = createClient(forWorker: worker)
 		
 		let url = self.couchBaseURL + "/" + dbName + "/" + uri
 		
@@ -98,6 +104,22 @@ public class CouchDBClient: NSObject {
 
 
 private extension CouchDBClient {
+	
+	/// Create HTTPClient
+	///
+	/// - Returns: HTTPClient
+	private func createClient(forWorker worker: Worker) -> EventLoopFuture<HTTPClient> {
+		return HTTPClient.connect(
+			scheme: .http,
+			hostname: couchHost,
+			port: couchPort,
+			connectTimeout: TimeAmount.seconds(30),
+			on: worker
+		) { (error) in
+			print(error)
+		}
+	}
+	
 	/// Build Base URL
 	///
 	/// - Returns: Base URL string

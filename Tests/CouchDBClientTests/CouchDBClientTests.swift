@@ -1,17 +1,27 @@
 import XCTest
 @testable import CouchDBClient
+import HTTP
 
 final class CouchDBClientTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-		let couchDBClient = CouchDBClient()
-		XCTAssertNotNil(couchDBClient)
-//        XCTAssertEqual(CouchDBClient().text, "Hello, World!")
-    }
+	let couchDBClient = CouchDBClient()
+	
+	override func setUp() {
+		super.setUp()
+	}
+	
+	func testGetAllDbs() {
+		let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+		var dbs: [String]?
+		do {
+			dbs = try couchDBClient.getAllDBs(worker: worker).wait()
+			XCTAssertNotNil(dbs)
+			XCTAssertTrue(dbs!.contains("_global_changes"))
+		} catch (let error) {
+			print(error)
+		}
+	}
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testGetAllDbs", testGetAllDbs),
     ]
 }
