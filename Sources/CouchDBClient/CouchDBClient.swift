@@ -103,12 +103,12 @@ public class CouchDBClient: NSObject {
 }
 
 
-private extension CouchDBClient {
+internal extension CouchDBClient {
 	
 	/// Create HTTPClient
 	///
 	/// - Returns: HTTPClient
-	private func createClient(forWorker worker: Worker) -> EventLoopFuture<HTTPClient> {
+	func createClient(forWorker worker: Worker) -> EventLoopFuture<HTTPClient> {
 		return HTTPClient.connect(
 			scheme: .http,
 			hostname: couchHost,
@@ -123,7 +123,7 @@ private extension CouchDBClient {
 	/// Build Base URL
 	///
 	/// - Returns: Base URL string
-	private func buildBaseUrl() -> String {
+	func buildBaseUrl() -> String {
 		return "\(self.couchProtocol)\(self.couchHost):\(self.couchPort)"
 	}
 	
