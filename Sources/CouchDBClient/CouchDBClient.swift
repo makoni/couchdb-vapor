@@ -35,6 +35,12 @@ public class CouchDBClient: NSObject {
 	
 	
 	// MARK: - Public methods
+	
+	
+	/// Get DBs list
+	///
+	/// - Parameter worker: Worker (EventLoopGroup)
+	/// - Returns: Future (EventLoopFuture) with array of strings containing DBs names
 	public func getAllDBs(worker: Worker) -> Future<[String]?> {
 		let client = createClient(forWorker: worker)
 		
@@ -57,6 +63,14 @@ public class CouchDBClient: NSObject {
 		})
 	}
 
+	/// Get data from DB
+	///
+	/// - Parameters:
+	///   - dbName: DB name
+	///   - uri: uri (view or document id)
+	///   - query: requst query
+	///   - worker: worker: Worker (EventLoopGroup)
+	/// - Returns: Future (EventLoopFuture) with response
 	public func get(dbName: String, uri: String, query: [String: Any]? = nil, worker: Worker) -> Future<HTTPResponse>? {
 		let client = createClient(forWorker: worker)
 		
@@ -72,6 +86,14 @@ public class CouchDBClient: NSObject {
 		}
 	}
 	
+	/// Update data in DB
+	///
+	/// - Parameters:
+	///   - dbName: DB name
+	///   - uri: uri (view or document id)
+	///   - body: data which will be in request body
+	///   - worker: worker: Worker (EventLoopGroup)
+	/// - Returns: Future (EventLoopFuture) with update response (CouchUpdateResponse)
 	public func update(dbName: String, uri: String, body: HTTPBody, worker: Worker ) -> Future<CouchUpdateResponse>? {
 		let client = createClient(forWorker: worker)
 		
@@ -98,7 +120,6 @@ public class CouchDBClient: NSObject {
 			
 			return worker.future(updateResponse)
 		})
-		
 	}
 }
 
