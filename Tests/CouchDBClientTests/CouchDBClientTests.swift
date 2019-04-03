@@ -33,12 +33,12 @@ final class CouchDBClientTests: XCTestCase {
 		}
 	}
 	
-	func testInsertGetUpdate() {
+	func testInsertGetUpdateDelete() {
 		let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 		
 		let encoder = JSONEncoder()
 		
-		var testData = TestData(name: "test name")
+		let testData = TestData(name: "test name")
 		var expectedInsertId: String = ""
 		var expectedInsertRev: String = ""
 		
@@ -98,11 +98,25 @@ final class CouchDBClientTests: XCTestCase {
 			
 			XCTAssertNotNil(doc)
 			XCTAssertEqual(doc.name, updatedData.name)
+			
+			expectedInsertRev = doc._rev
 		} catch (let error) {
 			XCTAssertFalse(true)
 			print(error)
 		}
 		
+		// Test delete
+		do {
+			let response = try couchDBClient.delete(fromDb: testsDB, uri: expectedInsertId, rev: expectedInsertRev, worker: worker)?.wait()
+			
+			XCTAssertEqual(response?.ok, true)
+			XCTAssertNotNil(response?.id)
+			XCTAssertNotNil(response?.rev)
+			
+		} catch (let error) {
+			XCTAssertFalse(true)
+			print(error)
+		}
 	}
 	
 	func testCreateClient() {
@@ -114,7 +128,6 @@ final class CouchDBClientTests: XCTestCase {
 	func testBuildBaseUrl() {
 		let expectedUrl = "http://127.0.0.1:5984"
 		let baseUrl = couchDBClient.buildBaseUrl()
-		print(baseUrl)
 		XCTAssertFalse(baseUrl.isEmpty)
 		XCTAssertEqual(baseUrl, expectedUrl)
 	}
@@ -134,6 +147,6 @@ final class CouchDBClientTests: XCTestCase {
 		("testCreateClient", testCreateClient),
 		("testBuildBaseUrl", testBuildBaseUrl),
 		("testBuildQuery", testBuildQuery),
-		("testInsertGetUpdate", testInsertGetUpdate)
+		("testInsertGetUpdateDelete", testInsertGetUpdateDelete)
     ]
 }

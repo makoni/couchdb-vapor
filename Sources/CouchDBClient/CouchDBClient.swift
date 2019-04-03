@@ -69,7 +69,7 @@ public class CouchDBClient: NSObject {
 	///   - dbName: DB name
 	///   - uri: uri (view or document id)
 	///   - query: requst query
-	///   - worker: worker: Worker (EventLoopGroup)
+	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with response
 	public func get(dbName: String, uri: String, query: [String: Any]? = nil, worker: Worker) -> Future<HTTPResponse>? {
 		let client = createClient(forWorker: worker)
@@ -92,7 +92,7 @@ public class CouchDBClient: NSObject {
 	///   - dbName: DB name
 	///   - uri: uri (view or document id)
 	///   - body: data which will be in request body
-	///   - worker: worker: Worker (EventLoopGroup)
+	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with update response (CouchUpdateResponse)
 	public func update(dbName: String, uri: String, body: HTTPBody, worker: Worker ) -> Future<CouchUpdateResponse>? {
 		let client = createClient(forWorker: worker)
@@ -127,7 +127,7 @@ public class CouchDBClient: NSObject {
 	/// - Parameters:
 	///   - dbName: DB name
 	///   - body: data which will be in request body
-	///   - worker: worker: Worker (EventLoopGroup)
+	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with insert response (CouchUpdateResponse)
 	public func insert(dbName: String, body: HTTPBody, worker: Worker ) -> Future<CouchUpdateResponse>? {
 		let client = createClient(forWorker: worker)
@@ -142,6 +142,40 @@ public class CouchDBClient: NSObject {
 				headers: HTTPHeaders([("Content-Type","application/json")]),
 				body: body
 			)
+			return httpCli.send(httpReq)
+		}).flatMap({ (response) -> EventLoopFuture<CouchUpdateResponse> in
+			guard let data = response.body.data else {
+				let response = CouchUpdateResponse(ok: false, id: "", rev: "")
+				return worker.future(response)
+			}
+			
+			let decoder = JSONDecoder()
+			decoder.dateDecodingStrategy = .secondsSince1970
+			let updateResponse = try decoder.decode(CouchUpdateResponse.self, from: data)
+			
+			return worker.future(updateResponse)
+		})
+	}
+	
+	/// Delete document from DB
+	///
+	/// - Parameters:
+	///   - dbName: DB name
+	///   - uri: document uri (usually _id)
+	///   - rev: document revision (usually _rev)
+	///   - worker: Worker (EventLoopGroup)
+	/// - Returns: Future (EventLoopFuture) with delete response (CouchUpdateResponse)
+	public func delete(fromDb dbName: String, uri: String, rev: String, worker: Worker) -> Future<CouchUpdateResponse>? {
+		let client = createClient(forWorker: worker)
+		
+		let queryString = buildQuery(fromQuery: ["rev": rev])
+		
+		let url = self.couchBaseURL + "/" + dbName + "/" + uri + queryString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+		
+		return client.flatMap({ (httpCli) -> Future<HTTPResponse> in
+			let httpReq = HTTPRequest(
+				method: .DELETE,
+				url: url)
 			return httpCli.send(httpReq)
 		}).flatMap({ (response) -> EventLoopFuture<CouchUpdateResponse> in
 			guard let data = response.body.data else {
