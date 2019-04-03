@@ -121,6 +121,41 @@ public class CouchDBClient: NSObject {
 			return worker.future(updateResponse)
 		})
 	}
+	
+	/// Insert document in DB
+	///
+	/// - Parameters:
+	///   - dbName: DB name
+	///   - body: data which will be in request body
+	///   - worker: worker: Worker (EventLoopGroup)
+	/// - Returns: Future (EventLoopFuture) with insert response (CouchUpdateResponse)
+	public func insert(dbName: String, body: HTTPBody, worker: Worker ) -> Future<CouchUpdateResponse>? {
+		let client = createClient(forWorker: worker)
+		
+		let url = self.couchBaseURL + "/" + dbName
+		
+		return client.flatMap({ (httpCli) -> Future<HTTPResponse> in
+			let httpReq = HTTPRequest(
+				method: .POST,
+				url: url,
+				version: HTTPVersion(major: 1, minor: 1),
+				headers: HTTPHeaders([("Content-Type","application/json")]),
+				body: body
+			)
+			return httpCli.send(httpReq)
+		}).flatMap({ (response) -> EventLoopFuture<CouchUpdateResponse> in
+			guard let data = response.body.data else {
+				let response = CouchUpdateResponse(ok: false, id: "", rev: "")
+				return worker.future(response)
+			}
+			
+			let decoder = JSONDecoder()
+			decoder.dateDecodingStrategy = .secondsSince1970
+			let updateResponse = try decoder.decode(CouchUpdateResponse.self, from: data)
+			
+			return worker.future(updateResponse)
+		})
+	}
 }
 
 
