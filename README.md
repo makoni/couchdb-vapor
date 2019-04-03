@@ -40,22 +40,23 @@ public func routes(_ router: Router) throws {
 	router.get(String.parameter) { req -> Future<View> in
 		let docId = req.parameters.next(String.self)
 		
-		let response = try couchDBClient.get(dbName: "yourDBname", uri: docId, worker: req)?.wait()
-		
-		// response data is in response!.body.data!
-		guard let data = response?.body.data else {
+		let couchResponse = try couchDBClient.get(dbName: "yourDBname", uri: docId, worker: req)
+		guard couchResponse != nil else {
 			throw Abort(.notFound)
 		}
 		
-		// Decode data
-		let decoder = JSONDecoder()
-		let doc = try decoder.decode(ExpectedDoc.self, from: data)
+		return couchResponse!.flatMap({ (response) -> EventLoopFuture<View> in
+			guard let data = response.body.data else { throw Abort(.notFound) }
 		
-		let pageData = PageData(
-			title: doc.name
-		)
+			let decoder = JSONDecoder()
+			let doc = try decoder.decode(ExpectedDoc.self, from: data)
 		
-		return try req.view().render("view-name", pageData)
+			let pageData = PageData(
+				title: doc.name
+			)
+		
+			return try req.view().render("view-name", pageData)
+		})
 	}
 }
 ```
