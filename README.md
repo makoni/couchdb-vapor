@@ -1,4 +1,4 @@
-# couchdb-vapor
+# CouchDB Client for Vapor
 
 This is simple lib to work with CouchDB with Vapor Framework.
 
