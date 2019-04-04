@@ -1,5 +1,12 @@
 # CouchDB Client for Vapor
 
+[![Platforms](https://img.shields.io/badge/platforms-macOS%2010.13%20|%20Ubuntu%2016.04%20LTS-ff0000.svg?style=flat)](https://github.com/makoni/couchdb-vapor)
+[![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://swift.org/package-manager/)
+[![Swift 5](https://img.shields.io/badge/swift-5.0-orange.svg?style=flat)](http://swift.org)
+[![Vapor 3](https://img.shields.io/badge/vapor-3.0-blue.svg?style=flat)](https://vapor.codes)
+
+
+
 This is simple lib to work with CouchDB with Vapor Framework.
 
 ## Installation
