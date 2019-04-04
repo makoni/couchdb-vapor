@@ -7,5 +7,4 @@ jobs:
     steps:
       - checkout
       - run: swift build
-      - run: swift test
       - run: swift build -c release
