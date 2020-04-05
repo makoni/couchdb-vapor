@@ -15,13 +15,10 @@ public class CouchDBClient: NSObject {
 	
 	/// Protocol
 	private var couchProtocol: String = "http://"
-	
 	/// Host
 	private var couchHost: String = "127.0.0.1"
-	
 	/// Port
 	private var couchPort: Int = 5984
-	
 	/// Base URL
 	private var couchBaseURL: String = ""
 
@@ -29,7 +26,6 @@ public class CouchDBClient: NSObject {
 	// MARK: - Init
 	public override init() {
 		super.init()
-		
 		self.couchBaseURL = self.buildBaseUrl()
 	}
 	
