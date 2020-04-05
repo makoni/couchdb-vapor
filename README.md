@@ -13,7 +13,7 @@
 
 
 
-This is simple lib to work with CouchDB with Vapor Framework.
+This is simple lib to work with CouchDB with Vapor Framework. This branch contains version that supports Vapor 3 version only.
 
 ## Installation
 
@@ -25,7 +25,7 @@ Add to the `dependencies` value of your `Package.swift`.
 
 ```swift
 dependencies: [
-	.package(url: "https://github.com/makoni/couchdb-vapor.git", from: "0.0.4"),
+	.package(url: "https://github.com/makoni/couchdb-vapor.git", branch: "vapor3"),
 ]
 ```
 
