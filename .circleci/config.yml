@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: vapor/swift:5.0
+      - image: vapor/swift:5.2
     steps:
       - checkout
       - run: swift build
