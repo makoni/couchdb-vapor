@@ -7,10 +7,16 @@
 
 import Foundation
 import NIO
+import NIOHTTP1
 import AsyncHTTPClient
 
 
 public class CouchDBClient: NSObject {
+	// MARK: - Public properties
+	
+	/// Flag if did authorize in CouchDB
+	var isAuthorized: Bool { authData?.ok ?? false }
+	
 	// MARK: - Private properties
 	
 	/// Protocol
@@ -21,6 +27,14 @@ public class CouchDBClient: NSObject {
 	private var couchPort: Int = 5984
 	/// Base URL
 	private var couchBaseURL: String = ""
+	/// Session cookie for requests that needs authorization
+	private var sessionCookie: String?
+	/// CouchDB user name
+	private var userName: String = ""
+	/// CouchDB user password
+	private var userPassword: String = ""
+	/// Authorization response from CouchDB
+	private var authData: CreateSessionResponse?
 
 
 	// MARK: - Init
@@ -29,10 +43,12 @@ public class CouchDBClient: NSObject {
 		self.couchBaseURL = self.buildBaseUrl()
 	}
 	
-	public init(couchProtocol: String = "http://", couchHost: String = "127.0.0.1", couchPort: Int = 5984) {
+	public init(couchProtocol: String = "http://", couchHost: String = "127.0.0.1", couchPort: Int = 5984, userName: String = "", userPassword: String = "") {
 		self.couchProtocol = couchProtocol
 		self.couchHost = couchHost
 		self.couchPort = couchPort
+		self.userName = userName
+		self.userPassword = userPassword
 		
 		super.init()
 		self.couchBaseURL = self.buildBaseUrl()
@@ -47,21 +63,31 @@ public class CouchDBClient: NSObject {
 	/// - Returns: Future (EventLoopFuture) with array of strings containing DBs names
 	public func getAllDBs(worker: EventLoopGroup) -> EventLoopFuture<[String]?> {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		defer {
-			try? httpClient.syncShutdown()
-		}
+		defer { try? httpClient.syncShutdown() }
 		
 		let url = self.couchBaseURL + "/_all_dbs"
-		return httpClient.get(url: url).flatMap { (response) -> EventLoopFuture<[String]?> in
-			guard let bytes = response.body else {
-				return worker.next().makeSucceededFuture(nil)
-			}
-			
-			let data = Data(buffer: bytes)
-			let decoder = JSONDecoder()
-			let response = try? decoder.decode([String].self, from: data)
-			
-			return worker.next().makeSucceededFuture(response)
+		
+		do {
+			return try authIfNeed(worker: worker)
+				.flatMap({ [weak self] (session) -> EventLoopFuture<[String]?> in
+					guard let request = try? self?.makeRequest(fromUrl: url, withMethod: .GET) else {
+						return worker.next().makeFailedFuture(NSError())
+					}
+					
+					return httpClient.execute(request: request).flatMap { (response) -> EventLoopFuture<[String]?> in
+						guard let bytes = response.body else {
+							return worker.next().makeSucceededFuture(nil)
+						}
+						
+						let data = Data(buffer: bytes)
+						let decoder = JSONDecoder()
+						let databasesList = try? decoder.decode([String].self, from: data)
+						
+						return worker.next().makeSucceededFuture(databasesList)
+					}
+				})
+		} catch {
+			return worker.next().makeFailedFuture(error)
 		}
 	}
 
@@ -218,5 +244,69 @@ internal extension CouchDBClient {
 			queryString = "?\(strings.joined(separator: "&"))"
 		}
 		return queryString
+	}
+	
+	/// Get authorization cookie in didn't yet. This cookie will be added automatically to requests that require authorization
+	/// - Parameter worker: Worker (EventLoopGroup)
+	/// - Returns: Future (EventLoopFuture) with authorization response (CreateSessionResponse)
+	func authIfNeed(worker: EventLoopGroup) throws -> EventLoopFuture<CreateSessionResponse> {
+		// already authorized
+		if let authData = self.authData {
+			return worker.next().makeSucceededFuture(authData)
+		}
+		
+		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+		defer { try? httpClient.syncShutdown() }
+		
+		let url = self.couchBaseURL + "/_session"
+		
+		do {
+			var request = try HTTPClient.Request(url:url, method: .POST)
+			request.headers.add(name: "Content-Type", value: "application/x-www-form-urlencoded")
+			let dataString = "name=\(userName)&password=\(userPassword)"
+			request.body = HTTPClient.Body.string(dataString)
+			
+			return httpClient
+				.execute(request: request, deadline: .now() + .seconds(30))
+				.flatMapResult { [weak self] (response) -> Result<CreateSessionResponse, Error> in
+					guard let bytes = response.body else {
+						return Result.failure(NSError())
+					}
+					
+					var cookie = ""
+					response.headers.forEach { (header: (name: String, value: String)) in
+						if header.name == "Set-Cookie" {
+							cookie = header.value
+						}
+					}
+					self?.sessionCookie = cookie
+					
+					guard let authData = try? JSONDecoder().decode(CreateSessionResponse.self, from: bytes) else {
+						return Result.failure(NSError())
+					}
+					self?.authData = authData
+					return Result.success(authData)
+			}
+		} catch {
+			return worker.next().makeFailedFuture(error)
+		}
+	}
+	
+	/// Make HTTP request from url string
+	/// - Parameters:
+	///   - url: url string
+	///   - method: HTTP method
+	/// - Returns: request
+	func makeRequest(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClient.Request  {
+		var headers = HTTPHeaders()
+		if let cookie = sessionCookie {
+			headers = HTTPHeaders([("Cookie", cookie)])
+		}
+		return try HTTPClient.Request(
+			url: url,
+			method: method,
+			headers: headers,
+			body: nil
+		)
 	}
 }
