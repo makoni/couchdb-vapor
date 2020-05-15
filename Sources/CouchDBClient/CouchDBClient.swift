@@ -69,21 +69,22 @@ public class CouchDBClient: NSObject {
 		
 		do {
 			return try authIfNeed(worker: worker)
-				.flatMap({ [weak self] (session) -> EventLoopFuture<[String]?> in
-					guard let request = try? self?.makeRequest(fromUrl: url, withMethod: .GET) else {
-						return worker.next().makeFailedFuture(NSError())
-					}
-					
-					return httpClient.execute(request: request).flatMap { (response) -> EventLoopFuture<[String]?> in
-						guard let bytes = response.body else {
-							return worker.next().makeSucceededFuture(nil)
+				.flatMap({ [unowned self] (session) -> EventLoopFuture<[String]?> in
+					do {
+						let request = try self.makeRequest(fromUrl: url, withMethod: .GET)
+						return httpClient.execute(request: request).flatMap { (response) -> EventLoopFuture<[String]?> in
+							guard let bytes = response.body else {
+								return worker.next().makeSucceededFuture(nil)
+							}
+							
+							let data = Data(buffer: bytes)
+							let decoder = JSONDecoder()
+							let databasesList = try? decoder.decode([String].self, from: data)
+							
+							return worker.next().makeSucceededFuture(databasesList)
 						}
-						
-						let data = Data(buffer: bytes)
-						let decoder = JSONDecoder()
-						let databasesList = try? decoder.decode([String].self, from: data)
-						
-						return worker.next().makeSucceededFuture(databasesList)
+					} catch {
+						return worker.next().makeFailedFuture(error)
 					}
 				})
 		} catch {
