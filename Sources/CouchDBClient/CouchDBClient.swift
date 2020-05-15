@@ -232,9 +232,10 @@ internal extension CouchDBClient {
 	}
 	
 	/// Get authorization cookie in didn't yet. This cookie will be added automatically to requests that require authorization
+	/// API reference: https://docs.couchdb.org/en/stable/api/server/authn.html#session
 	/// - Parameter worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with authorization response (CreateSessionResponse)
-	func authIfNeed(worker: EventLoopGroup) throws -> EventLoopFuture<CreateSessionResponse> {
+	func authIfNeed(worker: EventLoopGroup) throws -> EventLoopFuture<CreateSessionResponse?> {
 		// already authorized
 		if let authData = self.authData {
 			return worker.next().makeSucceededFuture(authData)
@@ -253,11 +254,7 @@ internal extension CouchDBClient {
 			
 			return httpClient
 				.execute(request: request, deadline: .now() + .seconds(30))
-				.flatMapResult { [weak self] (response) -> Result<CreateSessionResponse, Error> in
-					guard let bytes = response.body else {
-						return Result.failure(NSError())
-					}
-					
+				.map({  [weak self] (response) -> CreateSessionResponse? in
 					var cookie = ""
 					response.headers.forEach { (header: (name: String, value: String)) in
 						if header.name == "Set-Cookie" {
@@ -266,12 +263,14 @@ internal extension CouchDBClient {
 					}
 					self?.sessionCookie = cookie
 					
-					guard let authData = try? JSONDecoder().decode(CreateSessionResponse.self, from: bytes) else {
-						return Result.failure(NSError())
+					guard let bytes = response.body else {
+						return nil
 					}
+					
+					let authData = try? JSONDecoder().decode(CreateSessionResponse.self, from: bytes)
 					self?.authData = authData
-					return Result.success(authData)
-			}
+					return authData
+				})
 		} catch {
 			return worker.next().makeFailedFuture(error)
 		}
