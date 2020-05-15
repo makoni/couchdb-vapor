@@ -101,9 +101,7 @@ public class CouchDBClient: NSObject {
 	/// - Returns: Future (EventLoopFuture) with response
 	public func get(dbName: String, uri: String, query: [String: Any]? = nil, worker: EventLoopGroup) -> EventLoopFuture<HTTPClient.Response>? {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		defer {
-			try? httpClient.syncShutdown()
-		}
+		defer { try? httpClient.syncShutdown() }
 
 		let queryString = buildQuery(fromQuery: query)
 		let url = self.couchBaseURL + "/" + dbName + "/" + uri + queryString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
@@ -120,9 +118,7 @@ public class CouchDBClient: NSObject {
 	/// - Returns: Future (EventLoopFuture) with update response (CouchUpdateResponse)
 	public func update(dbName: String, uri: String, body: HTTPClient.Body, worker: EventLoopGroup ) -> EventLoopFuture<CouchUpdateResponse>? {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		defer {
-			try? httpClient.syncShutdown()
-		}
+		defer { try? httpClient.syncShutdown() }
 
 		let url = self.couchBaseURL + "/" + dbName + "/" + uri
 		guard var request = try? HTTPClient.Request(url:url, method: .PUT) else {
@@ -157,9 +153,7 @@ public class CouchDBClient: NSObject {
 	/// - Returns: Future (EventLoopFuture) with insert response (CouchUpdateResponse)
 	public func insert(dbName: String, body: HTTPClient.Body, worker: EventLoopGroup ) -> EventLoopFuture<CouchUpdateResponse>? {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		defer {
-			try? httpClient.syncShutdown()
-		}
+		defer { try? httpClient.syncShutdown() }
 
 		let url = self.couchBaseURL + "/" + dbName
 		
@@ -196,9 +190,7 @@ public class CouchDBClient: NSObject {
 	/// - Returns: Future (EventLoopFuture) with delete response (CouchUpdateResponse)
 	public func delete(fromDb dbName: String, uri: String, rev: String, worker: EventLoopGroup) -> EventLoopFuture<CouchUpdateResponse>? {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		defer {
-			try? httpClient.syncShutdown()
-		}
+		defer { try? httpClient.syncShutdown() }
 
 		let queryString = buildQuery(fromQuery: ["rev": rev])
 		let url = self.couchBaseURL + "/" + dbName + "/" + uri + queryString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
@@ -225,23 +217,16 @@ internal extension CouchDBClient {
 	/// Build Base URL
 	///
 	/// - Returns: Base URL string
-	func buildBaseUrl() -> String {
-		return "\(self.couchProtocol)\(self.couchHost):\(self.couchPort)"
-	}
+	func buildBaseUrl() -> String { "\(self.couchProtocol)\(self.couchHost):\(self.couchPort)" }
 	
 	/// Build query string
 	///
 	/// - Parameter query: params dictionary
 	/// - Returns: query string
-	func buildQuery(fromQuery query: [String: Any]?) -> String {
+	func buildQuery(fromQuery queryDictionary: [String: Any]?) -> String {
 		var queryString = ""
-		
-		if query != nil {
-			var strings = [String]()
-			for (key, value) in query! {
-				strings.append("\(key)=\(value)")
-			}
-			queryString = "?\(strings.joined(separator: "&"))"
+		if let query = queryDictionary {
+			queryString = "?" + query.map({ "\($0.key)=\($0.value)" }).joined(separator: "&")
 		}
 		return queryString
 	}
