@@ -65,7 +65,8 @@ public class CouchDBClient: NSObject {
 	/// - Returns: Future (EventLoopFuture) with array of strings containing DBs names
 	public func getAllDBs(worker: EventLoopGroup) -> EventLoopFuture<[String]?> {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		defer { try? httpClient.syncShutdown() }
+		// In case EventLoopGroup was provided to the client instance, there is no need to shutdown the client, we expect that lifecycle of that group will be controlled by its owner.
+//		defer { try? httpClient.syncShutdown() }
 		
 		let url = buildUrl(path: "/_all_dbs")
 		
@@ -104,7 +105,8 @@ public class CouchDBClient: NSObject {
 	/// - Returns: Future (EventLoopFuture) with response
 	public func get(dbName: String, uri: String, query: [String: String]? = nil, worker: EventLoopGroup) -> EventLoopFuture<HTTPClient.Response>? {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		defer { try? httpClient.syncShutdown() }
+		// In case EventLoopGroup was provided to the client instance, there is no need to shutdown the client, we expect that lifecycle of that group will be controlled by its owner.
+//		defer { try? httpClient.syncShutdown() }
 		
 		var queryItems: [URLQueryItem] = []
 		if let queryArray = query {
@@ -129,7 +131,9 @@ public class CouchDBClient: NSObject {
 	/// - Returns: Future (EventLoopFuture) with update response (CouchUpdateResponse)
 	public func update(dbName: String, uri: String, body: HTTPClient.Body, worker: EventLoopGroup ) -> EventLoopFuture<CouchUpdateResponse>? {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		defer { try? httpClient.syncShutdown() }
+		
+		// In case EventLoopGroup was provided to the client instance, there is no need to shutdown the client, we expect that lifecycle of that group will be controlled by its owner.
+//		defer { try? httpClient.syncShutdown() }
 
 		let url = buildUrl(path: "/" + dbName + "/" + uri)
 		
@@ -165,7 +169,9 @@ public class CouchDBClient: NSObject {
 	/// - Returns: Future (EventLoopFuture) with insert response (CouchUpdateResponse)
 	public func insert(dbName: String, body: HTTPClient.Body, worker: EventLoopGroup ) -> EventLoopFuture<CouchUpdateResponse>? {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		defer { try? httpClient.syncShutdown() }
+		
+		// In case EventLoopGroup was provided to the client instance, there is no need to shutdown the client, we expect that lifecycle of that group will be controlled by its owner.
+//		defer { try? httpClient.syncShutdown() }
 
 		let url = buildUrl(path: "/\(dbName)")
 		
@@ -202,7 +208,9 @@ public class CouchDBClient: NSObject {
 	/// - Returns: Future (EventLoopFuture) with delete response (CouchUpdateResponse)
 	public func delete(fromDb dbName: String, uri: String, rev: String, worker: EventLoopGroup) -> EventLoopFuture<CouchUpdateResponse>? {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		defer { try? httpClient.syncShutdown() }
+		
+		// In case EventLoopGroup was provided to the client instance, there is no need to shutdown the client, we expect that lifecycle of that group will be controlled by its owner.
+//		defer { try? httpClient.syncShutdown() }
 
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: [
 			URLQueryItem(name: "rev", value: rev)
@@ -253,7 +261,9 @@ internal extension CouchDBClient {
 		}
 		
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		defer { try? httpClient.syncShutdown() }
+		
+		// In case EventLoopGroup was provided to the client instance, there is no need to shutdown the client, we expect that lifecycle of that group will be controlled by its owner.
+//		defer { try? httpClient.syncShutdown() }
 		
 		let url = buildUrl(path: "/_session")
 		
