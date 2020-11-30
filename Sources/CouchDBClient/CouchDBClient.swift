@@ -105,7 +105,9 @@ public class CouchDBClient: NSObject {
 	/// - Returns: Future (EventLoopFuture) with response
 	public func get(dbName: String, uri: String, query: [String: String]? = nil, worker: EventLoopGroup) -> EventLoopFuture<HTTPClient.Response>? {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		// In case EventLoopGroup was provided to the client instance, there is no need to shutdown the client, we expect that lifecycle of that group will be controlled by its owner.
+		DispatchQueue.main.async {
+			try? httpClient.syncShutdown()
+		}
 //		defer { try? httpClient.syncShutdown() }
 		
 		var queryItems: [URLQueryItem] = []
