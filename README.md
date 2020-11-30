@@ -13,7 +13,9 @@
 
 
 
-This is simple lib to work with CouchDB with Vapor Framework.
+This is simple lib to work with CouchDB in Swift. You can use old version for Vapor 3 from vapor3 branch or using version < 1.0.0. 
+
+The only depndency for this lib is <a href="https://github.com/swift-server/async-http-client">async-http-client</a>
 
 ## Installation
 
@@ -25,16 +27,19 @@ Add to the `dependencies` value of your `Package.swift`.
 
 ```swift
 dependencies: [
-	.package(url: "https://github.com/makoni/couchdb-vapor.git", from: "0.0.4"),
+	.package(url: "https://github.com/makoni/couchdb-vapor.git", from: "1.0.0"),
 ]
 ```
 
 ## Usage
 
-Get data In Vapor routes:
+Get data In Vapor 4 routes:
 
 ```swift
+// using default settings
 let couchDBClient = CouchDBClient()
+// providing settings
+let couchDBClient2 = CouchDBClient(couchProtocol: .http, couchHost: "127.0.0.1", couchPort: 5984, userName: "username", userPassword: "userpass")
 
 // Sample document model
 struct ExpectedDoc: Codable {
@@ -48,18 +53,18 @@ struct PageData: Content {
 	let title: String
 }
 
-/// Register your application's routes here.
-public func routes(_ router: Router) throws {
-	router.get(String.parameter) { req -> Future<View> in
-		let docId = req.parameters.next(String.self)
+func routes(_ app: Application) throws {
+	app.get(":docId") { req -> EventLoopFuture<View> in
+		let docId = req.parameters.get("docId")!
 		
-		let couchResponse = try couchDBClient.get(dbName: "yourDBname", uri: docId, worker: req)
-		guard couchResponse != nil else {
+		let couchResponse = try couchDBClient.get(dbName: "yourDBname", uri: docId, worker: req.eventLoop)
+		guard let couchFutureResponse = couchResponse else {
 			throw Abort(.notFound)
 		}
 		
-		return couchResponse!.flatMap({ (response) -> EventLoopFuture<View> in
-			guard let data = response.body.data else { throw Abort(.notFound) }
+		return couchFutureResponse.flatMapThrowing({ (response) -> EventLoopFuture<View> in
+			guard let bytes = response.body else { throw Abort(.notFound) }
+			let data = Data(buffer: bytes)
 		
 			let decoder = JSONDecoder()
 			let doc = try decoder.decode(ExpectedDoc.self, from: data)
@@ -82,7 +87,7 @@ let testData = [name: "some name"]
 let encoder = JSONEncoder()
 let data = try encoder.encode(testData)
 
-let response = try couchDBClient.insert(dbName: "yourDBname", body: HTTPBody(data: data), worker: req)?.wait()
+let response = try couchDBClient.insert(dbName: "yourDBname", body: HTTPBody(data: data), worker: req.eventLoop)?.wait()
 print(response)
 // prints: CouchDBClient.CouchUpdateResponse(ok: true, id: "0a1eea865fdec7a00afb96685001c7be", rev: "1-e6bde9e60844ba5648cc61b446f9f4b3"))
 ```
@@ -95,7 +100,7 @@ let updatedData = ExpectedDoc(name: "some new name", _id: "0a1eea865fdec7a00afb9
 let encoder = JSONEncoder()
 let data = try encoder.encode(testData)
 
-let response = try couchDBClient.update(dbName: "yourDBname", uri: updatedData._id, body: HTTPBody(data: data), worker: req)?.wait()
+let response = try couchDBClient.update(dbName: "yourDBname", uri: updatedData._id, body: HTTPBody(data: data), worker: req.eventLoop)?.wait()
 print(response)
 // prints: CouchDBClient.CouchUpdateResponse(ok: true, id: "0a1eea865fdec7a00afb96685001c7be", rev: "1-e6bde9e60844ba5648cc61b446f9f4b4"))
 ```
@@ -108,7 +113,7 @@ let updatedData = ExpectedDoc(name: "some new name", _id: "0a1eea865fdec7a00afb9
 let encoder = JSONEncoder()
 let data = try encoder.encode(testData)
 
-let response = try couchDBClient.delete(fromDb: "yourDBname", uri: updatedData._id, rev: updatedData._rev, worker: req)?.wait()
+let response = try couchDBClient.delete(fromDb: "yourDBname", uri: updatedData._id, rev: updatedData._rev, worker: req.eventLoop)?.wait()
 print(response)
 // prints: CouchDBClient.CouchUpdateResponse(ok: true, id: "0a1eea865fdec7a00afb96685001c7be", rev: "1-e6bde9e60844ba5648cc61b446f9f4b5"))
 ```
@@ -117,7 +122,7 @@ Get all DBs example:
 
 ```swift
 
-let response = try couchDBClient.getAllDBs(worker: req).wait()
+let response = try couchDBClient.getAllDBs(worker: req.eventLoop).wait()
 guard let dbs = response else {
 	throw Abort(.notFound)
 }
