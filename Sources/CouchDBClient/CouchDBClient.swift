@@ -105,8 +105,11 @@ public class CouchDBClient: NSObject {
 	/// - Returns: Future (EventLoopFuture) with response
 	public func get(dbName: String, uri: String, query: [String: String]? = nil, worker: EventLoopGroup) -> EventLoopFuture<HTTPClient.Response>? {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		DispatchQueue.main.async {
-			try? httpClient.syncShutdown()
+		
+		defer {
+			DispatchQueue.main.async {
+				try? httpClient.syncShutdown()
+			}
 		}
 //		defer { try? httpClient.syncShutdown() }
 		
