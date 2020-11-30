@@ -12,15 +12,19 @@ import AsyncHTTPClient
 
 
 public class CouchDBClient: NSObject {
+	public enum CouchDBProtocol: String {
+		case http
+		case https
+	}
+	
 	// MARK: - Public properties
 	
 	/// Flag if did authorize in CouchDB
 	var isAuthorized: Bool { authData?.ok ?? false }
 	
 	// MARK: - Private properties
-	
 	/// Protocol
-	private var couchProtocol: String = "http://"
+	private var couchProtocol: CouchDBProtocol = .http
 	/// Host
 	private var couchHost: String = "127.0.0.1"
 	/// Port
@@ -40,10 +44,9 @@ public class CouchDBClient: NSObject {
 	// MARK: - Init
 	public override init() {
 		super.init()
-		self.couchBaseURL = self.buildBaseUrl()
 	}
 	
-	public init(couchProtocol: String = "http://", couchHost: String = "127.0.0.1", couchPort: Int = 5984, userName: String = "", userPassword: String = "") {
+	public init(couchProtocol: CouchDBProtocol = .http, couchHost: String = "127.0.0.1", couchPort: Int = 5984, userName: String = "", userPassword: String = "") {
 		self.couchProtocol = couchProtocol
 		self.couchHost = couchHost
 		self.couchPort = couchPort
@@ -51,7 +54,6 @@ public class CouchDBClient: NSObject {
 		self.userPassword = userPassword
 		
 		super.init()
-		self.couchBaseURL = self.buildBaseUrl()
 	}
 	
 	
@@ -65,7 +67,7 @@ public class CouchDBClient: NSObject {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		defer { try? httpClient.syncShutdown() }
 		
-		let url = self.couchBaseURL + "/_all_dbs"
+		let url = buildUrl(path: "/_all_dbs")
 		
 		do {
 			return try authIfNeed(worker: worker)
@@ -100,12 +102,20 @@ public class CouchDBClient: NSObject {
 	///   - query: requst query
 	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with response
-	public func get(dbName: String, uri: String, query: [String: Any]? = nil, worker: EventLoopGroup) -> EventLoopFuture<HTTPClient.Response>? {
+	public func get(dbName: String, uri: String, query: [String: String]? = nil, worker: EventLoopGroup) -> EventLoopFuture<HTTPClient.Response>? {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		defer { try? httpClient.syncShutdown() }
-
-		let queryString = buildQuery(fromQuery: query)
-		let url = self.couchBaseURL + "/" + dbName + "/" + uri + queryString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+		
+		var queryItems: [URLQueryItem] = []
+		if let queryArray = query {
+			for item in queryArray {
+				queryItems.append(
+					URLQueryItem(name: item.key, value: item.value)
+				)
+			}
+		}
+		let url = buildUrl(path: "/" + dbName + "/" + uri, query: queryItems)
+		
 		return httpClient.get(url: url)
 	}
 
@@ -121,7 +131,8 @@ public class CouchDBClient: NSObject {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		defer { try? httpClient.syncShutdown() }
 
-		let url = self.couchBaseURL + "/" + dbName + "/" + uri
+		let url = buildUrl(path: "/" + dbName + "/" + uri)
+		
 		guard var request = try? HTTPClient.Request(url:url, method: .PUT) else {
 			return worker.next().makeSucceededFuture(CouchUpdateResponse(ok: false, id: "", rev: ""))
 		}
@@ -156,7 +167,7 @@ public class CouchDBClient: NSObject {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		defer { try? httpClient.syncShutdown() }
 
-		let url = self.couchBaseURL + "/" + dbName
+		let url = buildUrl(path: "/\(dbName)")
 		
 		guard var request = try? HTTPClient.Request(url:url, method: .POST) else {
 			return worker.next().makeSucceededFuture(CouchUpdateResponse(ok: false, id: "", rev: ""))
@@ -193,9 +204,10 @@ public class CouchDBClient: NSObject {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		defer { try? httpClient.syncShutdown() }
 
-		let queryString = buildQuery(fromQuery: ["rev": rev])
-		let url = self.couchBaseURL + "/" + dbName + "/" + uri + queryString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
-
+		let url = buildUrl(path: "/" + dbName + "/" + uri, query: [
+			URLQueryItem(name: "rev", value: rev)
+		])
+		
 		return httpClient.delete(url: url).flatMap { (response) -> EventLoopFuture<CouchUpdateResponse> in
 			guard let bytes = response.body else {
 				return worker.next().makeSucceededFuture(CouchUpdateResponse(ok: false, id: "", rev: ""))
@@ -215,21 +227,19 @@ public class CouchDBClient: NSObject {
 
 // MARK: - Private methods
 internal extension CouchDBClient {
-	/// Build Base URL
-	///
-	/// - Returns: Base URL string
-	func buildBaseUrl() -> String { "\(self.couchProtocol)\(self.couchHost):\(self.couchPort)" }
-	
-	/// Build query string
-	///
-	/// - Parameter query: params dictionary
-	/// - Returns: query string
-	func buildQuery(fromQuery queryDictionary: [String: Any]?) -> String {
-		var queryString = ""
-		if let query = queryDictionary {
-			queryString = "?" + query.map({ "\($0.key)=\($0.value)" }).joined(separator: "&")
+	func buildUrl(path: String, query: [URLQueryItem] = []) -> String {
+		var components = URLComponents()
+		components.scheme = couchProtocol.rawValue
+		components.host = couchHost
+		components.port = couchPort
+		components.path = path
+		
+		components.queryItems = query.isEmpty ? nil : query
+		
+		if components.url?.absoluteString == nil {
+			assertionFailure("url should not be nil")
 		}
-		return queryString
+		return components.url?.absoluteString ?? ""
 	}
 	
 	/// Get authorization cookie in didn't yet. This cookie will be added automatically to requests that require authorization
@@ -238,14 +248,14 @@ internal extension CouchDBClient {
 	/// - Returns: Future (EventLoopFuture) with authorization response (CreateSessionResponse)
 	func authIfNeed(worker: EventLoopGroup) throws -> EventLoopFuture<CreateSessionResponse?> {
 		// already authorized
-		if let authData = self.authData {
+		if let authData = authData {
 			return worker.next().makeSucceededFuture(authData)
 		}
 		
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		defer { try? httpClient.syncShutdown() }
 		
-		let url = self.couchBaseURL + "/_session"
+		let url = buildUrl(path: "/_session")
 		
 		do {
 			var request = try HTTPClient.Request(url:url, method: .POST)

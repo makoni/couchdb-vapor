@@ -16,7 +16,8 @@ final class CouchDBClientTests: XCTestCase {
 	}
 	
 	let testsDB = "fortests"
-	let couchDBClient = CouchDBClient()
+	#warning("set your admin password if need")
+	let couchDBClient = CouchDBClient(couchProtocol: .http, couchHost: "127.0.0.1", couchPort: 5984, userName: "admin", userPassword: "kbyrbygfhr")
 	
 	
 	override func setUp() {
@@ -28,11 +29,12 @@ final class CouchDBClientTests: XCTestCase {
 		var dbs: [String]?
 		do {
 			dbs = try couchDBClient.getAllDBs(worker: worker).wait()
-			XCTAssertNotNil(dbs)
-			XCTAssertTrue(dbs!.contains("_global_changes"))
-		} catch (let error) {
-			print(error)
+		} catch let error {
+			XCTFail(error.localizedDescription)
 		}
+		
+		XCTAssertNotNil(dbs)
+		XCTAssertTrue(dbs!.contains("_global_changes"))
 	}
 	
 	func testInsertGetUpdateDelete() {
@@ -83,9 +85,8 @@ final class CouchDBClientTests: XCTestCase {
 			XCTAssertNotNil(doc)
 			XCTAssertEqual(doc.name, testData.name)
 
-		} catch (let error) {
-			XCTAssertFalse(true)
-			print(error)
+		} catch let error {
+			XCTFail(error.localizedDescription)
 		}
 
 		// Test update
@@ -142,28 +143,18 @@ final class CouchDBClientTests: XCTestCase {
 			print(error)
 		}
 	}
-
-	func testBuildBaseUrl() {
-		let expectedUrl = "http://127.0.0.1:5984"
-		let baseUrl = couchDBClient.buildBaseUrl()
-		XCTAssertFalse(baseUrl.isEmpty)
-		XCTAssertEqual(baseUrl, expectedUrl)
-	}
-
-	func testBuildQuery() {
-		let query = ["key": "\"testKey\""]
-		let expectedQuery = "?key=\"testKey\""
-
-		let querString = couchDBClient.buildQuery(fromQuery: query)
-
-		XCTAssertFalse(querString.isEmpty)
-		XCTAssertEqual(querString, expectedQuery)
+	
+	func testBuildUrl() {
+		let expectedUrl = "http://127.0.0.1:5984?key=testKey"
+		let url = couchDBClient.buildUrl(path: "", query: [
+			URLQueryItem(name: "key", value: "testKey")
+		])
+		XCTAssertEqual(url, expectedUrl)
 	}
 
     static var allTests = [
         ("testGetAllDbs", testGetAllDbs),
-		("testBuildBaseUrl", testBuildBaseUrl),
-		("testBuildQuery", testBuildQuery),
+		("testBuildUrl", testBuildUrl),
 		("testInsertGetUpdateDelete", testInsertGetUpdateDelete)
     ]
 }
