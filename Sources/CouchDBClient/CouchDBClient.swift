@@ -51,7 +51,14 @@ public class CouchDBClient: NSObject {
 		self.couchHost = couchHost
 		self.couchPort = couchPort
 		self.userName = userName
-		self.userPassword = userPassword
+
+		if userPassword.isEmpty {
+			if let pass = ProcessInfo.processInfo.environment["adminpass"] as? String {
+				self.userPassword = pass
+			}
+		} else {
+			self.userPassword = userPassword
+		}
 		
 		super.init()
 	}
