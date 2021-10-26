@@ -53,7 +53,7 @@ public class CouchDBClient: NSObject {
 		self.userName = userName
 
 		if userPassword.isEmpty {
-			if let pass = ProcessInfo.processInfo.environment["adminpass"] as? String {
+			if let pass = ProcessInfo.processInfo.environment["adminpass"] {
 				self.userPassword = pass
 			}
 		} else {
