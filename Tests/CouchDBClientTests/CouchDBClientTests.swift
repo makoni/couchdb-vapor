@@ -66,10 +66,10 @@ final class CouchDBClientTests: XCTestCase {
 		// Test Get
 		XCTAssertFalse(expectedInsertId.isEmpty)
 		do {
-			let response = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId, worker: worker)
+			var response = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId, worker: worker)
 			XCTAssertNotNil(response.body)
 
-			let data = response.body!.getData(at: 0, length: response.body!.readableBytes)!
+			let data = response.body!.readData(length: response.body!.readableBytes)!
 			let decoder = JSONDecoder()
 			let doc = try decoder.decode(ExpectedDoc.self, from: data)
 
@@ -98,7 +98,7 @@ final class CouchDBClientTests: XCTestCase {
 			XCTAssertNotEqual(response.rev, expectedInsertRev)
 			XCTAssertEqual(response.id, expectedInsertId)
 
-			let getResponse = try await couchDBClient.get(
+			var getResponse = try await couchDBClient.get(
 				dbName: testsDB,
 				uri: expectedInsertId,
 				worker: worker
@@ -106,7 +106,7 @@ final class CouchDBClientTests: XCTestCase {
 			
 			XCTAssertNotNil(getResponse.body)
 
-			let getData = getResponse.body!.getData(at: 0, length: getResponse.body!.readableBytes)!
+			let getData = getResponse.body!.readData(length: getResponse.body!.readableBytes)!
 			let decoder = JSONDecoder()
 			let doc = try decoder.decode(ExpectedDoc.self, from: getData)
 
