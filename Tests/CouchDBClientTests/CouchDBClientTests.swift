@@ -17,7 +17,7 @@ final class CouchDBClientTests: XCTestCase {
 	
 	let testsDB = "fortests"
 	#warning("set your admin password if need")
-	let couchDBClient = CouchDBClient(couchProtocol: .http, couchHost: "127.0.0.1", couchPort: 5984, userName: "admin", userPassword: "")
+	let couchDBClient = CouchDBClient(couchProtocol: .http, couchHost: "127.0.0.1", couchPort: 5984, userName: "admin", userPassword: "kbyrbygfhr")
 	
 	
 	override func setUp() {
@@ -68,8 +68,8 @@ final class CouchDBClientTests: XCTestCase {
 		do {
 			let response = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId, worker: worker)
 			XCTAssertNotNil(response.body)
-			
-			let data = Data(buffer: response.body!)
+
+			let data = response.body!.getData(at: 0, length: bytes.capacity)
 			let decoder = JSONDecoder()
 			let doc = try decoder.decode(ExpectedDoc.self, from: data)
 
@@ -106,7 +106,7 @@ final class CouchDBClientTests: XCTestCase {
 			
 			XCTAssertNotNil(getResponse.body)
 
-			let getData = Data(buffer: getResponse.body!)
+			let getData = getResponse.body!.getData(at: 0, length: getResponse.body!.capacity)!
 			let decoder = JSONDecoder()
 			let doc = try decoder.decode(ExpectedDoc.self, from: getData)
 

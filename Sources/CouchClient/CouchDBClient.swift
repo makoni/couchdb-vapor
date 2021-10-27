@@ -84,9 +84,8 @@ public class CouchDBClient: NSObject {
 		let request = try self.buildRequest(fromUrl: url, withMethod: .GET)
 		let response = try await httpClient.execute(request: request).get()
 
-		guard let bytes = response.body else { return nil }
+		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.capacity) else { return nil }
 
-		let data = Data(buffer: bytes)
 		let decoder = JSONDecoder()
 		let databasesList = try? decoder.decode([String].self, from: data)
 
@@ -148,11 +147,10 @@ public class CouchDBClient: NSObject {
 
 		let response = try await httpClient.execute(request: request, deadline: .now() + .seconds(30)).get()
 		
-		guard let bytes = response.body else {
+		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.capacity) else {
 			return CouchUpdateResponse(ok: false, id: "", rev: "")
 		}
 
-		let data = Data(buffer: bytes)
 		let decoder = JSONDecoder()
 		decoder.dateDecodingStrategy = .secondsSince1970
 		return try decoder.decode(CouchUpdateResponse.self, from: data)
@@ -182,11 +180,10 @@ public class CouchDBClient: NSObject {
 
 		let response = try await httpClient.execute(request: request, deadline: .now() + .seconds(30)).get()
 		
-		guard let bytes = response.body else {
+		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.capacity) else {
 			return CouchUpdateResponse(ok: false, id: "", rev: "")
 		}
 
-		let data = Data(buffer: bytes)
 		let decoder = JSONDecoder()
 		decoder.dateDecodingStrategy = .secondsSince1970
 		return try decoder.decode(CouchUpdateResponse.self, from: data)
@@ -215,11 +212,10 @@ public class CouchDBClient: NSObject {
 
 		let response = try await httpClient.delete(url: url).get()
 
-		guard let bytes = response.body else {
+		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.capacity) else {
 			return CouchUpdateResponse(ok: false, id: "", rev: "")
 		}
 
-		let data = Data(buffer: bytes)
 		let decoder = JSONDecoder()
 		return try decoder.decode(CouchUpdateResponse.self, from: data)
 	}
@@ -279,12 +275,11 @@ internal extension CouchDBClient {
 		}
 		sessionCookie = cookie
 
-		guard let bytes = response.body else {
+		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.capacity) else {
 			return nil
 		}
 
-		let data = Data(buffer: bytes)
-		let authData = try? JSONDecoder().decode(CreateSessionResponse.self, from: data)
+		let authData = try JSONDecoder().decode(CreateSessionResponse.self, from: data)
 		self.authData = authData
 		return authData
 	}
