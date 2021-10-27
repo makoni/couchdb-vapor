@@ -6,7 +6,7 @@ jobs:
   swift-docker:
     container: 
       image: swift:latest
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     - name: Checkout
       uses: actions/checkout@master

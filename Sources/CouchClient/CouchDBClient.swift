@@ -283,7 +283,8 @@ internal extension CouchDBClient {
 			return nil
 		}
 
-		let authData = try? JSONDecoder().decode(CreateSessionResponse.self, from: bytes)
+		let data = Data(buffer: bytes)
+		let authData = try? JSONDecoder().decode(CreateSessionResponse.self, from: data)
 		self.authData = authData
 		return authData
 	}
