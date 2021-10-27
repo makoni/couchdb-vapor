@@ -70,7 +70,7 @@ public class CouchDBClient: NSObject {
 	///
 	/// - Parameter worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with array of strings containing DBs names
-	public func getAllDBs(worker: EventLoopGroup) -> EventLoopFuture<[String]?> {
+	public func getAllDBs(worker: EventLoopGroup) async throws -> [String]? {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		defer {
 			DispatchQueue.main.async {
@@ -79,30 +79,18 @@ public class CouchDBClient: NSObject {
 		}
 		
 		let url = buildUrl(path: "/_all_dbs")
-		
-		do {
-			return try authIfNeed(worker: worker)
-				.flatMap({ [unowned self] (session) -> EventLoopFuture<[String]?> in
-					do {
-						let request = try self.makeRequest(fromUrl: url, withMethod: .GET)
-						return httpClient.execute(request: request).flatMap { (response) -> EventLoopFuture<[String]?> in
-							guard let bytes = response.body else {
-								return worker.next().makeSucceededFuture(nil)
-							}
-							
-							let data = Data(buffer: bytes)
-							let decoder = JSONDecoder()
-							let databasesList = try? decoder.decode([String].self, from: data)
-							
-							return worker.next().makeSucceededFuture(databasesList)
-						}
-					} catch {
-						return worker.next().makeFailedFuture(error)
-					}
-				})
-		} catch {
-			return worker.next().makeFailedFuture(error)
-		}
+		try await authIfNeed(worker: worker)
+
+		let request = try self.buildRequest(fromUrl: url, withMethod: .GET)
+		let response = try await httpClient.execute(request: request).get()
+
+		guard let bytes = response.body else { return nil }
+
+		let data = Data(buffer: bytes)
+		let decoder = JSONDecoder()
+		let databasesList = try? decoder.decode([String].self, from: data)
+
+		return databasesList
 	}
 
 	/// Get data from DB
@@ -113,7 +101,7 @@ public class CouchDBClient: NSObject {
 	///   - query: requst query
 	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with response
-	public func get(dbName: String, uri: String, query: [String: String]? = nil, worker: EventLoopGroup) -> EventLoopFuture<HTTPClient.Response>? {
+	public func get(dbName: String, uri: String, query: [String: String]? = nil, worker: EventLoopGroup) async throws -> HTTPClient.Response {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		
 		defer {
@@ -132,7 +120,7 @@ public class CouchDBClient: NSObject {
 		}
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: queryItems)
 		
-		return httpClient.get(url: url)
+		return try await httpClient.get(url: url).get()
 	}
 
 	/// Update data in DB
@@ -143,7 +131,7 @@ public class CouchDBClient: NSObject {
 	///   - body: data which will be in request body
 	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with update response (CouchUpdateResponse)
-	public func update(dbName: String, uri: String, body: HTTPClient.Body, worker: EventLoopGroup ) -> EventLoopFuture<CouchUpdateResponse>? {
+	public func update(dbName: String, uri: String, body: HTTPClient.Body, worker: EventLoopGroup ) async throws -> CouchUpdateResponse {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		
 		defer {
@@ -154,27 +142,20 @@ public class CouchDBClient: NSObject {
 
 		let url = buildUrl(path: "/" + dbName + "/" + uri)
 		
-		guard var request = try? HTTPClient.Request(url:url, method: .PUT) else {
-			return worker.next().makeSucceededFuture(CouchUpdateResponse(ok: false, id: "", rev: ""))
-		}
+		var request = try HTTPClient.Request(url:url, method: .PUT)
 		request.headers.add(name: "Content-Type", value: "application/json")
 		request.body = body
+
+		let response = try await httpClient.execute(request: request, deadline: .now() + .seconds(30)).get()
 		
-		return httpClient
-			.execute(request: request, deadline: .now() + .seconds(30))
-			.flatMap { (response) -> EventLoopFuture<CouchUpdateResponse> in
-				guard let bytes = response.body else {
-					return worker.next().makeSucceededFuture(CouchUpdateResponse(ok: false, id: "", rev: ""))
-				}
-				
-				let data = Data(buffer: bytes)
-				let decoder = JSONDecoder()
-				decoder.dateDecodingStrategy = .secondsSince1970
-				guard let updateResponse = try? decoder.decode(CouchUpdateResponse.self, from: data) else {
-					return worker.next().makeSucceededFuture(CouchUpdateResponse(ok: false, id: "", rev: ""))
-				}
-				return worker.next().makeSucceededFuture(updateResponse)
+		guard let bytes = response.body else {
+			return CouchUpdateResponse(ok: false, id: "", rev: "")
 		}
+
+		let data = Data(buffer: bytes)
+		let decoder = JSONDecoder()
+		decoder.dateDecodingStrategy = .secondsSince1970
+		return try decoder.decode(CouchUpdateResponse.self, from: data)
 	}
 
 	/// Insert document in DB
@@ -184,7 +165,7 @@ public class CouchDBClient: NSObject {
 	///   - body: data which will be in request body
 	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with insert response (CouchUpdateResponse)
-	public func insert(dbName: String, body: HTTPClient.Body, worker: EventLoopGroup ) -> EventLoopFuture<CouchUpdateResponse>? {
+	public func insert(dbName: String, body: HTTPClient.Body, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		
 		defer {
@@ -194,28 +175,21 @@ public class CouchDBClient: NSObject {
 		}
 
 		let url = buildUrl(path: "/\(dbName)")
-		
-		guard var request = try? HTTPClient.Request(url:url, method: .POST) else {
-			return worker.next().makeSucceededFuture(CouchUpdateResponse(ok: false, id: "", rev: ""))
-		}
+
+		var request = try HTTPClient.Request(url:url, method: .POST)
 		request.headers.add(name: "Content-Type", value: "application/json")
 		request.body = body
+
+		let response = try await httpClient.execute(request: request, deadline: .now() + .seconds(30)).get()
 		
-		return httpClient
-			.execute(request: request, deadline: .now() + .seconds(30))
-			.flatMap { (response) -> EventLoopFuture<CouchUpdateResponse> in
-				guard let bytes = response.body else {
-					return worker.next().makeSucceededFuture(CouchUpdateResponse(ok: false, id: "", rev: ""))
-				}
-				
-				let data = Data(buffer: bytes)
-				let decoder = JSONDecoder()
-				decoder.dateDecodingStrategy = .secondsSince1970
-				guard let updateResponse = try? decoder.decode(CouchUpdateResponse.self, from: data) else {
-					return worker.next().makeSucceededFuture(CouchUpdateResponse(ok: false, id: "", rev: ""))
-				}
-				return worker.next().makeSucceededFuture(updateResponse)
+		guard let bytes = response.body else {
+			return CouchUpdateResponse(ok: false, id: "", rev: "")
 		}
+
+		let data = Data(buffer: bytes)
+		let decoder = JSONDecoder()
+		decoder.dateDecodingStrategy = .secondsSince1970
+		return try decoder.decode(CouchUpdateResponse.self, from: data)
 	}
 
 	/// Delete document from DB
@@ -226,7 +200,7 @@ public class CouchDBClient: NSObject {
 	///   - rev: document revision (usually _rev)
 	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with delete response (CouchUpdateResponse)
-	public func delete(fromDb dbName: String, uri: String, rev: String, worker: EventLoopGroup) -> EventLoopFuture<CouchUpdateResponse>? {
+	public func delete(fromDb dbName: String, uri: String, rev: String, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		
 		defer {
@@ -238,20 +212,16 @@ public class CouchDBClient: NSObject {
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: [
 			URLQueryItem(name: "rev", value: rev)
 		])
-		
-		return httpClient.delete(url: url).flatMap { (response) -> EventLoopFuture<CouchUpdateResponse> in
-			guard let bytes = response.body else {
-				return worker.next().makeSucceededFuture(CouchUpdateResponse(ok: false, id: "", rev: ""))
-			}
-			
-			let data = Data(buffer: bytes)
-			let decoder = JSONDecoder()
-			guard let deleteResponse = try? decoder.decode(CouchUpdateResponse.self, from: data) else {
-				return worker.next().makeSucceededFuture(CouchUpdateResponse(ok: false, id: "", rev: ""))
-			}
-			
-			return worker.next().makeSucceededFuture(deleteResponse)
+
+		let response = try await httpClient.delete(url: url).get()
+
+		guard let bytes = response.body else {
+			return CouchUpdateResponse(ok: false, id: "", rev: "")
 		}
+
+		let data = Data(buffer: bytes)
+		let decoder = JSONDecoder()
+		return try decoder.decode(CouchUpdateResponse.self, from: data)
 	}
 }
 
@@ -272,15 +242,16 @@ internal extension CouchDBClient {
 		}
 		return components.url?.absoluteString ?? ""
 	}
-	
+
 	/// Get authorization cookie in didn't yet. This cookie will be added automatically to requests that require authorization
 	/// API reference: https://docs.couchdb.org/en/stable/api/server/authn.html#session
 	/// - Parameter worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with authorization response (CreateSessionResponse)
-	func authIfNeed(worker: EventLoopGroup) throws -> EventLoopFuture<CreateSessionResponse?> {
+	@discardableResult
+	func authIfNeed(worker: EventLoopGroup) async throws -> CreateSessionResponse? {
 		// already authorized
 		if let authData = authData {
-			return worker.next().makeSucceededFuture(authData)
+			return authData
 		}
 		
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
@@ -293,42 +264,36 @@ internal extension CouchDBClient {
 		
 		let url = buildUrl(path: "/_session")
 		
-		do {
-			var request = try HTTPClient.Request(url:url, method: .POST)
-			request.headers.add(name: "Content-Type", value: "application/x-www-form-urlencoded")
-			let dataString = "name=\(userName)&password=\(userPassword)"
-			request.body = HTTPClient.Body.string(dataString)
-			
-			return httpClient
-				.execute(request: request, deadline: .now() + .seconds(30))
-				.map({  [weak self] (response) -> CreateSessionResponse? in
-					var cookie = ""
-					response.headers.forEach { (header: (name: String, value: String)) in
-						if header.name == "Set-Cookie" {
-							cookie = header.value
-						}
-					}
-					self?.sessionCookie = cookie
-					
-					guard let bytes = response.body else {
-						return nil
-					}
-					
-					let authData = try? JSONDecoder().decode(CreateSessionResponse.self, from: bytes)
-					self?.authData = authData
-					return authData
-				})
-		} catch {
-			return worker.next().makeFailedFuture(error)
+		var request = try HTTPClient.Request(url:url, method: .POST)
+		request.headers.add(name: "Content-Type", value: "application/x-www-form-urlencoded")
+		let dataString = "name=\(userName)&password=\(userPassword)"
+		request.body = HTTPClient.Body.string(dataString)
+
+		let response = try await httpClient.execute(request: request, deadline: .now() + .seconds(30)).get()
+
+		var cookie = ""
+		response.headers.forEach { (header: (name: String, value: String)) in
+			if header.name == "Set-Cookie" {
+				cookie = header.value
+			}
 		}
+		sessionCookie = cookie
+
+		guard let bytes = response.body else {
+			return nil
+		}
+
+		let authData = try? JSONDecoder().decode(CreateSessionResponse.self, from: bytes)
+		self.authData = authData
+		return authData
 	}
 	
-	/// Make HTTP request from url string
+	/// Build HTTP request from url string
 	/// - Parameters:
 	///   - url: url string
 	///   - method: HTTP method
 	/// - Returns: request
-	func makeRequest(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClient.Request  {
+	func buildRequest(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClient.Request  {
 		var headers = HTTPHeaders()
 		if let cookie = sessionCookie {
 			headers = HTTPHeaders([("Cookie", cookie)])

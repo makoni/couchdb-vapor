@@ -1,7 +1,7 @@
 import XCTest
 import NIO
 import AsyncHTTPClient
-@testable import CouchDBClient
+@testable import CouchClient
 
 
 final class CouchDBClientTests: XCTestCase {
@@ -24,20 +24,15 @@ final class CouchDBClientTests: XCTestCase {
 		super.setUp()
 	}
 	
-	func testGetAllDbs() {
+	func testGetAllDbs() async throws {
 		let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-		var dbs: [String]?
-		do {
-			dbs = try couchDBClient.getAllDBs(worker: worker).wait()
-		} catch let error {
-			XCTFail(error.localizedDescription)
-		}
-		
+		let dbs = try await couchDBClient.getAllDBs(worker: worker)
+
 		XCTAssertNotNil(dbs)
 		XCTAssertTrue(dbs!.contains("_global_changes"))
 	}
 	
-	func testInsertGetUpdateDelete() {
+	func testInsertGetUpdateDelete() async throws {
 		let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 
 		let encoder = JSONEncoder()
@@ -51,34 +46,30 @@ final class CouchDBClientTests: XCTestCase {
 			let data = try encoder.encode(testData)
 			let string = String(data: data, encoding: .utf8)!
 			
-			let response = try couchDBClient
+			let response = try await couchDBClient
 				.insert(
 					dbName: testsDB,
 					body: .string(string),
 					worker: worker
-				)?.wait()
-			
-			XCTAssertNotNil(response)
+				)
 
-			XCTAssertEqual(response?.ok, true)
-			XCTAssertNotNil(response?.id)
-			XCTAssertNotNil(response?.rev)
+			XCTAssertEqual(response.ok, true)
+			XCTAssertFalse(response.id.isEmpty)
+			XCTAssertFalse(response.rev.isEmpty)
 
-			expectedInsertId = response!.id
-			expectedInsertRev = response!.rev
+			expectedInsertId = response.id
+			expectedInsertRev = response.rev
 		} catch (let error) {
-			XCTAssertFalse(true)
-			print(error)
+			XCTFail(error.localizedDescription)
 		}
 
 		// Test Get
 		XCTAssertFalse(expectedInsertId.isEmpty)
 		do {
-			let response = try couchDBClient.get(dbName: testsDB, uri: expectedInsertId, worker: worker)?.wait()
-			XCTAssertNotNil(response)
-			XCTAssertNotNil(response!.body)
+			let response = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId, worker: worker)
+			XCTAssertNotNil(response.body)
 			
-			let data = Data(buffer: response!.body!)
+			let data = Data(buffer: response.body!)
 			let decoder = JSONDecoder()
 			let doc = try decoder.decode(ExpectedDoc.self, from: data)
 
@@ -95,29 +86,27 @@ final class CouchDBClientTests: XCTestCase {
 		do {
 			let data = try encoder.encode(updatedData)
 			let string = String(data: data, encoding: .utf8)!
-			let response = try couchDBClient.update(
+			let response = try await couchDBClient.update(
 				dbName: testsDB,
 				uri: expectedInsertId,
 				body: .string(string),
 				worker: worker
-			)?.wait()
+			)
 
-			XCTAssertNotNil(response)
-			XCTAssertFalse(response!.rev.isEmpty)
-			XCTAssertFalse(response!.id.isEmpty)
-			XCTAssertNotEqual(response!.rev, expectedInsertRev)
-			XCTAssertEqual(response!.id, expectedInsertId)
+			XCTAssertFalse(response.rev.isEmpty)
+			XCTAssertFalse(response.id.isEmpty)
+			XCTAssertNotEqual(response.rev, expectedInsertRev)
+			XCTAssertEqual(response.id, expectedInsertId)
 
-			let getResponse = try couchDBClient.get(
+			let getResponse = try await couchDBClient.get(
 				dbName: testsDB,
 				uri: expectedInsertId,
 				worker: worker
-			)?.wait()
+			)
 			
-			XCTAssertNotNil(getResponse)
-			XCTAssertNotNil(getResponse?.body)
+			XCTAssertNotNil(getResponse.body)
 
-			let getData = Data(buffer: getResponse!.body!)
+			let getData = Data(buffer: getResponse.body!)
 			let decoder = JSONDecoder()
 			let doc = try decoder.decode(ExpectedDoc.self, from: getData)
 
@@ -126,17 +115,16 @@ final class CouchDBClientTests: XCTestCase {
 
 			expectedInsertRev = doc._rev
 		} catch (let error) {
-			XCTAssertFalse(true)
-			print(error)
+			XCTFail(error.localizedDescription)
 		}
 
 		// Test delete
 		do {
-			let response = try couchDBClient.delete(fromDb: testsDB, uri: expectedInsertId, rev: expectedInsertRev, worker: worker)?.wait()
+			let response = try await couchDBClient.delete(fromDb: testsDB, uri: expectedInsertId, rev: expectedInsertRev, worker: worker)
 
-			XCTAssertEqual(response?.ok, true)
-			XCTAssertNotNil(response?.id)
-			XCTAssertNotNil(response?.rev)
+			XCTAssertEqual(response.ok, true)
+			XCTAssertNotNil(response.id)
+			XCTAssertNotNil(response.rev)
 
 		} catch (let error) {
 			XCTAssertFalse(true)
@@ -150,6 +138,13 @@ final class CouchDBClientTests: XCTestCase {
 			URLQueryItem(name: "key", value: "testKey")
 		])
 		XCTAssertEqual(url, expectedUrl)
+	}
+
+	func testAuth() async throws {
+		let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+		let session: CreateSessionResponse? = try await couchDBClient.authIfNeed(worker: worker)
+		XCTAssertNotNil(session)
+		XCTAssertEqual(true, session?.ok)
 	}
 
     static var allTests = [
