@@ -84,7 +84,7 @@ public class CouchDBClient: NSObject {
 		let request = try self.buildRequest(fromUrl: url, withMethod: .GET)
 		let response = try await httpClient.execute(request: request).get()
 
-		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.capacity) else { return nil }
+		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.readableBytes) else { return nil }
 
 		let decoder = JSONDecoder()
 		let databasesList = try? decoder.decode([String].self, from: data)
@@ -147,7 +147,7 @@ public class CouchDBClient: NSObject {
 
 		let response = try await httpClient.execute(request: request, deadline: .now() + .seconds(30)).get()
 		
-		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.capacity) else {
+		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.readableBytes) else {
 			return CouchUpdateResponse(ok: false, id: "", rev: "")
 		}
 
@@ -180,7 +180,7 @@ public class CouchDBClient: NSObject {
 
 		let response = try await httpClient.execute(request: request, deadline: .now() + .seconds(30)).get()
 		
-		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.capacity) else {
+		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.readableBytes) else {
 			return CouchUpdateResponse(ok: false, id: "", rev: "")
 		}
 
@@ -212,7 +212,7 @@ public class CouchDBClient: NSObject {
 
 		let response = try await httpClient.delete(url: url).get()
 
-		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.capacity) else {
+		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.readableBytes) else {
 			return CouchUpdateResponse(ok: false, id: "", rev: "")
 		}
 
@@ -275,7 +275,7 @@ internal extension CouchDBClient {
 		}
 		sessionCookie = cookie
 
-		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.capacity) else {
+		guard let bytes = response.body, let data = bytes.getData(at: 0, length: bytes.readableBytes) else {
 			return nil
 		}
 
