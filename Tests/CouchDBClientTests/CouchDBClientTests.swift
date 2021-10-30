@@ -1,7 +1,7 @@
 import XCTest
 import NIO
 import AsyncHTTPClient
-@testable import CouchClient
+@testable import CouchDBClient
 
 
 final class CouchDBClientTests: XCTestCase {
