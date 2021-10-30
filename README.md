@@ -14,7 +14,7 @@
 
 
 This is simple lib to work with CouchDB in Swift.
-- Latest version is based on async/await and requires Swift 5.5 and newer.
+- Latest version is based on async/await and requires Swift 5.5 and newer. Works with Vapor 4.50 and newer.
 - Version 1.0.0 can be used with Vapor 4 without async/await. Swift 5.3 is required
 - You can use old version for Vapor 3 from vapor3 branch or using version < 1.0.0. 
 
