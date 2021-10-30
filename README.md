@@ -43,33 +43,33 @@ let couchDBClient2 = CouchDBClient(couchProtocol: .http, couchHost: "127.0.0.1",
 
 // Sample document model
 struct ExpectedDoc: Codable {
-	var name: String
-	var _id: String
-	var _rev: String
+    var name: String
+    var _id: String
+    var _rev: String
 }
 
 // Sample view data
 struct PageData: Content {
-	let title: String
+    let title: String
 }
 
 func routes(_ app: Application) throws {
-	app.get(":docId") { req async throws -> View in
-		let docId = req.parameters.get("docId")!
-		
-		let couchResponse = try await couchDBClient.get(dbName: "yourDBname", uri: docId, worker: req.eventLoop)
-		
-		guard let body = response.body, let bytes = body.readBytes(length: body.readableBytes) else { throw Abort(.notFound) }
-		
-		let data = Data(bytes)		
-		let doc = try JSONDecoder().decode(ExpectedDoc.self, from: data)
+    app.get(":docId") { req async throws -> View in
+        let docId = req.parameters.get("docId")!
+
+        let couchResponse = try await couchDBClient.get(dbName: "yourDBname", uri: docId, worker: req.eventLoop)
+
+        guard let body = response.body, let bytes = body.readBytes(length: body.readableBytes) else { throw Abort(.notFound) }
+
+        let data = Data(bytes)		
+        let doc = try JSONDecoder().decode(ExpectedDoc.self, from: data)
+
+        let pageData = PageData(
+            title: doc.name
+        )
 	
-		let pageData = PageData(
-			title: doc.name
-		)
-	
-		return try await req.view().render("view-name", pageData)
-	}
+        return try await req.view().render("view-name", pageData)
+    }
 }
 ```
 
