@@ -6,10 +6,10 @@
     </a>
 </p>
 
-[![Platforms](https://img.shields.io/badge/platforms-macOS%2010.13%20|%20Ubuntu%2016.04%20LTS-ff0000.svg?style=flat)](https://github.com/makoni/couchdb-vapor)
+[![Platforms](https://img.shields.io/badge/platforms-macOS%2012%20|%20Ubuntu%20|%20iOS%2015-ff0000.svg?style=flat)](https://github.com/makoni/couchdb-vapor)
 [![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://swift.org/package-manager/)
-[![Swift 5](https://img.shields.io/badge/swift-5.3-orange.svg?style=flat)](http://swift.org)
-[![Vapor 3](https://img.shields.io/badge/vapor-4.0-blue.svg?style=flat)](https://vapor.codes)
+[![Swift 5](https://img.shields.io/badge/swift-5.5-orange.svg?style=flat)](http://swift.org)
+[![Vapor 3](https://img.shields.io/badge/vapor-4.50.0-blue.svg?style=flat)](https://vapor.codes)
 
 
 
