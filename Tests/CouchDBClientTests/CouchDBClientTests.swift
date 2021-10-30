@@ -69,9 +69,9 @@ final class CouchDBClientTests: XCTestCase {
 			var response = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId, worker: worker)
 			XCTAssertNotNil(response.body)
 
-			let data = response.body!.readData(length: response.body!.readableBytes)!
-			let decoder = JSONDecoder()
-			let doc = try decoder.decode(ExpectedDoc.self, from: data)
+			let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
+			let data = Data(bytes)
+			let doc = try JSONDecoder().decode(ExpectedDoc.self, from: data)
 
 			XCTAssertNotNil(doc)
 			XCTAssertEqual(doc.name, testData.name)
@@ -106,9 +106,9 @@ final class CouchDBClientTests: XCTestCase {
 			
 			XCTAssertNotNil(getResponse.body)
 
-			let getData = getResponse.body!.readData(length: getResponse.body!.readableBytes)!
-			let decoder = JSONDecoder()
-			let doc = try decoder.decode(ExpectedDoc.self, from: getData)
+			let bytes = getResponse.body!.readBytes(length: getResponse.body!.readableBytes)!
+			let getData = Data(bytes)
+			let doc = try JSONDecoder().decode(ExpectedDoc.self, from: getData)
 
 			XCTAssertNotNil(doc)
 			XCTAssertEqual(doc.name, updatedData.name)
