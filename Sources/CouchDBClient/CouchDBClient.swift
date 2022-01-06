@@ -70,7 +70,7 @@ public class CouchDBClient: NSObject {
 	///
 	/// - Parameter worker: Worker (EventLoopGroup). New will be created if nil value provided
 	/// - Returns: Array of strings containing DBs names
-	public func getAllDBs(worker: EventLoopGroup) async throws -> [String]? {
+	public func getAllDBs(worker: EventLoopGroup? = nil) async throws -> [String]? {
         let httpClient: HTTPClient
         if let worker = worker {
             httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
@@ -287,13 +287,18 @@ internal extension CouchDBClient {
 	/// - Parameter worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with authorization response (CreateSessionResponse)
 	@discardableResult
-	func authIfNeed(worker: EventLoopGroup) async throws -> CreateSessionResponse? {
+	func authIfNeed(worker: EventLoopGroup? = nil) async throws -> CreateSessionResponse? {
 		// already authorized
 		if let authData = authData {
 			return authData
 		}
 		
-		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+        let httpClient: HTTPClient
+        if let worker = worker {
+            httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+        } else {
+            httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+        }
 		
 		defer {
 			DispatchQueue.main.async {
