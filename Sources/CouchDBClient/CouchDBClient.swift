@@ -68,10 +68,16 @@ public class CouchDBClient: NSObject {
 	
 	/// Get DBs list
 	///
-	/// - Parameter worker: Worker (EventLoopGroup)
-	/// - Returns: Future (EventLoopFuture) with array of strings containing DBs names
+	/// - Parameter worker: Worker (EventLoopGroup). New will be created if nil value provided
+	/// - Returns: Array of strings containing DBs names
 	public func getAllDBs(worker: EventLoopGroup) async throws -> [String]? {
-		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+        let httpClient: HTTPClient
+        if let worker = worker {
+            httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+        } else {
+            httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+        }
+        
 		defer {
 			DispatchQueue.main.async {
 				try? httpClient.syncShutdown()
@@ -99,10 +105,9 @@ public class CouchDBClient: NSObject {
 	///   - dbName: DB name
 	///   - uri: uri (view or document id)
 	///   - query: requst query
-	///   - worker: Worker (EventLoopGroup)
+	///   - worker: Worker (EventLoopGroup). New will be created if nil value provided
 	/// - Returns: Future (EventLoopFuture) with response
 	public func get(dbName: String, uri: String, query: [String: String]? = nil, worker: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
-        
         let httpClient: HTTPClient
         if let worker = worker {
             httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
@@ -129,6 +134,18 @@ public class CouchDBClient: NSObject {
 		
 		return try await httpClient.get(url: url).get()
 	}
+    /// Update data in DB
+    ///
+    /// - Parameters:
+    ///   - dbName: DB name
+    ///   - uri: uri (view or document id)
+    ///   - bodyData: request body as Data
+    ///   - worker: Worker (EventLoopGroup). New will be created if nil value provided
+    /// - Returns: Future (EventLoopFuture) with update response (CouchUpdateResponse)
+    public func update(dbName: String, uri: String, bodyData: Data, worker: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
+        let requestBody = HTTPClient.Body.data(bodyData)
+        return try await update(dbName: dbName, uri: uri, body: requestBody, worker: worker)
+    }
 
 	/// Update data in DB
 	///
@@ -136,10 +153,15 @@ public class CouchDBClient: NSObject {
 	///   - dbName: DB name
 	///   - uri: uri (view or document id)
 	///   - body: data which will be in request body
-	///   - worker: Worker (EventLoopGroup)
+	///   - worker: Worker (EventLoopGroup). New will be created if nil value provided
 	/// - Returns: Future (EventLoopFuture) with update response (CouchUpdateResponse)
-	public func update(dbName: String, uri: String, body: HTTPClient.Body, worker: EventLoopGroup ) async throws -> CouchUpdateResponse {
-		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+	public func update(dbName: String, uri: String, body: HTTPClient.Body, worker: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
+        let httpClient: HTTPClient
+        if let worker = worker {
+            httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+        } else {
+            httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+        }
 		
 		defer {
 			DispatchQueue.main.async {
@@ -170,10 +192,15 @@ public class CouchDBClient: NSObject {
 	/// - Parameters:
 	///   - dbName: DB name
 	///   - body: data which will be in request body
-	///   - worker: Worker (EventLoopGroup)
+	///   - worker: Worker (EventLoopGroup). New will be created if nil value provided
 	/// - Returns: Future (EventLoopFuture) with insert response (CouchUpdateResponse)
-	public func insert(dbName: String, body: HTTPClient.Body, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
-		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+	public func insert(dbName: String, body: HTTPClient.Body, worker: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
+        let httpClient: HTTPClient
+        if let worker = worker {
+            httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+        } else {
+            httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+        }
 		
 		defer {
 			DispatchQueue.main.async {
@@ -205,10 +232,15 @@ public class CouchDBClient: NSObject {
 	///   - dbName: DB name
 	///   - uri: document uri (usually _id)
 	///   - rev: document revision (usually _rev)
-	///   - worker: Worker (EventLoopGroup)
+	///   - worker: Worker (EventLoopGroup). New will be created if nil value provided
 	/// - Returns: Future (EventLoopFuture) with delete response (CouchUpdateResponse)
-	public func delete(fromDb dbName: String, uri: String, rev: String, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
-		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+	public func delete(fromDb dbName: String, uri: String, rev: String, worker: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
+        let httpClient: HTTPClient
+        if let worker = worker {
+            httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+        } else {
+            httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+        }
 		
 		defer {
 			DispatchQueue.main.async {
