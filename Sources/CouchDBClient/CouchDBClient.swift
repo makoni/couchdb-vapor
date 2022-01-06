@@ -101,8 +101,14 @@ public class CouchDBClient: NSObject {
 	///   - query: requst query
 	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with response
-	public func get(dbName: String, uri: String, query: [String: String]? = nil, worker: EventLoopGroup) async throws -> HTTPClient.Response {
-		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+	public func get(dbName: String, uri: String, query: [String: String]? = nil, worker: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
+        
+        let httpClient: HTTPClient
+        if let worker = worker {
+            httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+        } else {
+            httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+        }
 		
 		defer {
 			DispatchQueue.main.async {
@@ -119,6 +125,7 @@ public class CouchDBClient: NSObject {
 			}
 		}
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: queryItems)
+        print(url)
 		
 		return try await httpClient.get(url: url).get()
 	}
