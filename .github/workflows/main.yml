@@ -5,8 +5,10 @@ on: [push]
 jobs:
   build:
     name: Build on ${{ matrix.os }}
+    if: matrix.os == 'ubuntu-latest'
     container: 
       image: swift:latest
+        
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
