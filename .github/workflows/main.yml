@@ -3,9 +3,18 @@ name: Ubuntu 20.04 Swift latest
 on: [push]
 
 jobs:
-  macOS:
-    runs-on: macos-latest
+  build:
+    name: Build on ${{ matrix.os }}
+    container: 
+      image: swift:latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macOS-latest] #[ubuntu-latest, macOS-latest]
     steps:
+    - name: Print Swift version
+      run: swift --version
+      
     - name: Checkout
       uses: actions/checkout@master
 
@@ -15,16 +24,16 @@ jobs:
     - name: Done
       run: echo Done
       
-  ubuntu:
-    container: 
-      image: swift:latest
-    runs-on: ubuntu-20.04
-    steps:
-    - name: Checkout
-      uses: actions/checkout@master
+#   ubuntu:
+#     container: 
+#       image: swift:latest
+#     runs-on: ubuntu-20.04
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@master
 
-    - name: Swift build
-      run: swift build -c release
+#     - name: Swift build
+#       run: swift build -c release
             
-    - name: Done
-      run: echo Done
+#     - name: Done
+#       run: echo Done
