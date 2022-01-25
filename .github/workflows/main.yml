@@ -5,7 +5,7 @@ on: [push]
 jobs:
   build:
     name: Build on ${{ matrix.os }}
-    if: matrix.os == 'ubuntu-latest'
+    if: ${{ matrix.os }} == 'ubuntu-latest'
     container: 
       image: swift:latest
         
