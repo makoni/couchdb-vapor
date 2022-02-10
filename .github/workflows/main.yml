@@ -1,4 +1,4 @@
-name: Build
+name: Build on macOS and Ubuntu latest
 
 on: [push]
 
