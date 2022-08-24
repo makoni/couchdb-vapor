@@ -98,18 +98,11 @@ public class CouchDBClient: NSObject {
 	/// - Parameters:
 	///   - dbName: DB name
 	///   - uri: uri (view or document id)
-	///   - query: requst query
+	///   - query: request query
 	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with response
-	public func get(dbName: String, uri: String, query: [String: String]? = nil, worker: EventLoopGroup) async throws -> HTTPClient.Response {
-		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
-		
-		defer {
-			DispatchQueue.main.async {
-				try? httpClient.syncShutdown()
-			}
-		}
-		
+	@available(*, deprecated, message: "Use the same method with queryItems param passing [URLQueryItem]")
+	public func get(dbName: String, uri: String, query: [String: String]?, worker: EventLoopGroup) async throws -> HTTPClient.Response {
 		var queryItems: [URLQueryItem] = []
 		if let queryArray = query {
 			for item in queryArray {
@@ -118,8 +111,27 @@ public class CouchDBClient: NSObject {
 				)
 			}
 		}
-		let url = buildUrl(path: "/" + dbName + "/" + uri, query: queryItems)
-		
+		return try await get(dbName: dbName, uri: uri, queryItems: queryItems, worker: worker)
+	}
+
+	/// Get data from DB
+	/// - Parameters:
+	///   - dbName: DB name
+	///   - uri: uri (view or document id)
+	///   - query: request query items
+	///   - worker: Worker (EventLoopGroup)
+	/// - Returns: Future (EventLoopFuture) with response
+	public func get(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, worker: EventLoopGroup) async throws -> HTTPClient.Response {
+		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+
+		defer {
+			DispatchQueue.main.async {
+				try? httpClient.syncShutdown()
+			}
+		}
+
+		let url = buildUrl(path: "/" + dbName + "/" + uri, query: queryItems ?? [])
+
 		return try await httpClient
 			.get(url: url)
 			.get()
