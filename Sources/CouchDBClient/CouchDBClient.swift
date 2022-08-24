@@ -11,7 +11,9 @@ import NIOHTTP1
 import AsyncHTTPClient
 
 
+/// A CouchDB client class with async/await methods.
 public class CouchDBClient: NSObject {
+	/// Protocol (URL scheme) that should be used to perform requests to CouchDB
 	public enum CouchDBProtocol: String {
 		case http
 		case https
@@ -44,13 +46,43 @@ public class CouchDBClient: NSObject {
 	private var authData: CreateSessionResponse?
 
 
-	// MARK: - Init
+	// MARK: - Initializer
 
-	/// Init method
+	/// Initializer
+	///
+	///	Example:
+	///  ```swift
+	///  // use default params
+	///  let myClient = CouchDBClient()
+	///
+	///  // provide your own params
+	///  let couchDBClient = CouchDBClient(
+	///      couchProtocol: .http,
+	///      couchHost: "127.0.0.1",
+	///      couchPort: 5984,
+	///      userName: "admin",
+	///      userPassword: "myPassword"
+	///  )
+	///  ```
+	///  If you don't want to have your password in the code you can pass `COUCHDB_PASS` param in you command line.
+	///  For example you can run your Server Side Swift project:
+	///  ```bash
+	///  COUCHDB_PASS=myPassword /path/.build/x86_64-unknown-linux-gnu/release/Run
+	///  ```
+	///  Just use initializer without `userPassword` param:
+	///  ```swift
+	///  CouchDBClient(
+	///      couchProtocol: .http,
+	///      couchHost: "127.0.0.1",
+	///      couchPort: 5984,
+	///      userName: "admin"
+	///  )
+	///  ```
+	///
 	/// - Parameters:
-	///   - couchProtocol: protocol (http or https)
-	///   - couchHost: host
-	///   - couchPort: port
+	///   - couchProtocol: protocol (check ``CouchDBProtocol`` enum for avaiable values )
+	///   - couchHost: host of CouchDB instance
+	///   - couchPort: port CouchDB works on
 	///   - userName: username
 	///   - userPassword: user password
 	public init(couchProtocol: CouchDBProtocol = .http, couchHost: String = "127.0.0.1", couchPort: Int = 5984, userName: String = "", userPassword: String = "") {
@@ -60,7 +92,7 @@ public class CouchDBClient: NSObject {
 		self.userName = userName
 
 		self.userPassword = userPassword.isEmpty
-		? ProcessInfo.processInfo.environment["ADMINPASS"] ?? userPassword
+		? ProcessInfo.processInfo.environment["COUCHDB_PASS"] ?? userPassword
 		: userPassword
 		
 		super.init()
