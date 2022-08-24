@@ -17,7 +17,14 @@ final class CouchDBClientTests: XCTestCase {
 	
 	let testsDB = "fortests"
 	#warning("set your admin password if need")
-	let couchDBClient = CouchDBClient(couchProtocol: .http, couchHost: "127.0.0.1", couchPort: 5984, userName: "admin", userPassword: "kbyrbygfhr")
+	let c1 = CouchDBClient()
+	let couchDBClient = CouchDBClient(
+		couchProtocol: .http,
+		couchHost: "127.0.0.1",
+		couchPort: 5984,
+		userName: "admin",
+		userPassword: ""
+	)
 	
 	
 	override func setUp() {

@@ -42,32 +42,31 @@ public class CouchDBClient: NSObject {
 
 
 	// MARK: - Init
-	public override init() {
-		super.init()
-	}
-	
+
+	/// Init method
+	/// - Parameters:
+	///   - couchProtocol: protocol (http or https)
+	///   - couchHost: host
+	///   - couchPort: port
+	///   - userName: username
+	///   - userPassword: user password
 	public init(couchProtocol: CouchDBProtocol = .http, couchHost: String = "127.0.0.1", couchPort: Int = 5984, userName: String = "", userPassword: String = "") {
 		self.couchProtocol = couchProtocol
 		self.couchHost = couchHost
 		self.couchPort = couchPort
 		self.userName = userName
 
-		if userPassword.isEmpty {
-			if let pass = ProcessInfo.processInfo.environment["adminpass"] {
-				self.userPassword = pass
-			}
-		} else {
-			self.userPassword = userPassword
-		}
+		self.userPassword = userPassword.isEmpty
+		? ProcessInfo.processInfo.environment["adminpass"] ?? userPassword
+		: userPassword
 		
 		super.init()
 	}
 	
 	
 	// MARK: - Public methods
-	
+
 	/// Get DBs list
-	///
 	/// - Parameter worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with array of strings containing DBs names
 	public func getAllDBs(worker: EventLoopGroup) async throws -> [String]? {
