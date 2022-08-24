@@ -153,10 +153,4 @@ final class CouchDBClientTests: XCTestCase {
 		XCTAssertNotNil(session)
 		XCTAssertEqual(true, session?.ok)
 	}
-
-    static var allTests = [
-        ("testGetAllDbs", testGetAllDbs),
-		("testBuildUrl", testBuildUrl),
-		("testInsertGetUpdateDelete", testInsertGetUpdateDelete)
-    ]
 }
