@@ -57,7 +57,7 @@ public class CouchDBClient: NSObject {
 		self.userName = userName
 
 		self.userPassword = userPassword.isEmpty
-		? ProcessInfo.processInfo.environment["adminpass"] ?? userPassword
+		? ProcessInfo.processInfo.environment["ADMINPASS"] ?? userPassword
 		: userPassword
 		
 		super.init()
@@ -81,19 +81,17 @@ public class CouchDBClient: NSObject {
 		try await authIfNeed(worker: worker)
 
 		let request = try self.buildRequest(fromUrl: url, withMethod: .GET)
-		let response = try await httpClient.execute(request: request).get()
+		let response = try await httpClient
+			.execute(request: request)
+			.get()
 
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else { return nil }
 
 		let data = Data(bytes)
-		let decoder = JSONDecoder()
-		let databasesList = try? decoder.decode([String].self, from: data)
-
-		return databasesList
+		return try JSONDecoder().decode([String].self, from: data)
 	}
 
 	/// Get data from DB
-	///
 	/// - Parameters:
 	///   - dbName: DB name
 	///   - uri: uri (view or document id)
@@ -119,11 +117,12 @@ public class CouchDBClient: NSObject {
 		}
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: queryItems)
 		
-		return try await httpClient.get(url: url).get()
+		return try await httpClient
+			.get(url: url)
+			.get()
 	}
 
 	/// Update data in DB
-	///
 	/// - Parameters:
 	///   - dbName: DB name
 	///   - uri: uri (view or document id)
@@ -145,7 +144,9 @@ public class CouchDBClient: NSObject {
 		request.headers.add(name: "Content-Type", value: "application/json")
 		request.body = body
 
-		let response = try await httpClient.execute(request: request, deadline: .now() + .seconds(30)).get()
+		let response = try await httpClient
+			.execute(request: request, deadline: .now() + .seconds(30))
+			.get()
 		
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
 			return CouchUpdateResponse(ok: false, id: "", rev: "")
@@ -158,7 +159,6 @@ public class CouchDBClient: NSObject {
 	}
 
 	/// Insert document in DB
-	///
 	/// - Parameters:
 	///   - dbName: DB name
 	///   - body: data which will be in request body
@@ -179,7 +179,9 @@ public class CouchDBClient: NSObject {
 		request.headers.add(name: "Content-Type", value: "application/json")
 		request.body = body
 
-		let response = try await httpClient.execute(request: request, deadline: .now() + .seconds(30)).get()
+		let response = try await httpClient
+			.execute(request: request, deadline: .now() + .seconds(30))
+			.get()
 		
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
 			return CouchUpdateResponse(ok: false, id: "", rev: "")
@@ -192,7 +194,6 @@ public class CouchDBClient: NSObject {
 	}
 
 	/// Delete document from DB
-	///
 	/// - Parameters:
 	///   - dbName: DB name
 	///   - uri: document uri (usually _id)
@@ -212,21 +213,27 @@ public class CouchDBClient: NSObject {
 			URLQueryItem(name: "rev", value: rev)
 		])
 
-		let response = try await httpClient.delete(url: url).get()
+		let response = try await httpClient
+			.delete(url: url)
+			.get()
 
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
 			return CouchUpdateResponse(ok: false, id: "", rev: "")
 		}
 
 		let data = Data(bytes)
-		let decoder = JSONDecoder()
-		return try decoder.decode(CouchUpdateResponse.self, from: data)
+		return try JSONDecoder().decode(CouchUpdateResponse.self, from: data)
 	}
 }
 
 
 // MARK: - Private methods
 internal extension CouchDBClient {
+	/// Build URL string
+	/// - Parameters:
+	///   - path: path
+	///   - query: URL query
+	/// - Returns: URL string
 	func buildUrl(path: String, query: [URLQueryItem] = []) -> String {
 		var components = URLComponents()
 		components.scheme = couchProtocol.rawValue
@@ -268,7 +275,9 @@ internal extension CouchDBClient {
 		let dataString = "name=\(userName)&password=\(userPassword)"
 		request.body = HTTPClient.Body.string(dataString)
 
-		let response = try await httpClient.execute(request: request, deadline: .now() + .seconds(30)).get()
+		let response = try await httpClient
+			.execute(request: request, deadline: .now() + .seconds(30))
+			.get()
 
 		var cookie = ""
 		response.headers.forEach { (header: (name: String, value: String)) in
@@ -281,8 +290,7 @@ internal extension CouchDBClient {
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else { return nil }
 
 		let data = Data(bytes)
-		let authData = try JSONDecoder().decode(CreateSessionResponse.self, from: data)
-		self.authData = authData
+		authData = try JSONDecoder().decode(CreateSessionResponse.self, from: data)
 		return authData
 	}
 	
