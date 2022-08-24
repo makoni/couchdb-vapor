@@ -21,6 +21,9 @@ public class CouchDBClient: NSObject {
 	
 	/// Flag if did authorize in CouchDB
 	public var isAuthorized: Bool { authData?.ok ?? false }
+
+	/// Timout for requests in seconds
+	public var requestsTimeout: Int64 = 30
 	
 	// MARK: - Private properties
 	/// Protocol
@@ -145,7 +148,7 @@ public class CouchDBClient: NSObject {
 		request.body = body
 
 		let response = try await httpClient
-			.execute(request: request, deadline: .now() + .seconds(30))
+			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
 			.get()
 		
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
@@ -180,7 +183,7 @@ public class CouchDBClient: NSObject {
 		request.body = body
 
 		let response = try await httpClient
-			.execute(request: request, deadline: .now() + .seconds(30))
+			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
 			.get()
 		
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
@@ -276,7 +279,7 @@ internal extension CouchDBClient {
 		request.body = HTTPClient.Body.string(dataString)
 
 		let response = try await httpClient
-			.execute(request: request, deadline: .now() + .seconds(30))
+			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
 			.get()
 
 		var cookie = ""
