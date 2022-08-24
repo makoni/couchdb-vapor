@@ -20,7 +20,7 @@ public class CouchDBClient: NSObject {
 	// MARK: - Public properties
 	
 	/// Flag if did authorize in CouchDB
-	var isAuthorized: Bool { authData?.ok ?? false }
+	public var isAuthorized: Bool { authData?.ok ?? false }
 	
 	// MARK: - Private properties
 	/// Protocol
