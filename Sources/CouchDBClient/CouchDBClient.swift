@@ -22,7 +22,7 @@ public class CouchDBClient: NSObject {
 	/// Flag if did authorize in CouchDB
 	public var isAuthorized: Bool { authData?.ok ?? false }
 
-	/// Timout for requests in seconds
+	/// Timeout for requests in seconds
 	public var requestsTimeout: Int64 = 30
 	
 	// MARK: - Private properties
