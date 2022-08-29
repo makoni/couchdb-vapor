@@ -7,7 +7,17 @@
 
 import Foundation
 
-/// CouchDB document
+/// Every CouchDB document should have **\_id** and **\_rev** properties. Both should be defines as **String?**. Unfortunatelly DocC ignores properties starting with _
+///
+/// Example:
+/// ```swift
+/// // Example struct
+/// struct ExpectedDoc: CouchDBRepresentable, Codable {
+///   var name: String
+///   var _id: String?
+///   var _rev: String?
+/// }
+/// ```
 public protocol CouchDBRepresentable {
 	/// Document ID
 	var _id: String? { get set }
