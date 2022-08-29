@@ -223,9 +223,10 @@ public class CouchDBClient: NSObject {
 		}
 
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: queryItems ?? [])
+		let request = try self.buildRequest(fromUrl: url, withMethod: .GET)
 
 		return try await httpClient
-			.get(url: url)
+			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
 			.get()
 	}
 
