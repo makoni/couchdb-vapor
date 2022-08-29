@@ -287,9 +287,7 @@ public class CouchDBClient: NSObject {
 		}
 
 		let url = buildUrl(path: "/" + dbName + "/" + uri)
-		
-		var request = try HTTPClient.Request(url:url, method: .PUT)
-		request.headers.add(name: "Content-Type", value: "application/json")
+		var request = try buildRequest(fromUrl: url, withMethod: .PUT)
 		request.body = body
 
 		let response = try await httpClient
@@ -359,9 +357,10 @@ public class CouchDBClient: NSObject {
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: [
 			URLQueryItem(name: "rev", value: rev)
 		])
+		let request = try self.buildRequest(fromUrl: url, withMethod: .DELETE)
 
 		let response = try await httpClient
-			.delete(url: url)
+			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
 			.get()
 
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
