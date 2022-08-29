@@ -39,7 +39,6 @@ final class CouchDBClientTests: XCTestCase {
 	
 	func testInsertGetUpdateDelete() async throws {
 		let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-		try await couchDBClient.authIfNeed(worker: worker)
 
 		let testData = ExpectedDoc(name: "test name")
 		var expectedInsertId: String = ""

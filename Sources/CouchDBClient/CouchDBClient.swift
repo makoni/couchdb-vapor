@@ -112,6 +112,8 @@ public class CouchDBClient: NSObject {
 	/// - Parameter worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with array of strings containing DBs names
 	public func getAllDBs(worker: EventLoopGroup) async throws -> [String]? {
+		try await authIfNeed(worker: worker)
+
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		defer {
 			DispatchQueue.main.async {
@@ -120,7 +122,6 @@ public class CouchDBClient: NSObject {
 		}
 		
 		let url = buildUrl(path: "/_all_dbs")
-		try await authIfNeed(worker: worker)
 
 		let request = try buildRequest(fromUrl: url, withMethod: .GET)
 		let response = try await httpClient
@@ -214,6 +215,8 @@ public class CouchDBClient: NSObject {
 	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with response
 	public func get(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, worker: EventLoopGroup) async throws -> HTTPClient.Response {
+		try await authIfNeed(worker: worker)
+
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 
 		defer {
@@ -278,6 +281,8 @@ public class CouchDBClient: NSObject {
 	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with update response (``CouchUpdateResponse``)
 	public func update(dbName: String, uri: String, body: HTTPClient.Body, worker: EventLoopGroup ) async throws -> CouchUpdateResponse {
+		try await authIfNeed(worker: worker)
+
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		
 		defer {
@@ -311,6 +316,8 @@ public class CouchDBClient: NSObject {
 	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with insert response (``CouchUpdateResponse``)
 	public func insert(dbName: String, body: HTTPClient.Body, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
+		try await authIfNeed(worker: worker)
+
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		
 		defer {
