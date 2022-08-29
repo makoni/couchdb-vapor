@@ -446,7 +446,7 @@ public class CouchDBClient: NSObject {
 		return try decoder.decode(CouchUpdateResponse.self, from: data)
 	}
 
-	/// Delete document from DB
+	/// Delete document from DB by uri
 	///
 	/// Examples:
 	///
@@ -492,6 +492,33 @@ public class CouchDBClient: NSObject {
 
 		let data = Data(bytes)
 		return try JSONDecoder().decode(CouchUpdateResponse.self, from: data)
+	}
+
+	/// Delete document from DB
+	///
+	/// Examples:
+	///
+	/// ```swift
+	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+	/// let response = try await couchDBClient.delete(
+	///   fromDb: "databaseName",
+	///   doc: doc,
+	///   worker: worker
+	/// )
+	///
+	/// print(response)
+	/// ```
+	///
+	/// - Parameters:
+	///   - dbName: DB name
+	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol
+	///   - worker: Worker (EventLoopGroup)
+	/// - Returns: Delete request response
+	public func delete(fromDb dbName: String, doc: CouchDBRepresentable, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
+		guard let id = doc._id else { throw CouchDBClientError.idMissing }
+		guard let rev = doc._rev else { throw CouchDBClientError.revMissing }
+
+		return try await delete(fromDb: dbName, uri: id, rev: rev, worker: worker)
 	}
 }
 

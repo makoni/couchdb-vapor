@@ -86,6 +86,21 @@ final class CouchDBClientTests: XCTestCase {
 		testDoc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes2))
 
 		XCTAssertEqual(expectedName, testDoc.name)
+
+		// Test delete doc
+		do {
+			let response = try await couchDBClient.delete(
+				fromDb: testsDB,
+				doc: testDoc,
+				worker: worker
+			)
+
+			XCTAssertEqual(response.ok, true)
+			XCTAssertNotNil(response.id)
+			XCTAssertNotNil(response.rev)
+		} catch let error {
+			XCTFail(error.localizedDescription)
+		}
 	}
 	
 	func testInsertGetUpdateDelete() async throws {
