@@ -179,10 +179,10 @@ public class CouchDBClient: NSObject {
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: Codable {
+	/// struct ExpectedDoc: CouchDBRepresentable {
 	///   var name: String
-	///   var _id: String
-	///   var _rev: String
+	///   var _id: String?
+	///   var _rev: String?
 	/// }
 	/// ```
 	///
@@ -257,10 +257,10 @@ public class CouchDBClient: NSObject {
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: Codable {
+	/// struct ExpectedDoc: CouchDBRepresentable {
 	///   var name: String
-	///   var _id: String
-	///   var _rev: String
+	///   var _id: String?
+	///   var _rev: String?
 	/// }
 	/// ```
 	/// Get document by ID and update it:
@@ -281,7 +281,7 @@ public class CouchDBClient: NSObject {
 	/// 
 	/// let response = try await couchDBClient.update(
 	///   dbName: testsDB,
-	///   uri: "documentId",
+	///   uri: doc._id!,
 	///   body: .data(data),
 	///   worker: worker
 	/// )
@@ -388,7 +388,7 @@ public class CouchDBClient: NSObject {
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: Codable {
+	/// struct ExpectedDoc: CouchDBRepresentable {
 	///   var name: String
 	///   var _id: String?
 	///   var _rev: String?
