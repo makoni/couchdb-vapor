@@ -122,7 +122,7 @@ public class CouchDBClient: NSObject {
 		let url = buildUrl(path: "/_all_dbs")
 		try await authIfNeed(worker: worker)
 
-		let request = try self.buildRequest(fromUrl: url, withMethod: .GET)
+		let request = try buildRequest(fromUrl: url, withMethod: .GET)
 		let response = try await httpClient
 			.execute(request: request)
 			.get()
@@ -223,7 +223,7 @@ public class CouchDBClient: NSObject {
 		}
 
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: queryItems ?? [])
-		let request = try self.buildRequest(fromUrl: url, withMethod: .GET)
+		let request = try buildRequest(fromUrl: url, withMethod: .GET)
 
 		return try await httpClient
 			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
