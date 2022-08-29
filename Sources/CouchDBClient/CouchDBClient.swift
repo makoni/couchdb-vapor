@@ -257,16 +257,16 @@ public class CouchDBClient: NSObject {
 	/// let data = Data(bytes)
 	/// var doc = try JSONDecoder().decode(ExpectedDoc.self, from: data)
 	///
-	/// // Update document
+	/// // Update value
 	/// doc.name = "Updated name"
 	///
+	/// // encode document into JSON string
 	/// let data = try encoder.encode(updatedData)
-	/// let string = String(data: data, encoding: .utf8)!
 	/// 
 	/// let response = try await couchDBClient.update(
 	///   dbName: testsDB,
-	///   uri: expectedInsertId,
-	///   body: .string(string),
+	///   uri: "documentId",
+	///   body: .data(data),
 	///   worker: worker
 	/// )
 	///
@@ -310,6 +310,35 @@ public class CouchDBClient: NSObject {
 	}
 
 	/// Insert document in DB
+	///
+	/// Examples:
+	///
+	/// Define your document model:
+	/// ```swift
+	/// // Example struct
+	/// struct ExpectedDoc: Codable {
+	///   var name: String
+	///   var _id: String?
+	///   var _rev: String?
+	/// }
+	/// ```
+	///
+	///	Create a new document and insert:
+	/// ```swift
+	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+	///
+	/// let testDoc = ExpectedDoc(name: "My name")
+	/// let data = try JSONEncoder().encode(testData)
+	///
+	/// let response = try await couchDBClient.insert(
+	///   dbName: "databaseName",
+	///   body: .data(data),
+	///   worker: worker
+	/// )
+	///
+	/// print(response)
+	/// ```
+	///
 	/// - Parameters:
 	///   - dbName: DB name
 	///   - body: data which will be in request body
