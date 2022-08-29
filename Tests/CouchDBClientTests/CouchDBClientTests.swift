@@ -5,14 +5,11 @@ import AsyncHTTPClient
 
 
 final class CouchDBClientTests: XCTestCase {
-	struct TestData: Codable {
-		var name: String
-	}
-	
+
 	struct ExpectedDoc: Codable {
 		var name: String
-		var _id: String
-		var _rev: String
+		var _id: String?
+		var _rev: String?
 	}
 	
 	let testsDB = "fortests"
@@ -36,21 +33,21 @@ final class CouchDBClientTests: XCTestCase {
 		let dbs = try await couchDBClient.getAllDBs(worker: worker)
 
 		XCTAssertNotNil(dbs)
-		XCTAssertTrue(dbs!.contains("_global_changes"))
+		XCTAssertFalse(dbs!.isEmpty)
+		XCTAssertTrue(dbs!.contains(testsDB))
 	}
 	
 	func testInsertGetUpdateDelete() async throws {
 		let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+		try await couchDBClient.authIfNeed(worker: worker)
 
-		let encoder = JSONEncoder()
-
-		let testData = TestData(name: "test name")
+		let testData = ExpectedDoc(name: "test name")
 		var expectedInsertId: String = ""
 		var expectedInsertRev: String = ""
 
 		// test Insert
 		do {
-			let data = try encoder.encode(testData)
+			let data = try JSONEncoder().encode(testData)
 			let string = String(data: data, encoding: .utf8)!
 			
 			let response = try await couchDBClient
@@ -91,7 +88,7 @@ final class CouchDBClientTests: XCTestCase {
 		let updatedData = ExpectedDoc(name: "test name 2", _id: expectedInsertId, _rev: expectedInsertRev)
 
 		do {
-			let data = try encoder.encode(updatedData)
+			let data = try JSONEncoder().encode(updatedData)
 			let string = String(data: data, encoding: .utf8)!
 			let response = try await couchDBClient.update(
 				dbName: testsDB,
@@ -120,7 +117,7 @@ final class CouchDBClientTests: XCTestCase {
 			XCTAssertNotNil(doc)
 			XCTAssertEqual(doc.name, updatedData.name)
 
-			expectedInsertRev = doc._rev
+			expectedInsertRev = doc._rev!
 		} catch (let error) {
 			XCTFail(error.localizedDescription)
 		}
