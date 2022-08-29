@@ -10,12 +10,30 @@ import NIO
 import NIOHTTP1
 import AsyncHTTPClient
 
+/// CouchDB document
+public protocol CouchDBRepresentable: Codable {
+	/// Document ID
+	var _id: String? { get set }
+	/// Document revision
+	var _rev: String? { get set }
+}
+
 
 /// A CouchDB client class with async/await methods.
 public class CouchDBClient: NSObject {
+	/// CouchDB client errors
+	public enum CouchDBClientError: Error {
+		/// **id** property is empty or missing in provided document
+		case idMissing
+		/// **\_rev** property is empty or missing in provided document
+		case revMissing
+	}
+
 	/// Protocol (URL scheme) that should be used to perform requests to CouchDB
 	public enum CouchDBProtocol: String {
+		/// Use HTTP protocol
 		case http
+		/// Use HTTPS protocol
 		case https
 	}
 	
@@ -24,7 +42,7 @@ public class CouchDBClient: NSObject {
 	/// Flag if did authorize in CouchDB
 	public var isAuthorized: Bool { authData?.ok ?? false }
 
-	/// Timeout for requests in seconds
+	/// You can set timeout for requests in seconds. Default value is 30.
 	public var requestsTimeout: Int64 = 30
 	
 	// MARK: - Private properties
@@ -110,7 +128,7 @@ public class CouchDBClient: NSObject {
 	/// ```
 	///
 	/// - Parameter worker: Worker (EventLoopGroup)
-	/// - Returns: Future (EventLoopFuture) with array of strings containing DBs names
+	/// - Returns: Array of strings containing DBs names
 	public func getAllDBs(worker: EventLoopGroup) async throws -> [String]? {
 		try await authIfNeed(worker: worker)
 
@@ -140,7 +158,7 @@ public class CouchDBClient: NSObject {
 	///   - uri: uri (view or document id)
 	///   - query: request query
 	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Future (EventLoopFuture) with response
+	/// - Returns: Request response
 	@available(*, deprecated, message: "Use the same method with queryItems param passing [URLQueryItem]")
 	public func get(dbName: String, uri: String, query: [String: String]?, worker: EventLoopGroup) async throws -> HTTPClient.Response {
 		var queryItems: [URLQueryItem] = []
@@ -212,7 +230,7 @@ public class CouchDBClient: NSObject {
 	///   - uri: uri (view or document id)
 	///   - query: request query items
 	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Future (EventLoopFuture) with response
+	/// - Returns: Request response
 	public func get(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, worker: EventLoopGroup) async throws -> HTTPClient.Response {
 		try await authIfNeed(worker: worker)
 
@@ -277,7 +295,7 @@ public class CouchDBClient: NSObject {
 	///   - uri: uri (view or document id)
 	///   - body: data which will be in request body
 	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Future (EventLoopFuture) with update response (``CouchUpdateResponse``)
+	/// - Returns: Update response
 	public func update(dbName: String, uri: String, body: HTTPClient.Body, worker: EventLoopGroup ) async throws -> CouchUpdateResponse {
 		try await authIfNeed(worker: worker)
 
@@ -305,6 +323,62 @@ public class CouchDBClient: NSObject {
 		let decoder = JSONDecoder()
 		decoder.dateDecodingStrategy = .secondsSince1970
 		return try decoder.decode(CouchUpdateResponse.self, from: data)
+	}
+
+	/// Upate document in DB
+	///
+	/// Examples:
+	///
+	/// Define your document model:
+	/// ```swift
+	/// // Example struct
+	/// struct ExpectedDoc: CouchDBRepresentable {
+	///   var name: String
+	///   var _id: String?
+	///   var _rev: String?
+	/// }
+	/// ```
+	/// Get document by ID and update it:
+	/// ```swift
+	/// // get data from DB by document ID
+	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId", worker: worker)
+	///
+	/// // parse JSON
+	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
+	/// var doc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes))
+	///
+	/// // Update value
+	/// doc.name = "Updated name"
+	///
+	/// let response = try await couchDBClient.update(
+	///   dbName: testsDB,
+	///   doc: doc,
+	///   worker: worker
+	/// )
+	///
+	/// print(response)
+	/// ```
+	///
+	/// - Parameters:
+	///   - dbName: DB name
+	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol
+	///   - worker: Worker (EventLoopGroup)
+	/// - Returns: Update response
+	public func update(dbName: String, doc: CouchDBRepresentable, worker: EventLoopGroup ) async throws -> CouchUpdateResponse {
+		guard let id = doc._id else { throw CouchDBClientError.idMissing }
+		guard doc._rev?.isEmpty == false else { throw CouchDBClientError.revMissing }
+
+		let encoder = JSONEncoder()
+		encoder.dateEncodingStrategy = .secondsSince1970
+		let encodedData = try JSONEncoder().encode(doc)
+
+		return try await update(
+			dbName: dbName,
+			uri: id,
+			body: .data(encodedData),
+			worker: worker
+		)
 	}
 
 	/// Insert document in DB
@@ -341,7 +415,7 @@ public class CouchDBClient: NSObject {
 	///   - dbName: DB name
 	///   - body: data which will be in request body
 	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Future (EventLoopFuture) with insert response (``CouchUpdateResponse``)
+	/// - Returns: Insert request response
 	public func insert(dbName: String, body: HTTPClient.Body, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
 		try await authIfNeed(worker: worker)
 
@@ -393,7 +467,7 @@ public class CouchDBClient: NSObject {
 	///   - uri: document uri (usually _id)
 	///   - rev: document revision (usually _rev)
 	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Future (EventLoopFuture) with delete response (``CouchUpdateResponse``)
+	/// - Returns: Delete request response
 	public func delete(fromDb dbName: String, uri: String, rev: String, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		
