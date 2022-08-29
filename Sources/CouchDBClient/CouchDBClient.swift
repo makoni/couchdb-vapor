@@ -174,10 +174,9 @@ public class CouchDBClient: NSObject {
 	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId", worker: worker)
 	///
-	/// // parse data to JSON
+	/// // parse JSON
 	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
-	/// let data = Data(bytes)
-	/// let doc = try JSONDecoder().decode(ExpectedDoc.self, from: data)
+	/// let doc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes))
 	/// ```
 	///
 	/// You can also provide CouchDB view document as uri and key in query.
@@ -252,10 +251,9 @@ public class CouchDBClient: NSObject {
 	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId", worker: worker)
 	///
-	/// // parse data to JSON
+	/// // parse JSON
 	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
-	/// let data = Data(bytes)
-	/// var doc = try JSONDecoder().decode(ExpectedDoc.self, from: data)
+	/// var doc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes))
 	///
 	/// // Update value
 	/// doc.name = "Updated name"
@@ -375,6 +373,21 @@ public class CouchDBClient: NSObject {
 	}
 
 	/// Delete document from DB
+	///
+	/// Examples:
+	///
+	/// ```swift
+	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+	/// let response = try await couchDBClient.delete(
+	///   fromDb: "databaseName",
+	///   uri: doc._id,
+	///   rev: doc._rev,
+	///   worker: worker
+	/// )
+	///
+	/// print(response)
+	/// ```
+	/// 
 	/// - Parameters:
 	///   - dbName: DB name
 	///   - uri: document uri (usually _id)
