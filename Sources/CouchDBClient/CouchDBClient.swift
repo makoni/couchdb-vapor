@@ -102,6 +102,13 @@ public class CouchDBClient: NSObject {
 	// MARK: - Public methods
 
 	/// Get DBs list
+	///
+	/// Example:
+	/// ```swift
+	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+	/// let dbs = try await couchDBClient.getAllDBs(worker: worker)
+	/// ```
+	///
 	/// - Parameter worker: Worker (EventLoopGroup)
 	/// - Returns: Future (EventLoopFuture) with array of strings containing DBs names
 	public func getAllDBs(worker: EventLoopGroup) async throws -> [String]? {
@@ -147,6 +154,59 @@ public class CouchDBClient: NSObject {
 	}
 
 	/// Get data from DB
+	///
+	/// Examples:
+	///
+	/// Define your document model:
+	/// ```swift
+	/// // Example struct
+	/// struct ExpectedDoc: Codable {
+	///   var name: String
+	///   var _id: String
+	///   var _rev: String
+	/// }
+	/// ```
+	///
+	///  Get document by ID:
+	/// ```swift
+	/// // get data from DB by document ID
+	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId", worker: worker)
+	///
+	/// // parse data to JSON
+	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
+	/// let data = Data(bytes)
+	/// let doc = try JSONDecoder().decode(ExpectedDoc.self, from: data)
+	/// ```
+	///
+	/// You can also provide CouchDB view document as uri and key in query.
+	/// Define Row and RowsResponse models:
+	/// ```swift
+	/// struct Row: Codable {
+	///   let value: ExpectedDoc
+	/// }
+	///
+	/// struct RowsResponse: Codable {
+	///   let total_rows: Int
+	///   let offset: Int
+	///   let rows: [Row]
+	/// }
+	/// ```
+	///
+	/// Get data and parse RowsResponse:
+	/// ```swift
+	/// let response = try await couchDBClient.get(
+	///   dbName: "databaseName",
+	///   uri: "_design/all/_view/by_url",
+	///   query: ["key": "\"\(url)\""],
+	///   worker: worker
+	/// )
+	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
+	/// let decodedResponse = try JSONDecoder().decode(RowsResponse.self, from: data)
+	/// print(decodedResponse.rows)
+	/// print(decodedResponse.rows.first?.value)
+	/// ```
+	///
 	/// - Parameters:
 	///   - dbName: DB name
 	///   - uri: uri (view or document id)
