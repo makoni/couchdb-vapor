@@ -12,7 +12,7 @@ import AsyncHTTPClient
 
 
 /// A CouchDB client class with async/await methods.
-public class CouchDBClient: NSObject {
+public class CouchDBClient {
 	/// CouchDB client errors
 	public enum CouchDBClientError: Error {
 		/// **id** property is empty or missing in provided document
@@ -104,8 +104,6 @@ public class CouchDBClient: NSObject {
 		self.userPassword = userPassword.isEmpty
 		? ProcessInfo.processInfo.environment["COUCHDB_PASS"] ?? userPassword
 		: userPassword
-		
-		super.init()
 	}
 	
 	
