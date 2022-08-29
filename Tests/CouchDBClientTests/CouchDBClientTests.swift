@@ -121,7 +121,12 @@ final class CouchDBClientTests: XCTestCase {
 
 		// Test delete
 		do {
-			let response = try await couchDBClient.delete(fromDb: testsDB, uri: expectedInsertId, rev: expectedInsertRev, worker: worker)
+			let response = try await couchDBClient.delete(
+				fromDb: testsDB,
+				uri: expectedInsertId,
+				rev: expectedInsertRev,
+				worker: worker
+			)
 
 			XCTAssertEqual(response.ok, true)
 			XCTAssertNotNil(response.id)
