@@ -167,7 +167,7 @@ public class CouchDBClient: NSObject {
 	/// }
 	/// ```
 	///
-	///  Get document by ID:
+	/// Get document by ID:
 	/// ```swift
 	/// // get data from DB by document ID
 	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
@@ -230,12 +230,52 @@ public class CouchDBClient: NSObject {
 	}
 
 	/// Update data in DB
+	///
+	/// Examples:
+	///
+	/// Define your document model:
+	/// ```swift
+	/// // Example struct
+	/// struct ExpectedDoc: Codable {
+	///   var name: String
+	///   var _id: String
+	///   var _rev: String
+	/// }
+	/// ```
+	/// Get document by ID and update it:
+	/// ```swift
+	/// // get data from DB by document ID
+	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId", worker: worker)
+	///
+	/// // parse data to JSON
+	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
+	/// let data = Data(bytes)
+	/// var doc = try JSONDecoder().decode(ExpectedDoc.self, from: data)
+	///
+	/// // Update document
+	/// doc.name = "Updated name"
+	///
+	/// let data = try encoder.encode(updatedData)
+	/// let string = String(data: data, encoding: .utf8)!
+	/// 
+	/// let response = try await couchDBClient.update(
+	///   dbName: testsDB,
+	///   uri: expectedInsertId,
+	///   body: .string(string),
+	///   worker: worker
+	/// )
+	///
+	/// print(response)
+	/// ```
+	///
+	///
 	/// - Parameters:
 	///   - dbName: DB name
 	///   - uri: uri (view or document id)
 	///   - body: data which will be in request body
 	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Future (EventLoopFuture) with update response (CouchUpdateResponse)
+	/// - Returns: Future (EventLoopFuture) with update response (``CouchUpdateResponse``)
 	public func update(dbName: String, uri: String, body: HTTPClient.Body, worker: EventLoopGroup ) async throws -> CouchUpdateResponse {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		
@@ -270,7 +310,7 @@ public class CouchDBClient: NSObject {
 	///   - dbName: DB name
 	///   - body: data which will be in request body
 	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Future (EventLoopFuture) with insert response (CouchUpdateResponse)
+	/// - Returns: Future (EventLoopFuture) with insert response (``CouchUpdateResponse``)
 	public func insert(dbName: String, body: HTTPClient.Body, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		
@@ -306,7 +346,7 @@ public class CouchDBClient: NSObject {
 	///   - uri: document uri (usually _id)
 	///   - rev: document revision (usually _rev)
 	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Future (EventLoopFuture) with delete response (CouchUpdateResponse)
+	/// - Returns: Future (EventLoopFuture) with delete response (``CouchUpdateResponse``)
 	public func delete(fromDb dbName: String, uri: String, rev: String, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		
