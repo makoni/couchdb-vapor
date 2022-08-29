@@ -322,8 +322,7 @@ public class CouchDBClient: NSObject {
 
 		let url = buildUrl(path: "/\(dbName)")
 
-		var request = try HTTPClient.Request(url:url, method: .POST)
-		request.headers.add(name: "Content-Type", value: "application/json")
+		var request = try self.buildRequest(fromUrl: url, withMethod: .POST)
 		request.body = body
 
 		let response = try await httpClient
@@ -448,8 +447,9 @@ internal extension CouchDBClient {
 	/// - Returns: request
 	func buildRequest(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClient.Request  {
 		var headers = HTTPHeaders()
+		headers.add(name: "Content-Type", value: "application/json")
 		if let cookie = sessionCookie {
-			headers = HTTPHeaders([("Cookie", cookie)])
+			headers.add(name: "Cookie", value: cookie)
 		}
 		return try HTTPClient.Request(
 			url: url,
