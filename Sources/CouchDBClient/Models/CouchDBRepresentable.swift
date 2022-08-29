@@ -8,7 +8,7 @@
 import Foundation
 
 /// CouchDB document
-public protocol CouchDBRepresentable: Codable {
+public protocol CouchDBRepresentable {
 	/// Document ID
 	var _id: String? { get set }
 	/// Document revision

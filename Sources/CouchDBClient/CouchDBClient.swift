@@ -171,7 +171,7 @@ public class CouchDBClient: NSObject {
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable {
+	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
 	///   var name: String
 	///   var _id: String?
 	///   var _rev: String?
@@ -249,7 +249,7 @@ public class CouchDBClient: NSObject {
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable {
+	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
 	///   var name: String
 	///   var _id: String?
 	///   var _rev: String?
@@ -324,7 +324,7 @@ public class CouchDBClient: NSObject {
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable {
+	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
 	///   var name: String
 	///   var _id: String?
 	///   var _rev: String?
@@ -354,10 +354,10 @@ public class CouchDBClient: NSObject {
 	///
 	/// - Parameters:
 	///   - dbName: DB name
-	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol
+	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` and Codable protocols
 	///   - worker: Worker (EventLoopGroup)
 	/// - Returns: Update response
-	public func update(dbName: String, doc: CouchDBRepresentable, worker: EventLoopGroup ) async throws -> CouchUpdateResponse {
+	public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: T, worker: EventLoopGroup ) async throws -> CouchUpdateResponse {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard doc._rev?.isEmpty == false else { throw CouchDBClientError.revMissing }
 
@@ -380,7 +380,7 @@ public class CouchDBClient: NSObject {
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable {
+	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
 	///   var name: String
 	///   var _id: String?
 	///   var _rev: String?

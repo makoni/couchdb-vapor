@@ -6,7 +6,7 @@ import AsyncHTTPClient
 
 final class CouchDBClientTests: XCTestCase {
 
-	struct ExpectedDoc: CouchDBRepresentable {
+	struct ExpectedDoc: CouchDBRepresentable, Codable {
 		var name: String
 		var _id: String?
 		var _rev: String?
