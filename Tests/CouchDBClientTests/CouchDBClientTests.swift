@@ -47,12 +47,11 @@ final class CouchDBClientTests: XCTestCase {
 		// test Insert
 		do {
 			let data = try JSONEncoder().encode(testData)
-			let string = String(data: data, encoding: .utf8)!
-			
+
 			let response = try await couchDBClient
 				.insert(
 					dbName: testsDB,
-					body: .string(string),
+					body: .data(data),
 					worker: worker
 				)
 
@@ -88,11 +87,10 @@ final class CouchDBClientTests: XCTestCase {
 
 		do {
 			let data = try JSONEncoder().encode(updatedData)
-			let string = String(data: data, encoding: .utf8)!
 			let response = try await couchDBClient.update(
 				dbName: testsDB,
 				uri: expectedInsertId,
-				body: .string(string),
+				body: .data(data),
 				worker: worker
 			)
 
