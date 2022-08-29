@@ -10,14 +10,6 @@ import NIO
 import NIOHTTP1
 import AsyncHTTPClient
 
-/// CouchDB document
-public protocol CouchDBRepresentable: Codable {
-	/// Document ID
-	var _id: String? { get set }
-	/// Document revision
-	var _rev: String? { get set }
-}
-
 
 /// A CouchDB client class with async/await methods.
 public class CouchDBClient: NSObject {
