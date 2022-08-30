@@ -452,7 +452,7 @@ public class CouchDBClient {
 		doc._id = updateResponse.id
 	}
 
-	/// Insert document in DB by uri.
+	/// Insert data in DB by uri.
 	///
 	/// Examples:
 	///
