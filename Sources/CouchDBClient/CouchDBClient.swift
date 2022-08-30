@@ -11,54 +11,54 @@ import NIOHTTP1
 import AsyncHTTPClient
 
 
-/// A CouchDB client class with async/await methods.
+/// A CouchDB client class with methods using Swift Concurrency.
 public class CouchDBClient {
-	/// CouchDB client errors
+	/// CouchDB client errors.
 	public enum CouchDBClientError: Error {
-		/// **id** property is empty or missing in provided document
+		/// **id** property is empty or missing in provided document.
 		case idMissing
-		/// **\_rev** property is empty or missing in provided document
+		/// **\_rev** property is empty or missing in provided document.
 		case revMissing
 	}
 
-	/// Protocol (URL scheme) that should be used to perform requests to CouchDB
+	/// Protocol (URL scheme) that should be used to perform requests to CouchDB.
 	public enum CouchDBProtocol: String {
-		/// Use HTTP protocol
+		/// Use HTTP protocol.
 		case http
-		/// Use HTTPS protocol
+		/// Use HTTPS protocol.
 		case https
 	}
 	
 	// MARK: - Public properties
 	
-	/// Flag if did authorize in CouchDB
+	/// Flag if did authorize in CouchDB.
 	public var isAuthorized: Bool { authData?.ok ?? false }
 
 	/// You can set timeout for requests in seconds. Default value is 30.
 	public var requestsTimeout: Int64 = 30
 	
 	// MARK: - Private properties
-	/// Protocol
+	/// Requests protocol.
 	private var couchProtocol: CouchDBProtocol = .http
-	/// Host
+	/// Host.
 	private var couchHost: String = "127.0.0.1"
-	/// Port
+	/// Port.
 	private var couchPort: Int = 5984
-	/// Base URL
+	/// Base URL.
 	private var couchBaseURL: String = ""
-	/// Session cookie for requests that needs authorization
+	/// Session cookie for requests that needs authorization.
 	private var sessionCookie: String?
-	/// CouchDB user name
+	/// CouchDB user name.
 	private var userName: String = ""
-	/// CouchDB user password
+	/// CouchDB user password.
 	private var userPassword: String = ""
-	/// Authorization response from CouchDB
+	/// Authorization response from CouchDB.
 	private var authData: CreateSessionResponse?
 
 
 	// MARK: - Initializer
 
-	/// Initializer
+	/// Initialize CouchDB with connection params and credentials.
 	///
 	///	Example:
 	///  ```swift
@@ -90,11 +90,11 @@ public class CouchDBClient {
 	///  ```
 	///
 	/// - Parameters:
-	///   - couchProtocol: protocol (check ``CouchDBProtocol`` enum for avaiable values )
-	///   - couchHost: host of CouchDB instance
-	///   - couchPort: port CouchDB works on
-	///   - userName: username
-	///   - userPassword: user password
+	///   - couchProtocol: Protocol for requests (check ``CouchDBProtocol`` enum for avaiable values).
+	///   - couchHost: Host of CouchDB instance.
+	///   - couchPort: Port CouchDB works on.
+	///   - userName: Username.
+	///   - userPassword: User password.
 	public init(couchProtocol: CouchDBProtocol = .http, couchHost: String = "127.0.0.1", couchPort: Int = 5984, userName: String = "", userPassword: String = "") {
 		self.couchProtocol = couchProtocol
 		self.couchHost = couchHost
@@ -109,7 +109,7 @@ public class CouchDBClient {
 	
 	// MARK: - Public methods
 
-	/// Get DBs list
+	/// Get DBs list.
 	///
 	/// Example:
 	/// ```swift
@@ -117,8 +117,8 @@ public class CouchDBClient {
 	/// let dbs = try await couchDBClient.getAllDBs(worker: worker)
 	/// ```
 	///
-	/// - Parameter worker: Worker (EventLoopGroup)
-	/// - Returns: Array of strings containing DBs names
+	/// - Parameter worker: Worker.
+	/// - Returns: Array of strings containing DBs names.
 	public func getAllDBs(worker: EventLoopGroup) async throws -> [String]? {
 		try await authIfNeed(worker: worker)
 
@@ -142,13 +142,13 @@ public class CouchDBClient {
 		return try JSONDecoder().decode([String].self, from: data)
 	}
 
-	/// Get data from DB
+	/// Get data from DB.
 	/// - Parameters:
-	///   - dbName: DB name
-	///   - uri: uri (view or document id)
-	///   - query: request query
-	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Request response
+	///   - dbName: DB name.
+	///   - uri: uri (view or document id).
+	///   - query: request query.
+	///   - worker: Worker.
+	/// - Returns: Request response.
 	@available(*, deprecated, message: "Use the same method with queryItems param passing [URLQueryItem]")
 	public func get(dbName: String, uri: String, query: [String: String]?, worker: EventLoopGroup) async throws -> HTTPClient.Response {
 		var queryItems: [URLQueryItem] = []
@@ -162,7 +162,7 @@ public class CouchDBClient {
 		return try await get(dbName: dbName, uri: uri, queryItems: queryItems, worker: worker)
 	}
 
-	/// Get data from DB
+	/// Get data from DB.
 	///
 	/// Examples:
 	///
@@ -216,11 +216,11 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name
-	///   - uri: uri (view or document id)
-	///   - query: request query items
-	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Request response
+	///   - dbName: DB name.
+	///   - uri: uri (view or document id).
+	///   - query: request query items.
+	///   - worker: Worker.
+	/// - Returns: Request response.
 	public func get(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, worker: EventLoopGroup) async throws -> HTTPClient.Response {
 		try await authIfNeed(worker: worker)
 
@@ -240,7 +240,7 @@ public class CouchDBClient {
 			.get()
 	}
 
-	/// Update data in DB
+	/// Update data in DB.
 	///
 	/// Examples:
 	///
@@ -281,11 +281,11 @@ public class CouchDBClient {
 	///
 	///
 	/// - Parameters:
-	///   - dbName: DB name
-	///   - uri: uri (view or document id)
-	///   - body: data which will be in request body
-	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Update response
+	///   - dbName: DB name.
+	///   - uri: uri (view or document id).
+	///   - body: data which will be in request body.
+	///   - worker: Worker.
+	/// - Returns: Update response.
 	public func update(dbName: String, uri: String, body: HTTPClient.Body, worker: EventLoopGroup ) async throws -> CouchUpdateResponse {
 		try await authIfNeed(worker: worker)
 
@@ -315,7 +315,7 @@ public class CouchDBClient {
 		return try decoder.decode(CouchUpdateResponse.self, from: data)
 	}
 
-	/// Upate document in DB
+	/// Update document in DB.
 	///
 	/// Examples:
 	///
@@ -351,10 +351,10 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name
-	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` and Codable protocols
-	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Update response
+	///   - dbName: DB name.
+	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` and Codable protocols.
+	///   - worker: Worker.
+	/// - Returns: Update response.
 	public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: T, worker: EventLoopGroup ) async throws -> CouchUpdateResponse {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard doc._rev?.isEmpty == false else { throw CouchDBClientError.revMissing }
@@ -371,7 +371,7 @@ public class CouchDBClient {
 		)
 	}
 
-	/// Insert document in DB
+	/// Insert document in DB.
 	///
 	/// Examples:
 	///
@@ -402,10 +402,10 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name
-	///   - body: data which will be in request body
-	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Insert request response
+	///   - dbName: DB name.
+	///   - body: data which will be in request body.
+	///   - worker: Worker.
+	/// - Returns: Insert request response.
 	public func insert(dbName: String, body: HTTPClient.Body, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
 		try await authIfNeed(worker: worker)
 
@@ -436,7 +436,7 @@ public class CouchDBClient {
 		return try decoder.decode(CouchUpdateResponse.self, from: data)
 	}
 
-	/// Delete document from DB by uri
+	/// Delete document from DB by uri.
 	///
 	/// Examples:
 	///
@@ -453,11 +453,11 @@ public class CouchDBClient {
 	/// ```
 	/// 
 	/// - Parameters:
-	///   - dbName: DB name
-	///   - uri: document uri (usually _id)
-	///   - rev: document revision (usually _rev)
-	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Delete request response
+	///   - dbName: DB name.
+	///   - uri: document uri (usually _id).
+	///   - rev: document revision (usually _rev).
+	///   - worker: Worker.
+	/// - Returns: Delete request response.
 	public func delete(fromDb dbName: String, uri: String, rev: String, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
 		
@@ -484,7 +484,7 @@ public class CouchDBClient {
 		return try JSONDecoder().decode(CouchUpdateResponse.self, from: data)
 	}
 
-	/// Delete document from DB
+	/// Delete document from DB.
 	///
 	/// Examples:
 	///
@@ -500,10 +500,10 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name
-	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol
-	///   - worker: Worker (EventLoopGroup)
-	/// - Returns: Delete request response
+	///   - dbName: DB name.
+	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
+	///   - worker: Worker.
+	/// - Returns: Delete request response.
 	public func delete(fromDb dbName: String, doc: CouchDBRepresentable, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard let rev = doc._rev else { throw CouchDBClientError.revMissing }
@@ -515,11 +515,11 @@ public class CouchDBClient {
 
 // MARK: - Private methods
 internal extension CouchDBClient {
-	/// Build URL string
+	/// Build URL string.
 	/// - Parameters:
-	///   - path: path
-	///   - query: URL query
-	/// - Returns: URL string
+	///   - path: Path.
+	///   - query: URL query.
+	/// - Returns: URL string.
 	func buildUrl(path: String, query: [URLQueryItem] = []) -> String {
 		var components = URLComponents()
 		components.scheme = couchProtocol.rawValue
@@ -535,10 +535,10 @@ internal extension CouchDBClient {
 		return components.url?.absoluteString ?? ""
 	}
 
-	/// Get authorization cookie in didn't yet. This cookie will be added automatically to requests that require authorization
+	/// Get authorization cookie in didn't yet. This cookie will be added automatically to requests that require authorization.
 	/// API reference: https://docs.couchdb.org/en/stable/api/server/authn.html#session
-	/// - Parameter worker: Worker (EventLoopGroup)
-	/// - Returns: Future (EventLoopFuture) with authorization response (CreateSessionResponse)
+	/// - Parameter worker: Worker.
+	/// - Returns: Authorization response.
 	@discardableResult
 	func authIfNeed(worker: EventLoopGroup) async throws -> CreateSessionResponse? {
 		// already authorized
@@ -580,11 +580,11 @@ internal extension CouchDBClient {
 		return authData
 	}
 	
-	/// Build HTTP request from url string
+	/// Build HTTP request from url string.
 	/// - Parameters:
-	///   - url: url string
-	///   - method: HTTP method
-	/// - Returns: request
+	///   - url: URL string.
+	///   - method: HTTP method.
+	/// - Returns: HTTP Request.
 	func buildRequest(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClient.Request  {
 		var headers = HTTPHeaders()
 		headers.add(name: "Content-Type", value: "application/json")
