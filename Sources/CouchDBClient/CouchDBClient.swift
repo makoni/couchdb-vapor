@@ -390,7 +390,7 @@ public class CouchDBClient {
 		}
 	}
 
-	/// Update document in DB.
+	/// Update document in DB. That method will mutate `doc` to update it's `_rev` with the value from CouchDB response.
 	///
 	/// Examples:
 	///
@@ -407,11 +407,8 @@ public class CouchDBClient {
 	/// ```swift
 	/// // get data from DB by document ID
 	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId", worker: worker)
-	///
-	/// // parse JSON
-	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
-	/// var doc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes))
+	/// var doc: ExpectedDoc = try await couchDBClient.get(dbName: "databaseName", uri: "documentId", worker: worker)
+	/// print(doc)
 	///
 	/// // Update value
 	/// doc.name = "Updated name"
@@ -422,11 +419,11 @@ public class CouchDBClient {
 	///   worker: worker
 	/// )
 	///
-	/// print(doc)
+	/// print(doc) // doc will have updated name and _rev values now
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name.
+	///   - dbName: DB name. That method will mutate `doc` to update it's `_id` and `_rev` properties from insert request.
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` and Codable protocols.
 	///   - worker: Worker.
 	/// - Returns: Update response.
@@ -527,7 +524,7 @@ public class CouchDBClient {
 		}
 	}
 
-	/// Insert document in DB.
+	/// Insert document in DB. That method will mutate `doc` to update it's `_id` and `_rev` with the values from CouchDB response.
 	///
 	/// Examples:
 	///
@@ -553,7 +550,7 @@ public class CouchDBClient {
 	///   worker: worker
 	/// )
 	///
-	/// print(testDoc)
+	/// print(testDoc) // testDoc has _id and _rev values now
 	/// ```
 	///
 	/// - Parameters:
