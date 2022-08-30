@@ -63,9 +63,15 @@ final class CouchDBClientTests: XCTestCase {
 		expectedInsertRev = testDoc._rev!
 
 		// get inserted doc
-		var response = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId, worker: worker)
-		let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
-		testDoc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes))
+		do {
+			testDoc = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId, worker: worker)
+		} catch CouchDBClientError.getError(let error) {
+			XCTFail(error.reason)
+			return
+		} catch {
+			XCTFail(error.localizedDescription)
+			return
+		}
 
 		// Test update doc
 		testDoc.name = "test name 3"

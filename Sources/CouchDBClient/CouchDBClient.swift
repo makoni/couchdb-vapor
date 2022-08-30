@@ -24,9 +24,11 @@ public enum CouchDBClientError: Error {
 	case idMissing
 	/// **\_rev** property is empty or missing in provided document.
 	case revMissing
-	/// Insert wasn't successful
+	/// Get request wasn't successful
+	case getError(error: CouchDBError)
+	/// Insert request wasn't successful
 	case insertError(error: CouchDBError)
-	/// Update wasn't successful
+	/// Update request wasn't successful
 	case updateError(error: CouchDBError)
 	/// Uknown response from CouchDB
 	case unknownResponse
@@ -230,8 +232,8 @@ public class CouchDBClient {
 	///
 	/// - Parameters:
 	///   - dbName: DB name.
-	///   - uri: uri (view or document id).
-	///   - query: request query items.
+	///   - uri: URI (view or document id).
+	///   - query: Request query items.
 	///   - worker: Worker.
 	/// - Returns: Request response.
 	public func get(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, worker: EventLoopGroup) async throws -> HTTPClient.Response {
@@ -252,6 +254,57 @@ public class CouchDBClient {
 			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
 			.get()
 	}
+
+
+	/// Get data from DB.
+	///
+	/// Examples:
+	///
+	/// Define your document model:
+	/// ```swift
+	/// // Example struct
+	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
+	///   var name: String
+	///   var _id: String?
+	///   var _rev: String?
+	/// }
+	/// ```
+	///
+	/// Get document by ID:
+	/// ```swift
+	/// // get data from DB by document ID
+	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+	/// let doc: ExpectedDoc = try await couchDBClient.get(dbName: "databaseName", uri: "documentId", worker: worker)
+	/// ```
+	///
+	/// - Parameters:
+	///   - dbName: DB name.
+	///   - uri: URI (view or document id).
+	///   - queryItems: Request query items.
+	///   - worker: Worker.
+	/// - Returns: Request response.
+	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, worker: EventLoopGroup) async throws -> T {
+		let response = try await get(dbName: dbName, uri: uri, queryItems: queryItems, worker: worker)
+
+		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
+			throw CouchDBClientError.unknownResponse
+		}
+
+		let data = Data(bytes)
+		let decoder = JSONDecoder()
+		decoder.dateDecodingStrategy = .secondsSince1970
+
+		do {
+			let doc = try decoder.decode(T.self, from: data)
+			return doc
+		} catch let parsingError {
+			if let couchdbError = try? decoder.decode(CouchDBError.self, from: data) {
+				throw CouchDBClientError.getError(error: couchdbError)
+			}
+			throw parsingError
+		}
+	}
+
 
 	/// Update data in DB.
 	///
