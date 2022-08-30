@@ -30,11 +30,16 @@ final class CouchDBClientTests: XCTestCase {
 	
 	func testGetAllDbs() async throws {
 		let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-		let dbs = try await couchDBClient.getAllDBs(worker: worker)
 
-		XCTAssertNotNil(dbs)
-		XCTAssertFalse(dbs!.isEmpty)
-		XCTAssertTrue(dbs!.contains(testsDB))
+		do {
+			let dbs = try await couchDBClient.getAllDBs(worker: worker)
+
+			XCTAssertNotNil(dbs)
+			XCTAssertFalse(dbs.isEmpty)
+			XCTAssertTrue(dbs.contains(testsDB))
+		} catch {
+			XCTFail(error.localizedDescription)
+		}
 	}
 
 	func test_updateAndDeleteDocMethods() async throws {
