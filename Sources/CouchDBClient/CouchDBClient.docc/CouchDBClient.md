@@ -19,4 +19,4 @@ Currently CouchDBClient supports:
 
 ### Essentials
 
-- <doc:GettingStarted>
+- <doc:Tutorial-Table-of-Contents>
