@@ -10,17 +10,28 @@ import NIO
 import NIOHTTP1
 import AsyncHTTPClient
 
+/// A model that represents errors that CouchDB might return
+public struct CouchDBError: Error, Codable {
+	/// Error message
+	public let error: String
+	/// Error reason
+	public let reason: String
+}
+
+/// CouchDB client errors.
+public enum CouchDBClientError: Error {
+	/// **id** property is empty or missing in provided document.
+	case idMissing
+	/// **\_rev** property is empty or missing in provided document.
+	case revMissing
+	/// Insert wasn't successful
+	case insertError(error: CouchDBError)
+	/// Uknown response from CouchDB
+	case unknownResponse
+}
 
 /// A CouchDB client class with methods using Swift Concurrency.
 public class CouchDBClient {
-	/// CouchDB client errors.
-	public enum CouchDBClientError: Error {
-		/// **id** property is empty or missing in provided document.
-		case idMissing
-		/// **\_rev** property is empty or missing in provided document.
-		case revMissing
-	}
-
 	/// Protocol (URL scheme) that should be used to perform requests to CouchDB.
 	public enum CouchDBProtocol: String {
 		/// Use HTTP protocol.
@@ -427,13 +438,22 @@ public class CouchDBClient {
 			.get()
 		
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
-			return CouchUpdateResponse(ok: false, id: "", rev: "")
+			throw CouchDBClientError.unknownResponse
 		}
 
 		let data = Data(bytes)
 		let decoder = JSONDecoder()
 		decoder.dateDecodingStrategy = .secondsSince1970
-		return try decoder.decode(CouchUpdateResponse.self, from: data)
+
+		do {
+			let decodedResponse = try decoder.decode(CouchUpdateResponse.self, from: data)
+			return decodedResponse
+		} catch let parsingError {
+			if let couchdbError = try? decoder.decode(CouchDBError.self, from: data) {
+				throw CouchDBClientError.insertError(error: couchdbError)
+			}
+			throw parsingError
+		}
 	}
 
 	/// Insert document in DB.
@@ -470,13 +490,20 @@ public class CouchDBClient {
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
 	///   - worker: Worker.
 	/// - Returns: Insert request response.
-	public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: T, worker: EventLoopGroup ) async throws -> CouchUpdateResponse {
+	public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, worker: EventLoopGroup ) async throws {
 		let insertEncodeData = try JSONEncoder().encode(doc)
-		return try await insert(
+		let insertResponse = try await insert(
 			dbName: dbName,
 			body: .data(insertEncodeData),
 			worker: worker
 		)
+
+		guard insertResponse.ok == true else {
+			return
+		}
+
+		doc._rev = insertResponse.rev
+		doc._id = insertResponse.id
 	}
 
 	/// Delete document from DB by uri.

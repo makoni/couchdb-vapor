@@ -45,13 +45,22 @@ final class CouchDBClientTests: XCTestCase {
 		var expectedInsertRev: String = ""
 
 		// insert
-		let insertResponse = try await couchDBClient.insert(
-			dbName: testsDB,
-			doc: testDoc,
-			worker: worker
-		)
-		expectedInsertId = insertResponse.id
-		expectedInsertRev = insertResponse.rev
+		do {
+			try await couchDBClient.insert(
+				dbName: testsDB,
+				doc: &testDoc,
+				worker: worker
+			)
+		} catch CouchDBClientError.insertError(let error) {
+			XCTFail(error.reason)
+			return
+		} catch {
+			XCTFail(error.localizedDescription)
+			return
+		}
+
+		expectedInsertId = testDoc._id!
+		expectedInsertRev = testDoc._rev!
 
 		// get inserted doc
 		var response = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId, worker: worker)

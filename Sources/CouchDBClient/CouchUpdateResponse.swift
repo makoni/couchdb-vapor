@@ -28,12 +28,4 @@ public struct CouchUpdateResponse: Codable {
 		case id
 		case rev
 	}
-
-	public init(from decoder: Decoder) throws {
-		let container = try decoder.container(keyedBy: CodingKeys.self)
-		
-		ok = try container.decodeIfPresent(Bool.self, forKey: .ok) ?? false
-		id = try container.decodeIfPresent(String.self, forKey: .id) ?? ""
-		rev = try container.decodeIfPresent(String.self, forKey: .rev) ?? ""
-	}
 }
