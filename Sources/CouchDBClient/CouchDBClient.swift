@@ -12,9 +12,9 @@ import AsyncHTTPClient
 
 /// A model that represents errors that CouchDB might return
 public struct CouchDBError: Error, Codable {
-	/// Error message
+	/// Error message.
 	public let error: String
-	/// Error reason
+	/// Error reason.
 	public let reason: String
 }
 
@@ -24,13 +24,13 @@ public enum CouchDBClientError: Error {
 	case idMissing
 	/// **\_rev** property is empty or missing in provided document.
 	case revMissing
-	/// Get request wasn't successful
+	/// Get request wasn't successful.
 	case getError(error: CouchDBError)
-	/// Insert request wasn't successful
+	/// Insert request wasn't successful.
 	case insertError(error: CouchDBError)
-	/// Update request wasn't successful
+	/// Update request wasn't successful.
 	case updateError(error: CouchDBError)
-	/// Uknown response from CouchDB
+	/// Uknown response from CouchDB.
 	case unknownResponse
 }
 
