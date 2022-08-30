@@ -71,16 +71,22 @@ final class CouchDBClientTests: XCTestCase {
 		testDoc.name = "test name 3"
 		let expectedName = testDoc.name
 
-		let updateResponse = try await couchDBClient.update(
-			dbName: testsDB,
-			doc: testDoc,
-			worker: worker
-		)
+		do {
+			try await couchDBClient.update(
+				dbName: testsDB,
+				doc: &testDoc,
+				worker: worker
+			)
+		} catch CouchDBClientError.updateError(let error) {
+			XCTFail(error.reason)
+			return
+		} catch {
+			XCTFail(error.localizedDescription)
+			return
+		}
 
-		XCTAssertFalse(updateResponse.rev.isEmpty)
-		XCTAssertFalse(updateResponse.id.isEmpty)
-		XCTAssertNotEqual(updateResponse.rev, expectedInsertRev)
-		XCTAssertEqual(updateResponse.id, expectedInsertId)
+		XCTAssertNotEqual(testDoc._rev, expectedInsertRev)
+		XCTAssertEqual(testDoc._id, expectedInsertId)
 
 		// get updated doc
 		var getResponse2 = try await couchDBClient.get(

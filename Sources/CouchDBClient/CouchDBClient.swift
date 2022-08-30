@@ -26,6 +26,8 @@ public enum CouchDBClientError: Error {
 	case revMissing
 	/// Insert wasn't successful
 	case insertError(error: CouchDBError)
+	/// Update wasn't successful
+	case updateError(error: CouchDBError)
 	/// Uknown response from CouchDB
 	case unknownResponse
 }
@@ -317,13 +319,22 @@ public class CouchDBClient {
 			.get()
 		
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
-			return CouchUpdateResponse(ok: false, id: "", rev: "")
+			throw CouchDBClientError.unknownResponse
 		}
 
 		let data = Data(bytes)
 		let decoder = JSONDecoder()
 		decoder.dateDecodingStrategy = .secondsSince1970
-		return try decoder.decode(CouchUpdateResponse.self, from: data)
+
+		do {
+			let decodedResponse = try decoder.decode(CouchUpdateResponse.self, from: data)
+			return decodedResponse
+		} catch let parsingError {
+			if let couchdbError = try? decoder.decode(CouchDBError.self, from: data) {
+				throw CouchDBClientError.updateError(error: couchdbError)
+			}
+			throw parsingError
+		}
 	}
 
 	/// Update document in DB.
@@ -352,13 +363,13 @@ public class CouchDBClient {
 	/// // Update value
 	/// doc.name = "Updated name"
 	///
-	/// let response = try await couchDBClient.update(
+	/// try await couchDBClient.update(
 	///   dbName: testsDB,
-	///   doc: doc,
+	///   doc: &doc,
 	///   worker: worker
 	/// )
 	///
-	/// print(response)
+	/// print(doc)
 	/// ```
 	///
 	/// - Parameters:
@@ -366,7 +377,7 @@ public class CouchDBClient {
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` and Codable protocols.
 	///   - worker: Worker.
 	/// - Returns: Update response.
-	public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: T, worker: EventLoopGroup ) async throws -> CouchUpdateResponse {
+	public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, worker: EventLoopGroup ) async throws {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard doc._rev?.isEmpty == false else { throw CouchDBClientError.revMissing }
 
@@ -374,12 +385,19 @@ public class CouchDBClient {
 		encoder.dateEncodingStrategy = .secondsSince1970
 		let encodedData = try JSONEncoder().encode(doc)
 
-		return try await update(
+		let updateResponse = try await update(
 			dbName: dbName,
 			uri: id,
 			body: .data(encodedData),
 			worker: worker
 		)
+
+		guard updateResponse.ok == true else {
+			throw CouchDBClientError.unknownResponse
+		}
+
+		doc._rev = updateResponse.rev
+		doc._id = updateResponse.id
 	}
 
 	/// Insert document in DB by uri.
@@ -474,22 +492,21 @@ public class CouchDBClient {
 	/// ```swift
 	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 	///
-	/// let testDoc = ExpectedDoc(name: "My name")
+	/// var testDoc = ExpectedDoc(name: "My name")
 	///
-	/// let response = try await couchDBClient.insert(
+	/// try await couchDBClient.insert(
 	///   dbName: "databaseName",
-	///   doc: testDoc,
+	///   doc: &testDoc,
 	///   worker: worker
 	/// )
 	///
-	/// print(response)
+	/// print(testDoc)
 	/// ```
 	///
 	/// - Parameters:
 	///   - dbName: DB name.
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
 	///   - worker: Worker.
-	/// - Returns: Insert request response.
 	public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, worker: EventLoopGroup ) async throws {
 		let insertEncodeData = try JSONEncoder().encode(doc)
 		let insertResponse = try await insert(
@@ -499,7 +516,7 @@ public class CouchDBClient {
 		)
 
 		guard insertResponse.ok == true else {
-			return
+			throw CouchDBClientError.unknownResponse
 		}
 
 		doc._rev = insertResponse.rev
