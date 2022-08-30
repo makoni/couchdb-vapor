@@ -134,7 +134,7 @@ public class CouchDBClient {
 	///
 	/// - Parameter worker: Worker.
 	/// - Returns: Array of strings containing DBs names.
-	public func getAllDBs(worker: EventLoopGroup) async throws -> [String]? {
+	public func getAllDBs(worker: EventLoopGroup) async throws -> [String] {
 		try await authIfNeed(worker: worker)
 
 		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
@@ -151,7 +151,9 @@ public class CouchDBClient {
 			.execute(request: request)
 			.get()
 
-		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else { return nil }
+		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
+			throw CouchDBClientError.unknownResponse
+		}
 
 		let data = Data(bytes)
 		return try JSONDecoder().decode([String].self, from: data)
