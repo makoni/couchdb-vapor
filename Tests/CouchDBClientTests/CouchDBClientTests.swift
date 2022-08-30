@@ -45,10 +45,9 @@ final class CouchDBClientTests: XCTestCase {
 		var expectedInsertRev: String = ""
 
 		// insert
-		let insertEncodeData = try JSONEncoder().encode(testDoc)
 		let insertResponse = try await couchDBClient.insert(
 			dbName: testsDB,
-			body: .data(insertEncodeData),
+			doc: testDoc,
 			worker: worker
 		)
 		expectedInsertId = insertResponse.id

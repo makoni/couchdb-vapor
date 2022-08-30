@@ -371,7 +371,7 @@ public class CouchDBClient {
 		)
 	}
 
-	/// Insert document in DB.
+	/// Insert document in DB by uri.
 	///
 	/// Examples:
 	///
@@ -403,7 +403,7 @@ public class CouchDBClient {
 	///
 	/// - Parameters:
 	///   - dbName: DB name.
-	///   - body: data which will be in request body.
+	///   - body: Data which will be in request body.
 	///   - worker: Worker.
 	/// - Returns: Insert request response.
 	public func insert(dbName: String, body: HTTPClient.Body, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
@@ -434,6 +434,49 @@ public class CouchDBClient {
 		let decoder = JSONDecoder()
 		decoder.dateDecodingStrategy = .secondsSince1970
 		return try decoder.decode(CouchUpdateResponse.self, from: data)
+	}
+
+	/// Insert document in DB.
+	///
+	/// Examples:
+	///
+	/// Define your document model:
+	/// ```swift
+	/// // Example struct
+	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
+	///   var name: String
+	///   var _id: String?
+	///   var _rev: String?
+	/// }
+	/// ```
+	///
+	///	Create a new document and insert:
+	/// ```swift
+	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+	///
+	/// let testDoc = ExpectedDoc(name: "My name")
+	///
+	/// let response = try await couchDBClient.insert(
+	///   dbName: "databaseName",
+	///   doc: testDoc,
+	///   worker: worker
+	/// )
+	///
+	/// print(response)
+	/// ```
+	///
+	/// - Parameters:
+	///   - dbName: DB name.
+	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
+	///   - worker: Worker.
+	/// - Returns: Insert request response.
+	public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: T, worker: EventLoopGroup ) async throws -> CouchUpdateResponse {
+		let insertEncodeData = try JSONEncoder().encode(doc)
+		return try await insert(
+			dbName: dbName,
+			body: .data(insertEncodeData),
+			worker: worker
+		)
 	}
 
 	/// Delete document from DB by uri.
