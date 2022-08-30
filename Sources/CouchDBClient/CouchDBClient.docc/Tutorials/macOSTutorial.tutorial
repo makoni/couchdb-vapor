@@ -1,0 +1,35 @@
+@Tutorial(time: 10) {
+    @Intro(title: "macOS app") {
+		Use CouchDBClient in macOS app
+        
+		@Image(source: macOSapp.png, alt: "Application icon")
+    }
+    
+    @Section(title: "Use CouchDBClient in macOS app") {
+        @ContentAndMedia {
+			Use CouchDBClient in macOS app
+            
+            @Image(source: macOSapp.png, alt: "Application icon")
+        }
+        
+        @Steps {
+            @Step {
+				Add `CouchDBClient` as a Swift Package dependency.
+                
+                @Image(source: macOSTutorial-1.png, alt: "Add CouchDBClient as a Swift Package dependency.")
+            }
+            
+            @Step {
+                Import `CouchDBClient`.
+                
+                @Code(name: "main.swift", file: macOSTutorial-1.swift)
+            }
+			
+			@Step {
+				Import `CouchDBClient` and `NIO`.
+				
+				@Code(name: "main.swift", file: macOSTutorial-2.swift)
+			}
+        }
+    }
+}

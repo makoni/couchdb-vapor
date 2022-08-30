@@ -15,8 +15,10 @@ A CouchDB client class with methods using Swift Concurrency.
 - ``getAllDBs(worker:)``
 
 ### Requests to a database
-- ``get(dbName:uri:queryItems:worker:)``
+- ``get(dbName:uri:queryItems:worker:)-5vf6k``
+- ``get(dbName:uri:queryItems:worker:)-7h5ke``
 - ``insert(dbName:body:worker:)``
+- ``insert(dbName:doc:worker:)``
 - ``update(dbName:doc:worker:)``
 - ``update(dbName:uri:body:worker:)``
 - ``delete(fromDb:doc:worker:)``

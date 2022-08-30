@@ -1,0 +1,15 @@
+@Tutorials(name: "CouchDBClient") {
+    @Intro(title: "Getting started") {
+        Couple examples of CouchDBClient usage.
+        
+        @Image(source: logo.png, alt: "CouchDBClient logo")
+    }
+    
+    @Chapter(name: "macOS app") {
+        How to use CouchDBClient in a macOS app.
+        
+		@Image(source: macOSapp.png, alt: "CouchDBClient logo")
+        
+        @TutorialReference(tutorial: "doc:macOSTutorial")
+    }
+}
