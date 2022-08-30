@@ -1,15 +1,15 @@
 @Tutorial(time: 10) {
-    @Intro(title: "macOS app") {
-		Use CouchDBClient in macOS app
+    @Intro(title: "Use in macOS app") {
+		Learn how to use CouchDBClient in your macOS app
         
-		@Image(source: macOSapp.png, alt: "Application icon")
+		@Image(source: chapter1.png, alt: "Application icon")
     }
     
-    @Section(title: "Use CouchDBClient in macOS app") {
+    @Section(title: "Initializaton") {
         @ContentAndMedia {
-			Use CouchDBClient in macOS app
+			Adding CouchDBClient in your project.
             
-            @Image(source: macOSapp.png, alt: "Application icon")
+            @Image(source: chapter1.png, alt: "Application icon")
         }
         
         @Steps {
@@ -38,7 +38,7 @@
 			}
 			
 			@Step {
-				Define a model for your CouchDB document. It should confirm to `Codable` and ``CouchDBRepresentable`` protocols.
+				Define a model for your CouchDB document. It should confirm to `Codable` and `CouchDBRepresentable` protocols.
 				
 				@Code(name: "main.swift", file: macOSTutorial-4.swift)
 			}

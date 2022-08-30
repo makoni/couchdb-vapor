@@ -5,11 +5,20 @@
         @Image(source: logo.png, alt: "CouchDBClient logo")
     }
     
-    @Chapter(name: "macOS app") {
-        How to use CouchDBClient in a macOS app.
+    @Chapter(name: "Getting started") {
+		Learn how to use CouchDBClient.
         
-		@Image(source: macOSapp.png, alt: "CouchDBClient logo")
+		@Image(source: chapter1.png, alt: "CouchDBClient logo")
         
         @TutorialReference(tutorial: "doc:macOSTutorial")
+		@TutorialReference(tutorial: "doc:VaporTutorial")
     }
+	
+	@Chapter(name: "Errors handling") {
+		Examples handling CouchDBClient errors and errors from CouchDB.
+		
+		@Image(source: chapter1.png, alt: "CouchDBClient logo")
+		
+		@TutorialReference(tutorial: "doc:ErrorsHandlingTutorial")
+	}
 }
