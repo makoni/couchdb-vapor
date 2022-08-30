@@ -256,7 +256,7 @@ public class CouchDBClient {
 	}
 
 
-	/// Get data from DB.
+	/// Get a document from DB. It will parse JSON using provided generic type. Check an example in Discussion.
 	///
 	/// Examples:
 	///
@@ -282,7 +282,7 @@ public class CouchDBClient {
 	///   - uri: URI (view or document id).
 	///   - queryItems: Request query items.
 	///   - worker: Worker.
-	/// - Returns: Request response.
+	/// - Returns: An object or a struct (of generic type) parsed from JSON.
 	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, worker: EventLoopGroup) async throws -> T {
 		let response = try await get(dbName: dbName, uri: uri, queryItems: queryItems, worker: worker)
 
