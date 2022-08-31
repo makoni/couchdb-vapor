@@ -18,7 +18,7 @@ This is simple lib to work with CouchDB in Swift.
 - Version 1.0.0 can be used with Vapor 4 without async/await. Swift 5.3 is required
 - You can use old version for Vapor 3 from vapor3 branch or using version < 1.0.0. 
 
-The only depndency for this lib is <a href="https://github.com/swift-server/async-http-client">async-http-client</a>
+The only dependency for this lib is <a href="https://github.com/swift-server/async-http-client">async-http-client</a>
 
 ## Installation
 
