@@ -128,8 +128,7 @@ public class CouchDBClient {
 	///
 	/// Example:
 	/// ```swift
-	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-	/// let dbs = try await couchDBClient.getAllDBs(worker: worker)
+	/// let dbs = try await couchDBClient.getAllDBs()
 	/// ```
 	///
 	/// - Parameter worker: Worker. New will be created if nil value provided.

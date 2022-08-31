@@ -29,10 +29,8 @@ final class CouchDBClientTests: XCTestCase {
 	}
 	
 	func testGetAllDbs() async throws {
-		let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-
 		do {
-			let dbs = try await couchDBClient.getAllDBs(worker: worker)
+			let dbs = try await couchDBClient.getAllDBs()
 
 			XCTAssertNotNil(dbs)
 			XCTAssertFalse(dbs.isEmpty)
