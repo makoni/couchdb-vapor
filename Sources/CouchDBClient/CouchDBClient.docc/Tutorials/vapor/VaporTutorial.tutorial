@@ -1,5 +1,5 @@
 @Tutorial(time: 10) {
-    @Intro(title: "Use with Vapor on server-side") {
+    @Intro(title: "Use with Vapor on a server") {
 		Use CouchDBClient on server-side.
         
 		@Image(source: chapter1.png, alt: "Application icon")
