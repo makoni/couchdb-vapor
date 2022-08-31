@@ -495,15 +495,12 @@ public class CouchDBClient {
 	///
 	///	Create a new document and insert:
 	/// ```swift
-	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-	///
 	/// let testDoc = ExpectedDoc(name: "My name")
 	/// let data = try JSONEncoder().encode(testData)
 	///
 	/// let response = try await couchDBClient.insert(
 	///   dbName: "databaseName",
-	///   body: .data(data),
-	///   worker: worker
+	///   body: .data(data)
 	/// )
 	///
 	/// print(response)

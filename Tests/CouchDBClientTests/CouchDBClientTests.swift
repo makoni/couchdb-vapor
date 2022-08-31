@@ -138,8 +138,7 @@ final class CouchDBClientTests: XCTestCase {
 			let insertEncodeData = try JSONEncoder().encode(testDoc)
 			let response = try await couchDBClient.insert(
 				dbName: testsDB,
-				body: .data(insertEncodeData),
-				worker: worker
+				body: .data(insertEncodeData)
 			)
 
 			XCTAssertEqual(response.ok, true)
