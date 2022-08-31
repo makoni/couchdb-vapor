@@ -605,12 +605,10 @@ public class CouchDBClient {
 	/// Examples:
 	///
 	/// ```swift
-	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 	/// let response = try await couchDBClient.delete(
 	///   fromDb: "databaseName",
 	///   uri: doc._id,
-	///   rev: doc._rev,
-	///   worker: worker
+	///   rev: doc._rev
 	/// )
 	///
 	/// print(response)

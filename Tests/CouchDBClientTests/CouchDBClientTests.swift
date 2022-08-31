@@ -127,8 +127,6 @@ final class CouchDBClientTests: XCTestCase {
 	}
 	
 	func testInsertGetUpdateDelete() async throws {
-		let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-
 		var testDoc = ExpectedDoc(name: "test name")
 		var expectedInsertId: String = ""
 		var expectedInsertRev: String = ""
@@ -203,8 +201,7 @@ final class CouchDBClientTests: XCTestCase {
 			let response = try await couchDBClient.delete(
 				fromDb: testsDB,
 				uri: testDoc._id!,
-				rev: testDoc._rev!,
-				worker: worker
+				rev: testDoc._rev!
 			)
 
 			XCTAssertEqual(response.ok, true)
