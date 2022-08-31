@@ -1,12 +1,30 @@
-name: Ubuntu 20.04 Swift latest
+name: Build on macOS and Ubuntu latest
 
 on: [push]
 
 jobs:
-  swift-docker:
+  macOS:
+    name: Build on macOS-latest
+    runs-on: macOS-latest
+        
+    steps:
+    - name: Print Swift version
+      run: swift --version
+      
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Swift build
+      run: swift build -c release
+            
+    - name: Done
+      run: echo Done
+      
+  ubuntu:
+    name: Build on ubuntu-latest
     container: 
       image: swift:latest
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@master
