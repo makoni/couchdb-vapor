@@ -154,7 +154,7 @@ final class CouchDBClientTests: XCTestCase {
 		// Test Get
 		var expectedName = testDoc.name
 		do {
-			var response = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId, worker: worker)
+			var response = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId)
 			XCTAssertNotNil(response.body)
 
 			let bytes = response.body!.readBytes(length: response.body!.readableBytes)!

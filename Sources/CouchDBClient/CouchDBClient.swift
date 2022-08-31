@@ -201,8 +201,7 @@ public class CouchDBClient {
 	/// Get document by ID:
 	/// ```swift
 	/// // get data from DB by document ID
-	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId", worker: worker)
+	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId")
 	///
 	/// // parse JSON
 	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
@@ -228,8 +227,7 @@ public class CouchDBClient {
 	/// let response = try await couchDBClient.get(
 	///   dbName: "databaseName",
 	///   uri: "_design/all/_view/by_url",
-	///   query: ["key": "\"\(url)\""],
-	///   worker: worker
+	///   query: ["key": "\"\(url)\""]
 	/// )
 	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
 	/// let decodedResponse = try JSONDecoder().decode(RowsResponse.self, from: data)
