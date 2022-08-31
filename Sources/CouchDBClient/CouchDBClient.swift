@@ -169,7 +169,7 @@ public class CouchDBClient {
 	///   - dbName: DB name.
 	///   - uri: uri (view or document id).
 	///   - query: request query.
-	///   - worker: Worker.
+	///   - worker: Worker. New will be created if nil value provided.
 	/// - Returns: Request response.
 	@available(*, deprecated, message: "Use the same method with queryItems param passing [URLQueryItem]")
 	public func get(dbName: String, uri: String, query: [String: String]?, worker: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
@@ -283,15 +283,14 @@ public class CouchDBClient {
 	/// Get document by ID:
 	/// ```swift
 	/// // get data from DB by document ID
-	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-	/// let doc: ExpectedDoc = try await couchDBClient.get(dbName: "databaseName", uri: "documentId", worker: worker)
+	/// let doc: ExpectedDoc = try await couchDBClient.get(dbName: "databaseName", uri: "documentId")
 	/// ```
 	///
 	/// - Parameters:
 	///   - dbName: DB name.
 	///   - uri: URI (view or document id).
 	///   - queryItems: Request query items.
-	///   - worker: Worker.
+	///   - worker: Worker. New will be created if nil value provided.
 	/// - Returns: An object or a struct (of generic type) parsed from JSON.
 	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, worker: EventLoopGroup? = nil) async throws -> T {
 		let response = try await get(dbName: dbName, uri: uri, queryItems: queryItems, worker: worker)
@@ -320,8 +319,8 @@ public class CouchDBClient {
     ///   - dbName: DB name
     ///   - uri: uri (view or document id)
     ///   - bodyData: request body as Data
-    ///   - worker: Worker (EventLoopGroup). New will be created if nil value provided
-    /// - Returns: Future (EventLoopFuture) with update response (CouchUpdateResponse)
+    ///   - worker: Worke. New will be created if nil value provided
+    /// - Returns: Update response.
     public func update(dbName: String, uri: String, bodyData: Data, worker: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
         let requestBody = HTTPClient.Body.data(bodyData)
         return try await update(dbName: dbName, uri: uri, body: requestBody, worker: worker)
@@ -370,7 +369,7 @@ public class CouchDBClient {
 	///   - dbName: DB name.
 	///   - uri: URI (view or document id).
 	///   - body: Request body data. New will be created if nil value provided.
-	///   - worker: Worker.
+	///   - worker: Worker. New will be created if nil value provided.
 	/// - Returns: Update response.
 	public func update(dbName: String, uri: String, body: HTTPClient.Body, worker: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		try await authIfNeed(worker: worker)
@@ -431,8 +430,7 @@ public class CouchDBClient {
 	/// Get document by ID and update it:
 	/// ```swift
 	/// // get data from DB by document ID
-	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-	/// var doc: ExpectedDoc = try await couchDBClient.get(dbName: "databaseName", uri: "documentId", worker: worker)
+	/// var doc: ExpectedDoc = try await couchDBClient.get(dbName: "databaseName", uri: "documentId")
 	/// print(doc)
 	///
 	/// // Update value
@@ -440,8 +438,7 @@ public class CouchDBClient {
 	///
 	/// try await couchDBClient.update(
 	///   dbName: testsDB,
-	///   doc: &doc,
-	///   worker: worker
+	///   doc: &doc
 	/// )
 	///
 	/// print(doc) // doc will have updated name and _rev values now
@@ -450,9 +447,9 @@ public class CouchDBClient {
 	/// - Parameters:
 	///   - dbName: DB name. That method will mutate `doc` to update it's `_id` and `_rev` properties from insert request.
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` and Codable protocols.
-	///   - worker: Worker.
+	///   - worker: Worker. New will be created if nil value provided.
 	/// - Returns: Update response.
-	public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, worker: EventLoopGroup ) async throws {
+	public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, worker: EventLoopGroup? = nil ) async throws {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard doc._rev?.isEmpty == false else { throw CouchDBClientError.revMissing }
 
@@ -567,14 +564,11 @@ public class CouchDBClient {
 	///
 	///	Create a new document and insert:
 	/// ```swift
-	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-	///
 	/// var testDoc = ExpectedDoc(name: "My name")
 	///
 	/// try await couchDBClient.insert(
 	///   dbName: "databaseName",
-	///   doc: &testDoc,
-	///   worker: worker
+	///   doc: &testDoc
 	/// )
 	///
 	/// print(testDoc) // testDoc has _id and _rev values now
@@ -584,7 +578,7 @@ public class CouchDBClient {
 	///   - dbName: DB name.
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
 	///   - worker: Worker.
-	public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, worker: EventLoopGroup ) async throws {
+	public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, worker: EventLoopGroup? = nil ) async throws {
 		let insertEncodeData = try JSONEncoder().encode(doc)
 		let insertResponse = try await insert(
 			dbName: dbName,
@@ -656,11 +650,9 @@ public class CouchDBClient {
 	/// Examples:
 	///
 	/// ```swift
-	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 	/// let response = try await couchDBClient.delete(
 	///   fromDb: "databaseName",
-	///   doc: doc,
-	///   worker: worker
+	///   doc: doc
 	/// )
 	///
 	/// print(response)
@@ -671,7 +663,7 @@ public class CouchDBClient {
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
 	///   - worker: Worker.
 	/// - Returns: Delete request response.
-	public func delete(fromDb dbName: String, doc: CouchDBRepresentable, worker: EventLoopGroup) async throws -> CouchUpdateResponse {
+	public func delete(fromDb dbName: String, doc: CouchDBRepresentable, worker: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard let rev = doc._rev else { throw CouchDBClientError.revMissing }
 

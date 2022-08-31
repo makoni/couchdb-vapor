@@ -41,8 +41,6 @@ final class CouchDBClientTests: XCTestCase {
 	}
 
 	func test_updateAndDeleteDocMethods() async throws {
-		let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-
 		var testDoc = ExpectedDoc(name: "test name")
 		var expectedInsertId: String = ""
 		var expectedInsertRev: String = ""
@@ -51,8 +49,7 @@ final class CouchDBClientTests: XCTestCase {
 		do {
 			try await couchDBClient.insert(
 				dbName: testsDB,
-				doc: &testDoc,
-				worker: worker
+				doc: &testDoc
 			)
 		} catch CouchDBClientError.insertError(let error) {
 			XCTFail(error.reason)
@@ -67,7 +64,7 @@ final class CouchDBClientTests: XCTestCase {
 
 		// get inserted doc
 		do {
-			testDoc = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId, worker: worker)
+			testDoc = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId)
 		} catch CouchDBClientError.getError(let error) {
 			XCTFail(error.reason)
 			return
@@ -83,8 +80,7 @@ final class CouchDBClientTests: XCTestCase {
 		do {
 			try await couchDBClient.update(
 				dbName: testsDB,
-				doc: &testDoc,
-				worker: worker
+				doc: &testDoc
 			)
 		} catch CouchDBClientError.updateError(let error) {
 			XCTFail(error.reason)
@@ -100,8 +96,7 @@ final class CouchDBClientTests: XCTestCase {
 		// get updated doc
 		var getResponse2 = try await couchDBClient.get(
 			dbName: testsDB,
-			uri: expectedInsertId,
-			worker: worker
+			uri: expectedInsertId
 		)
 		XCTAssertNotNil(getResponse2.body)
 
@@ -114,8 +109,7 @@ final class CouchDBClientTests: XCTestCase {
 		do {
 			let response = try await couchDBClient.delete(
 				fromDb: testsDB,
-				doc: testDoc,
-				worker: worker
+				doc: testDoc
 			)
 
 			XCTAssertEqual(response.ok, true)
@@ -222,8 +216,7 @@ final class CouchDBClientTests: XCTestCase {
 	}
 
 	func testAuth() async throws {
-		let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-		let session: CreateSessionResponse? = try await couchDBClient.authIfNeed(worker: worker)
+		let session: CreateSessionResponse? = try await couchDBClient.authIfNeed()
 		XCTAssertNotNil(session)
 		XCTAssertEqual(true, session?.ok)
 	}
