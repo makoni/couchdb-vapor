@@ -176,8 +176,7 @@ final class CouchDBClientTests: XCTestCase {
 			let updateResponse = try await couchDBClient.update(
 				dbName: testsDB,
 				uri: expectedInsertId,
-				body: .data(updateEncodedData),
-				worker: worker
+				body: .data(updateEncodedData)
 			)
 
 			XCTAssertFalse(updateResponse.rev.isEmpty)
@@ -187,8 +186,7 @@ final class CouchDBClientTests: XCTestCase {
 
 			var getResponse = try await couchDBClient.get(
 				dbName: testsDB,
-				uri: expectedInsertId,
-				worker: worker
+				uri: expectedInsertId
 			)
 			XCTAssertNotNil(getResponse.body)
 

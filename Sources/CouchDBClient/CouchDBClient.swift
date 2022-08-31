@@ -344,7 +344,6 @@ public class CouchDBClient {
 	/// Get document by ID and update it:
 	/// ```swift
 	/// // get data from DB by document ID
-	/// let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId", worker: worker)
 	///
 	/// // parse JSON
@@ -360,8 +359,7 @@ public class CouchDBClient {
 	/// let response = try await couchDBClient.update(
 	///   dbName: testsDB,
 	///   uri: doc._id!,
-	///   body: .data(data),
-	///   worker: worker
+	///   body: .data(data)
 	/// )
 	///
 	/// print(response)
