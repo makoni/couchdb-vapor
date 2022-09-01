@@ -1,77 +1,41 @@
-@Tutorial(time: 10) {
-    @Intro(title: "Intro") {
+@Tutorial(time: 3) {
+	@Intro(title: "Handing CouchDB errors") {
 		Use CouchDBClient in macOS app
-        
+		
 		@Image(source: chapter1.png, alt: "Application icon")
-    }
-    
-    @Section(title: "Use CouchDBClient in macOS app") {
-        @ContentAndMedia {
+	}
+	
+	@Section(title: "Use CouchDBClient in macOS app") {
+		@ContentAndMedia {
 			Use CouchDBClient in macOS app
-            
-            @Image(source: chapter1.png, alt: "Application icon")
-        }
-        
-        @Steps {
-            @Step {
-				Add `CouchDBClient` as a Swift Package dependency.
-                
-                @Image(source: macOSTutorial-1.png, alt: "Add CouchDBClient as a Swift Package dependency.")
-            }
-            
-            @Step {
-                Import `CouchDBClient`.
-                
-                @Code(name: "main.swift", file: macOSTutorial-1.swift)
-            }
 			
+			@Image(source: chapter1.png, alt: "Application icon")
+		}
+		
+		@Steps {
 			@Step {
-				Import `CouchDBClient` and `NIO`.
+				`CouchDBClient` has an Error enum called ``CouchDBClientError``. Some of enum values has nested error of ``CouchDBError`` type that represents error messages from CouchDB.
 				
-				@Code(name: "main.swift", file: macOSTutorial-2.swift)
+				@Code(name: "main.swift", file: ErrorsHandlingTutorial-1.swift)
 			}
 			
 			@Step {
-				Create a CouchDBClient object, define database name and create a worker to perform requests.
+				You can wrap your code in do-catch block to catch a CouchDB error during insert operation.
 				
-				@Code(name: "main.swift", file: macOSTutorial-3.swift)
+				@Code(name: "main.swift", file: ErrorsHandlingTutorial-2.swift)
 			}
 			
 			@Step {
-				Define a model for your CouchDB document. It should confirm to `Codable` and ``CouchDBRepresentable`` protocols.
+				Same for update to find out what's wrong.
 				
-				@Code(name: "main.swift", file: macOSTutorial-4.swift)
+				@Code(name: "main.swift", file: ErrorsHandlingTutorial-3.swift)
 			}
 			
 			@Step {
-				Insert a document into your database. After inserting CouchDBClient will update `_id` and `_rev` values of your document with the values from CouchDB. 
+				And same for get operation. CouchDB will return an error message if username or password is incorrect for example. 
 				
-				@Code(name: "main.swift", file: macOSTutorial-5.swift)
+				@Code(name: "main.swift", file: ErrorsHandlingTutorial-4.swift)
 			}
-			
-			@Step {
-				Here's an example of updating the document. CouchDBClient will also update `_rev` value of your document with the value from CouchDB after saving. 
-				
-				@Code(name: "main.swift", file: macOSTutorial-6.swift)
-			}
-			
-			@Step {
-				Getting document by it's `_id` from DB with that method will parse JSON into your model if you'll provide it as a generic type. 
-				
-				@Code(name: "main.swift", file: macOSTutorial-7.swift)
-			}
-			
-			@Step {
-				Deleting a document from DB is also easy. 
-				
-				@Code(name: "main.swift", file: macOSTutorial-8.swift)
-			}
-			
-			@Step {
-				More examples can be found in CouchDBClientTests.swift in the lib sources. 
-				
-				@Image(source: macOSTutorial-2.png, alt: "Add CouchDBClient as a Swift Package dependency.")
-			}
-        }
-    }
+		}
+	}
 }
