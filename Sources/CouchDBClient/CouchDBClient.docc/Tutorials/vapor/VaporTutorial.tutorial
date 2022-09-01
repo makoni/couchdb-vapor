@@ -1,13 +1,13 @@
 @Tutorial(time: 10) {
     @Intro(title: "Using with Vapor in server-side app") {
-		Use CouchDBClient on server-side.
+		Use CouchDBClient for developing server-side apps built with Vapor.
         
 		@Image(source: chapter1.png, alt: "Application icon")
     }
     
     @Section(title: "Use CouchDBClient in macOS app") {
         @ContentAndMedia {
-			Use CouchDBClient in macOS app
+			Vapor is built on top of  Apple's [SwiftNIO](https://github.com/apple/swift-nio). `CouchDBClient` is compatible with SwiftNIO and can be used for server-side development.
             
             @Image(source: chapter1.png, alt: "Application icon")
         }
@@ -16,61 +16,43 @@
             @Step {
 				Add `CouchDBClient` as a Swift Package dependency.
                 
-                @Image(source: macOSTutorial-1.png, alt: "Add CouchDBClient as a Swift Package dependency.")
+                @Image(source: VaporTutorial-1.png, alt: "Add CouchDBClient as a Swift Package dependency.")
             }
             
             @Step {
-                Import `CouchDBClient`.
+				Open `routes.swift` in your Vapor project.
                 
-                @Code(name: "main.swift", file: macOSTutorial-1.swift)
+                @Code(name: "main.swift", file: VaporTutorial-1.swift)
             }
 			
 			@Step {
-				Import `CouchDBClient` and `NIO`.
+				Import `CouchDBClient` and create a client instance.
 				
-				@Code(name: "main.swift", file: macOSTutorial-2.swift)
+				@Code(name: "main.swift", file: VaporTutorial-2.swift)
 			}
 			
 			@Step {
-				Create a CouchDBClient object, define database name and create a worker to perform requests.
+				Define you data model for CouchDB document. Nested `Row` and `RowsResponse` models will be used to parse CouchDB responses.
 				
-				@Code(name: "main.swift", file: macOSTutorial-3.swift)
+				@Code(name: "main.swift", file: VaporTutorial-3.swift)
 			}
 			
 			@Step {
-				Define a model for your CouchDB document. It should confirm to `Codable` and ``CouchDBRepresentable`` protocols.
+				Get you document from DB. That example is using `CouchDB View` to find the document by url field. It's map function needs `key` param which is `appUrl` in our case.
 				
-				@Code(name: "main.swift", file: macOSTutorial-4.swift)
+				@Code(name: "main.swift", file: VaporTutorial-4.swift)
 			}
 			
 			@Step {
-				Insert a document into your database. After inserting CouchDBClient will update `_id` and `_rev` values of your document with the values from CouchDB. 
+				Parse the response into our data model.
 				
-				@Code(name: "main.swift", file: macOSTutorial-5.swift)
+				@Code(name: "main.swift", file: VaporTutorial-5.swift)
 			}
 			
 			@Step {
-				Here's an example of updating the document. CouchDBClient will also update `_rev` value of your document with the value from CouchDB after saving. 
+				Finally pass the data to Leaf for template rendering.
 				
-				@Code(name: "main.swift", file: macOSTutorial-6.swift)
-			}
-			
-			@Step {
-				Getting document by it's `_id` from DB with that method will parse JSON into your model if you'll provide it as a generic type. 
-				
-				@Code(name: "main.swift", file: macOSTutorial-7.swift)
-			}
-			
-			@Step {
-				Deleting a document from DB is also easy. 
-				
-				@Code(name: "main.swift", file: macOSTutorial-8.swift)
-			}
-			
-			@Step {
-				More examples can be found in CouchDBClientTests.swift in the lib sources. 
-				
-				@Image(source: macOSTutorial-2.png, alt: "Add CouchDBClient as a Swift Package dependency.")
+				@Code(name: "main.swift", file: VaporTutorial-6.swift)
 			}
         }
     }
