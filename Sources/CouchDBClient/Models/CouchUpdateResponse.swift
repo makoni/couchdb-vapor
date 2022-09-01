@@ -10,10 +10,10 @@ import Foundation
 
 /// Model for insert/update/delete request response.
 public struct CouchUpdateResponse: Codable {
-	/// Operation status
+	/// Operation status.
 	public var ok: Bool
-	/// Document ID
+	/// Document ID.
 	public var id: String
-	/// Revision MVCC token
+	/// Revision MVCC token.
 	public var rev: String
 }

@@ -464,7 +464,7 @@ public class CouchDBClient {
 		doc._id = updateResponse.id
 	}
 
-	/// Insert data in DB by uri.
+	/// Insert data in DB.
 	///
 	/// Examples:
 	///
@@ -496,12 +496,12 @@ public class CouchDBClient {
 	///   - body: Request body data.
 	///   - worker: Worker. New will be created if nil value provided.
 	/// - Returns: Insert request response.
-	public func insert(dbName: String, body: HTTPClient.Body, worker: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
-		try await authIfNeed(worker: worker)
+	public func insert(dbName: String, body: HTTPClient.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
+		try await authIfNeed(worker: eventLoopGroup)
 
 		let httpClient: HTTPClient
-		if let worker = worker {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+		if let eventLoopGroup = eventLoopGroup {
+			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
 			httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
 		}
@@ -570,12 +570,12 @@ public class CouchDBClient {
 	///   - dbName: DB name.
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
 	///   - worker: Worker.
-	public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, worker: EventLoopGroup? = nil ) async throws {
+	public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, eventLoopGroup: EventLoopGroup? = nil ) async throws {
 		let insertEncodeData = try JSONEncoder().encode(doc)
 		let insertResponse = try await insert(
 			dbName: dbName,
 			body: .data(insertEncodeData),
-			worker: worker
+			eventLoopGroup: eventLoopGroup
 		)
 
 		guard insertResponse.ok == true else {
@@ -586,7 +586,7 @@ public class CouchDBClient {
 		doc._id = insertResponse.id
 	}
 
-	/// Delete document from DB by uri.
+	/// Delete document from DB by URI.
 	///
 	/// Examples:
 	///

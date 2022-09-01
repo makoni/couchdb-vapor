@@ -19,8 +19,8 @@ import Foundation
 /// }
 /// ```
 public protocol CouchDBRepresentable {
-	/// Document ID
+	/// Document ID.
 	var _id: String? { get set }
-	/// Document revision
+	/// Revision MVCC token.
 	var _rev: String? { get set }
 }
