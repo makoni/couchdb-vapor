@@ -20,13 +20,13 @@
             }
             
             @Step {
-                Import `CouchDBClient`.
+                Here's an example app.
                 
                 @Code(name: "main.swift", file: macOSTutorial-1.swift)
             }
 			
 			@Step {
-				Import `CouchDBClient` and `NIO`.
+				Import `CouchDBClient`.
 				
 				@Code(name: "main.swift", file: macOSTutorial-2.swift)
 			}

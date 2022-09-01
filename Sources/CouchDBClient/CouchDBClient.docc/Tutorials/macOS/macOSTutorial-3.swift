@@ -1,6 +1,5 @@
 import Foundation
 import CouchDBClient
-import NIO
 
 let couchDBClient = CouchDBClient(
 	couchProtocol: .http,
@@ -11,6 +10,5 @@ let couchDBClient = CouchDBClient(
 )
 
 let dbName = "fortests"
-let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 
 RunLoop.main.run()

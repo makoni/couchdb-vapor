@@ -1,6 +1,5 @@
 import Foundation
 import CouchDBClient
-import NIO
 
 let couchDBClient = CouchDBClient(
 	couchProtocol: .http,
@@ -11,7 +10,6 @@ let couchDBClient = CouchDBClient(
 )
 
 let dbName = "fortests"
-let worker = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 
 struct MyDoc: CouchDBRepresentable, Codable {
 	var _id: String?
@@ -21,14 +19,14 @@ struct MyDoc: CouchDBRepresentable, Codable {
 
 Task {
 	var doc = MyDoc(title: "My Document")
-	try await couchDBClient.insert(dbName: dbName, doc: &doc, worker: worker)
+	try await couchDBClient.insert(dbName: dbName, doc: &doc)
 	print(doc)
 
 	doc.title = "Updated title"
-	try await couchDBClient.update(dbName: dbName, doc: &doc, worker: worker)
+	try await couchDBClient.update(dbName: dbName, doc: &doc)
 	print(doc)
 
-	let docFromDB: MyDoc = try await couchDBClient.get(dbName: dbName, uri: doc._id!, worker: worker)
+	let docFromDB: MyDoc = try await couchDBClient.get(dbName: dbName, uri: doc._id!)
 	print(docFromDB)
 }
 
