@@ -157,26 +157,6 @@ public class CouchDBClient {
 	}
 
 	/// Get data from DB.
-	/// - Parameters:
-	///   - dbName: DB name.
-	///   - uri: URI (view or document id).
-	///   - query: Request query.
-	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Request response.
-	@available(*, deprecated, message: "Use the same method with queryItems param passing [URLQueryItem]")
-	public func get(dbName: String, uri: String, query: [String: String]?, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
-		var queryItems: [URLQueryItem] = []
-		if let queryArray = query {
-			for item in queryArray {
-				queryItems.append(
-					URLQueryItem(name: item.key, value: item.value)
-				)
-			}
-		}
-		return try await get(dbName: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
-	}
-
-	/// Get data from DB.
 	///
 	/// Examples:
 	///
