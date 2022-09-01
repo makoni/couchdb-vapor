@@ -125,12 +125,12 @@ public class CouchDBClient {
 	///
 	/// - Parameter worker: Worker. New will be created if nil value provided.
 	/// - Returns: Array of strings containing DBs names.
-	public func getAllDBs(worker: EventLoopGroup? = nil) async throws -> [String] {
-		try await authIfNeed(worker: worker)
+	public func getAllDBs(eventLoopGroup: EventLoopGroup? = nil) async throws -> [String] {
+		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
         let httpClient: HTTPClient
-        if let worker = worker {
-            httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+        if let eventLoopGroup = eventLoopGroup {
+            httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
         } else {
             httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
         }
@@ -164,7 +164,7 @@ public class CouchDBClient {
 	///   - worker: Worker. New will be created if nil value provided.
 	/// - Returns: Request response.
 	@available(*, deprecated, message: "Use the same method with queryItems param passing [URLQueryItem]")
-	public func get(dbName: String, uri: String, query: [String: String]?, worker: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
+	public func get(dbName: String, uri: String, query: [String: String]?, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
 		var queryItems: [URLQueryItem] = []
 		if let queryArray = query {
 			for item in queryArray {
@@ -173,7 +173,7 @@ public class CouchDBClient {
 				)
 			}
 		}
-		return try await get(dbName: dbName, uri: uri, queryItems: queryItems, worker: worker)
+		return try await get(dbName: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
 	}
 
 	/// Get data from DB.
@@ -233,12 +233,12 @@ public class CouchDBClient {
 	///   - query: Request query items.
 	///   - worker: Worker. New will be created if nil value provided.
 	/// - Returns: Request response.
-	public func get(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, worker: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
-		try await authIfNeed(worker: worker)
+	public func get(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
+		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
 		let httpClient: HTTPClient
-		if let worker = worker {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+		if let eventLoopGroup = eventLoopGroup {
+			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
 			httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
 		}
@@ -284,8 +284,8 @@ public class CouchDBClient {
 	///   - queryItems: Request query items.
 	///   - worker: Worker. New will be created if nil value provided.
 	/// - Returns: An object or a struct (of generic type) parsed from JSON.
-	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, worker: EventLoopGroup? = nil) async throws -> T {
-		let response = try await get(dbName: dbName, uri: uri, queryItems: queryItems, worker: worker)
+	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
+		let response = try await get(dbName: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
 
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
 			throw CouchDBClientError.unknownResponse
@@ -313,9 +313,9 @@ public class CouchDBClient {
     ///   - bodyData: request body as Data
     ///   - worker: Worke. New will be created if nil value provided
     /// - Returns: Update response.
-    public func update(dbName: String, uri: String, bodyData: Data, worker: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
+    public func update(dbName: String, uri: String, bodyData: Data, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
         let requestBody = HTTPClient.Body.data(bodyData)
-        return try await update(dbName: dbName, uri: uri, body: requestBody, worker: worker)
+        return try await update(dbName: dbName, uri: uri, body: requestBody, eventLoopGroup: eventLoopGroup)
     }
 
 
@@ -363,12 +363,12 @@ public class CouchDBClient {
 	///   - body: Request body data. New will be created if nil value provided.
 	///   - worker: Worker. New will be created if nil value provided.
 	/// - Returns: Update response.
-	public func update(dbName: String, uri: String, body: HTTPClient.Body, worker: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
-		try await authIfNeed(worker: worker)
+	public func update(dbName: String, uri: String, body: HTTPClient.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
+		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
 		let httpClient: HTTPClient
-		if let worker = worker {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+		if let eventLoopGroup = eventLoopGroup {
+			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
 			httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
 		}
@@ -441,7 +441,7 @@ public class CouchDBClient {
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` and Codable protocols.
 	///   - worker: Worker. New will be created if nil value provided.
 	/// - Returns: Update response.
-	public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, worker: EventLoopGroup? = nil ) async throws {
+	public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, eventLoopGroup: EventLoopGroup? = nil ) async throws {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard doc._rev?.isEmpty == false else { throw CouchDBClientError.revMissing }
 
@@ -453,7 +453,7 @@ public class CouchDBClient {
 			dbName: dbName,
 			uri: id,
 			body: .data(encodedData),
-			worker: worker
+			eventLoopGroup: eventLoopGroup
 		)
 
 		guard updateResponse.ok == true else {
@@ -497,7 +497,7 @@ public class CouchDBClient {
 	///   - worker: Worker. New will be created if nil value provided.
 	/// - Returns: Insert request response.
 	public func insert(dbName: String, body: HTTPClient.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
-		try await authIfNeed(worker: eventLoopGroup)
+		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
 		let httpClient: HTTPClient
 		if let eventLoopGroup = eventLoopGroup {
@@ -606,10 +606,10 @@ public class CouchDBClient {
 	///   - rev: document revision.
 	///   - worker: Worker. New will be created if nil value provided.
 	/// - Returns: Delete request response.
-	public func delete(fromDb dbName: String, uri: String, rev: String, worker: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
+	public func delete(fromDb dbName: String, uri: String, rev: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		let httpClient: HTTPClient
-		if let worker = worker {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+		if let eventLoopGroup = eventLoopGroup {
+			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
 			httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
 		}
@@ -655,11 +655,11 @@ public class CouchDBClient {
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
 	///   - worker: Worker.
 	/// - Returns: Delete request response.
-	public func delete(fromDb dbName: String, doc: CouchDBRepresentable, worker: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
+	public func delete(fromDb dbName: String, doc: CouchDBRepresentable, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard let rev = doc._rev else { throw CouchDBClientError.revMissing }
 
-		return try await delete(fromDb: dbName, uri: id, rev: rev, worker: worker)
+		return try await delete(fromDb: dbName, uri: id, rev: rev, eventLoopGroup: eventLoopGroup)
 	}
 }
 
@@ -691,15 +691,15 @@ internal extension CouchDBClient {
 	/// - Parameter worker: Worker.
 	/// - Returns: Authorization response.
 	@discardableResult
-	func authIfNeed(worker: EventLoopGroup? = nil) async throws -> CreateSessionResponse? {
+	func authIfNeed(eventLoopGroup: EventLoopGroup? = nil) async throws -> CreateSessionResponse? {
 		// already authorized
 		if let authData = authData {
 			return authData
 		}
 		
         let httpClient: HTTPClient
-        if let worker = worker {
-            httpClient = HTTPClient(eventLoopGroupProvider: .shared(worker))
+        if let eventLoopGroup = eventLoopGroup {
+            httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
         } else {
             httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
         }
