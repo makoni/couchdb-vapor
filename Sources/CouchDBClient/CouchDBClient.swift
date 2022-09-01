@@ -123,7 +123,7 @@ public class CouchDBClient {
 	/// let dbs = try await couchDBClient.getAllDBs()
 	/// ```
 	///
-	/// - Parameter worker: Worker. New will be created if nil value provided.
+	/// - Parameter eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Array of strings containing DBs names.
 	public func getAllDBs(eventLoopGroup: EventLoopGroup? = nil) async throws -> [String] {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
@@ -161,7 +161,7 @@ public class CouchDBClient {
 	///   - dbName: DB name.
 	///   - uri: uri (view or document id).
 	///   - query: request query.
-	///   - worker: Worker. New will be created if nil value provided.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Request response.
 	@available(*, deprecated, message: "Use the same method with queryItems param passing [URLQueryItem]")
 	public func get(dbName: String, uri: String, query: [String: String]?, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
@@ -231,7 +231,7 @@ public class CouchDBClient {
 	///   - dbName: DB name.
 	///   - uri: URI (view or document id).
 	///   - query: Request query items.
-	///   - worker: Worker. New will be created if nil value provided.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Request response.
 	public func get(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
@@ -282,7 +282,7 @@ public class CouchDBClient {
 	///   - dbName: DB name.
 	///   - uri: URI (view or document id).
 	///   - queryItems: Request query items.
-	///   - worker: Worker. New will be created if nil value provided.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: An object or a struct (of generic type) parsed from JSON.
 	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		let response = try await get(dbName: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
@@ -311,13 +311,12 @@ public class CouchDBClient {
     ///   - dbName: DB name
     ///   - uri: uri (view or document id)
     ///   - bodyData: request body as Data
-    ///   - worker: Worke. New will be created if nil value provided
+    ///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
     /// - Returns: Update response.
     public func update(dbName: String, uri: String, bodyData: Data, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
         let requestBody = HTTPClient.Body.data(bodyData)
         return try await update(dbName: dbName, uri: uri, body: requestBody, eventLoopGroup: eventLoopGroup)
     }
-
 
 	/// Update data in DB.
 	///
@@ -335,7 +334,7 @@ public class CouchDBClient {
 	/// Get document by ID and update it:
 	/// ```swift
 	/// // get data from DB by document ID
-	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId", worker: worker)
+	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId")
 	///
 	/// // parse JSON
 	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
@@ -361,7 +360,7 @@ public class CouchDBClient {
 	///   - dbName: DB name.
 	///   - uri: URI (view or document id).
 	///   - body: Request body data. New will be created if nil value provided.
-	///   - worker: Worker. New will be created if nil value provided.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Update response.
 	public func update(dbName: String, uri: String, body: HTTPClient.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
@@ -439,7 +438,7 @@ public class CouchDBClient {
 	/// - Parameters:
 	///   - dbName: DB name. That method will mutate `doc` to update it's `_id` and `_rev` properties from insert request.
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` and Codable protocols.
-	///   - worker: Worker. New will be created if nil value provided.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Update response.
 	public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, eventLoopGroup: EventLoopGroup? = nil ) async throws {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
@@ -494,7 +493,7 @@ public class CouchDBClient {
 	/// - Parameters:
 	///   - dbName: DB name.
 	///   - body: Request body data.
-	///   - worker: Worker. New will be created if nil value provided.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Insert request response.
 	public func insert(dbName: String, body: HTTPClient.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
@@ -569,7 +568,7 @@ public class CouchDBClient {
 	/// - Parameters:
 	///   - dbName: DB name.
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
-	///   - worker: Worker.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, eventLoopGroup: EventLoopGroup? = nil ) async throws {
 		let insertEncodeData = try JSONEncoder().encode(doc)
 		let insertResponse = try await insert(
@@ -591,20 +590,14 @@ public class CouchDBClient {
 	/// Examples:
 	///
 	/// ```swift
-	/// let response = try await couchDBClient.delete(
-	///   fromDb: "databaseName",
-	///   uri: doc._id,
-	///   rev: doc._rev
-	/// )
-	///
-	/// print(response)
+	/// let response = try await couchDBClient.delete(fromDb: "databaseName", uri: doc._id,rev: doc._rev)
 	/// ```
 	/// 
 	/// - Parameters:
 	///   - dbName: DB name.
 	///   - uri: document uri (usually _id).
 	///   - rev: document revision.
-	///   - worker: Worker. New will be created if nil value provided.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Delete request response.
 	public func delete(fromDb dbName: String, uri: String, rev: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		let httpClient: HTTPClient
@@ -642,18 +635,13 @@ public class CouchDBClient {
 	/// Examples:
 	///
 	/// ```swift
-	/// let response = try await couchDBClient.delete(
-	///   fromDb: "databaseName",
-	///   doc: doc
-	/// )
-	///
-	/// print(response)
+	/// let response = try await couchDBClient.delete(fromDb: "databaseName",doc: doc)
 	/// ```
 	///
 	/// - Parameters:
 	///   - dbName: DB name.
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
-	///   - worker: Worker.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Delete request response.
 	public func delete(fromDb dbName: String, doc: CouchDBRepresentable, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
@@ -688,7 +676,7 @@ internal extension CouchDBClient {
 
 	/// Get authorization cookie in didn't yet. This cookie will be added automatically to requests that require authorization.
 	/// API reference: https://docs.couchdb.org/en/stable/api/server/authn.html#session
-	/// - Parameter worker: Worker.
+	/// - Parameter eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Authorization response.
 	@discardableResult
 	func authIfNeed(eventLoopGroup: EventLoopGroup? = nil) async throws -> CreateSessionResponse? {
