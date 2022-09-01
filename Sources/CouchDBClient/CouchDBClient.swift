@@ -10,14 +10,6 @@ import NIO
 import NIOHTTP1
 import AsyncHTTPClient
 
-/// A model that represents errors that CouchDB might return
-public struct CouchDBError: Error, Codable {
-	/// Error message.
-	public let error: String
-	/// Error reason.
-	public let reason: String
-}
-
 /// CouchDB client errors.
 public enum CouchDBClientError: Error {
 	/// **id** property is empty or missing in provided document.
