@@ -159,8 +159,8 @@ public class CouchDBClient {
 	/// Get data from DB.
 	/// - Parameters:
 	///   - dbName: DB name.
-	///   - uri: uri (view or document id).
-	///   - query: request query.
+	///   - uri: URI (view or document id).
+	///   - query: Request query.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Request response.
 	@available(*, deprecated, message: "Use the same method with queryItems param passing [URLQueryItem]")
@@ -184,9 +184,9 @@ public class CouchDBClient {
 	/// ```swift
 	/// // Example struct
 	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
-	///   var name: String
-	///   var _id: String?
-	///   var _rev: String?
+	///     var name: String
+	///     var _id: String?
+	///     var _rev: String?
 	/// }
 	/// ```
 	///
@@ -204,22 +204,22 @@ public class CouchDBClient {
 	/// Define Row and RowsResponse models:
 	/// ```swift
 	/// struct Row: Codable {
-	///   let value: ExpectedDoc
+	///     let value: ExpectedDoc
 	/// }
 	///
 	/// struct RowsResponse: Codable {
-	///   let total_rows: Int
-	///   let offset: Int
-	///   let rows: [Row]
+	///     let total_rows: Int
+	///     let offset: Int
+	///     let rows: [Row]
 	/// }
 	/// ```
 	///
 	/// Get data and parse RowsResponse:
 	/// ```swift
 	/// let response = try await couchDBClient.get(
-	///   dbName: "databaseName",
-	///   uri: "_design/all/_view/by_url",
-	///   query: ["key": "\"\(url)\""]
+	///     dbName: "databaseName",
+	///     uri: "_design/all/_view/by_url",
+	///     query: ["key": "\"\(url)\""]
 	/// )
 	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
 	/// let decodedResponse = try JSONDecoder().decode(RowsResponse.self, from: data)
@@ -260,15 +260,15 @@ public class CouchDBClient {
 
 	/// Get a document from DB. It will parse JSON using provided generic type. Check an example in Discussion.
 	///
-	/// Examples:
+	/// Example:
 	///
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
 	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
-	///   var name: String
-	///   var _id: String?
-	///   var _rev: String?
+	///     var name: String
+	///     var _id: String?
+	///     var _rev: String?
 	/// }
 	/// ```
 	///
@@ -305,18 +305,6 @@ public class CouchDBClient {
 			throw parsingError
 		}
 	}
-    /// Update data in DB
-    ///
-    /// - Parameters:
-    ///   - dbName: DB name
-    ///   - uri: uri (view or document id)
-    ///   - bodyData: request body as Data
-    ///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-    /// - Returns: Update response.
-    public func update(dbName: String, uri: String, bodyData: Data, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
-        let requestBody = HTTPClient.Body.data(bodyData)
-        return try await update(dbName: dbName, uri: uri, body: requestBody, eventLoopGroup: eventLoopGroup)
-    }
 
 	/// Update data in DB.
 	///
@@ -326,9 +314,9 @@ public class CouchDBClient {
 	/// ```swift
 	/// // Example struct
 	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
-	///   var name: String
-	///   var _id: String?
-	///   var _rev: String?
+	///     var name: String
+	///     var _id: String?
+	///     var _rev: String?
 	/// }
 	/// ```
 	/// Get document by ID and update it:
@@ -347,9 +335,9 @@ public class CouchDBClient {
 	/// let data = try encoder.encode(updatedData)
 	/// 
 	/// let response = try await couchDBClient.update(
-	///   dbName: testsDB,
-	///   uri: doc._id!,
-	///   body: .data(data)
+	///     dbName: testsDB,
+	///     uri: doc._id!,
+	///     body: .data(data)
 	/// )
 	///
 	/// print(response)
@@ -413,9 +401,9 @@ public class CouchDBClient {
 	/// ```swift
 	/// // Example struct
 	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
-	///   var name: String
-	///   var _id: String?
-	///   var _rev: String?
+	///     var name: String
+	///     var _id: String?
+	///     var _rev: String?
 	/// }
 	/// ```
 	/// Get document by ID and update it:
@@ -428,8 +416,8 @@ public class CouchDBClient {
 	/// doc.name = "Updated name"
 	///
 	/// try await couchDBClient.update(
-	///   dbName: testsDB,
-	///   doc: &doc
+	///     dbName: testsDB,
+	///     doc: &doc
 	/// )
 	///
 	/// print(doc) // doc will have updated name and _rev values now
@@ -471,9 +459,9 @@ public class CouchDBClient {
 	/// ```swift
 	/// // Example struct
 	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
-	///   var name: String
-	///   var _id: String?
-	///   var _rev: String?
+	///     var name: String
+	///     var _id: String?
+	///     var _rev: String?
 	/// }
 	/// ```
 	///
@@ -483,8 +471,8 @@ public class CouchDBClient {
 	/// let data = try JSONEncoder().encode(testData)
 	///
 	/// let response = try await couchDBClient.insert(
-	///   dbName: "databaseName",
-	///   body: .data(data)
+	///     dbName: "databaseName",
+	///     body: .data(data)
 	/// )
 	///
 	/// print(response)
@@ -547,9 +535,9 @@ public class CouchDBClient {
 	/// ```swift
 	/// // Example struct
 	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
-	///   var name: String
-	///   var _id: String?
-	///   var _rev: String?
+	///     var name: String
+	///     var _id: String?
+	///     var _rev: String?
 	/// }
 	/// ```
 	///
@@ -558,8 +546,8 @@ public class CouchDBClient {
 	/// var testDoc = ExpectedDoc(name: "My name")
 	///
 	/// try await couchDBClient.insert(
-	///   dbName: "databaseName",
-	///   doc: &testDoc
+	///     dbName: "databaseName",
+	///     doc: &testDoc
 	/// )
 	///
 	/// print(testDoc) // testDoc has _id and _rev values now
