@@ -14,7 +14,7 @@
 		
 		@Steps {
 			@Step {
-				`CouchDBClient` has an Error enum called ``CouchDBClientError``. Some of enum values has nested error of ``CouchDBError`` type that represents error messages from CouchDB.
+				`CouchDBClient` has an Error enum `CouchDBClientError`. Some of enum values has nested error of `CouchDBError` type that represents error messages from CouchDB.
 				
 				@Code(name: "main.swift", file: ErrorsHandlingTutorial-1.swift)
 			}
