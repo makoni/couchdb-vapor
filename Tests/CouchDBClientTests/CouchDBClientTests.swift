@@ -13,7 +13,7 @@ final class CouchDBClientTests: XCTestCase {
 	}
 	
 	let testsDB = "fortests"
-	#warning("set your admin password if need")
+
 	let c1 = CouchDBClient()
 	let couchDBClient = CouchDBClient(
 		couchProtocol: .http,
