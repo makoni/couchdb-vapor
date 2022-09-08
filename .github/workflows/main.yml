@@ -3,22 +3,22 @@ name: Build on macOS and Ubuntu latest
 on: [push]
 
 jobs:
-  macOS:
-    name: Build on macOS-latest
-    runs-on: macOS-latest
-        
-    steps:
-    - name: Print Swift version
-      run: swift --version
-      
-    - name: Checkout
-      uses: actions/checkout@master
-
-    - name: Swift build
-      run: swift build -c release
-            
-    - name: Done
-      run: echo Done
+#  macOS:
+#    name: Build on macOS-latest
+#    runs-on: macOS-latest
+#        
+#    steps:
+#    - name: Print Swift version
+#      run: swift --version
+#      
+#    - name: Checkout
+#      uses: actions/checkout@master
+#
+#    - name: Swift build
+#      run: swift build -c release
+#            
+#    - name: Done
+#      run: echo Done
       
   ubuntu:
     name: Build on ubuntu-latest
