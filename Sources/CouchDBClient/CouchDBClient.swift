@@ -603,7 +603,7 @@ public class CouchDBClient {
 	/// Examples:
 	///
 	/// ```swift
-	/// let response = try await couchDBClient.delete(fromDb: "databaseName",doc: doc)
+	/// let response = try await couchDBClient.delete(fromDb: "databaseName", doc: doc)
 	/// ```
 	///
 	/// - Parameters:
