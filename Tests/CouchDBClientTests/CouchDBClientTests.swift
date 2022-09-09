@@ -20,7 +20,7 @@ final class CouchDBClientTests: XCTestCase {
 		couchHost: "127.0.0.1",
 		couchPort: 5984,
 		userName: "admin",
-		userPassword: ""
+		userPassword: ProcessInfo.processInfo.environment["COUCHDB_PASS"] ?? ""
 	)
 	
 	
