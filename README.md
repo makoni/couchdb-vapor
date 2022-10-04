@@ -8,7 +8,7 @@
 
 [![Platforms](https://img.shields.io/badge/platforms-macOS%2010.15%20|%20Ubuntu%20|%20iOS%2013-ff0000.svg?style=flat)](https://github.com/makoni/couchdb-vapor)
 [![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://swift.org/package-manager/)
-[![Swift 5](https://img.shields.io/badge/swift-5.5-orange.svg?style=flat)](http://swift.org)
+[![Swift 5](https://img.shields.io/badge/swift-5.6-orange.svg?style=flat)](http://swift.org)
 [![Vapor 3](https://img.shields.io/badge/vapor-4.50.0-blue.svg?style=flat)](https://vapor.codes)
 
 
