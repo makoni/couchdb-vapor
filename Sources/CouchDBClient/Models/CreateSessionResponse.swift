@@ -9,7 +9,7 @@ import Foundation
 
 /// Resonse model for create session request
 struct CreateSessionResponse: Codable {
-	var ok: Bool?
+	var ok: Bool
 	var name: String?
 	var roles: [String]?
 	
@@ -21,10 +21,10 @@ struct CreateSessionResponse: Codable {
 }
 
 extension CreateSessionResponse {
-	public init(from decoder: Decoder) throws {
+	init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		
-		let ok = try container.decodeIfPresent(Bool.self, forKey: .ok)
+		let ok = try container.decodeIfPresent(Bool.self, forKey: .ok) ?? false
 		let name = try container.decodeIfPresent(String.self, forKey: .name)
 		let roles = try container.decodeIfPresent([String].self, forKey: .roles)
 		

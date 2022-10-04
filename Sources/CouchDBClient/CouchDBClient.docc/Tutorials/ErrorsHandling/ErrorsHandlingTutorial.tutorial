@@ -1,0 +1,41 @@
+@Tutorial(time: 3) {
+	@Intro(title: "Handling CouchDB errors") {
+		Use CouchDBClient in macOS app
+		
+		@Image(source: chapter1.png, alt: "Application icon")
+	}
+	
+	@Section(title: "Use CouchDBClient in macOS app") {
+		@ContentAndMedia {
+			Use CouchDBClient in macOS app
+			
+			@Image(source: chapter1.png, alt: "Application icon")
+		}
+		
+		@Steps {
+			@Step {
+				`CouchDBClient` has an Error enum `CouchDBClientError`. Some of enum values has nested error of `CouchDBError` type that represents error messages from CouchDB.
+				
+				@Code(name: "main.swift", file: ErrorsHandlingTutorial-1.swift)
+			}
+			
+			@Step {
+				You can wrap your code in do-catch block to catch a CouchDB error during insert operation.
+				
+				@Code(name: "main.swift", file: ErrorsHandlingTutorial-2.swift)
+			}
+			
+			@Step {
+				Same for update to find out what's wrong.
+				
+				@Code(name: "main.swift", file: ErrorsHandlingTutorial-3.swift)
+			}
+			
+			@Step {
+				And same for get operation. CouchDB will return an error message if username or password is incorrect for example. 
+				
+				@Code(name: "main.swift", file: ErrorsHandlingTutorial-4.swift)
+			}
+		}
+	}
+}

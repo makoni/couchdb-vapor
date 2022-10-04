@@ -1,0 +1,77 @@
+@Tutorial(time: 10) {
+    @Intro(title: "Using in macOS app") {
+		Learn how to use CouchDBClient in your macOS app
+        
+		@Image(source: chapter1.png, alt: "Application icon")
+    }
+    
+    @Section(title: "Initializaton") {
+        @ContentAndMedia {
+			Adding CouchDBClient in your project.
+            
+            @Image(source: chapter1.png, alt: "Application icon")
+        }
+        
+        @Steps {
+            @Step {
+				Add `CouchDBClient` as a Swift Package dependency.
+                
+                @Image(source: macOSTutorial-1.png, alt: "Add CouchDBClient as a Swift Package dependency.")
+            }
+            
+            @Step {
+                Here's an example app.
+                
+                @Code(name: "main.swift", file: macOSTutorial-1.swift)
+            }
+			
+			@Step {
+				Import `CouchDBClient`.
+				
+				@Code(name: "main.swift", file: macOSTutorial-2.swift)
+			}
+			
+			@Step {
+				Create a CouchDBClient object, define database name and create a worker to perform requests.
+				
+				@Code(name: "main.swift", file: macOSTutorial-3.swift)
+			}
+			
+			@Step {
+				Define a model for your CouchDB document. It should confirm to `Codable` and `CouchDBRepresentable` protocols.
+				
+				@Code(name: "main.swift", file: macOSTutorial-4.swift)
+			}
+			
+			@Step {
+				Insert a document into your database. After inserting CouchDBClient will update `_id` and `_rev` values of your document with the values from CouchDB. 
+				
+				@Code(name: "main.swift", file: macOSTutorial-5.swift)
+			}
+			
+			@Step {
+				Here's an example of updating the document. CouchDBClient will also update `_rev` value of your document with the value from CouchDB after saving. 
+				
+				@Code(name: "main.swift", file: macOSTutorial-6.swift)
+			}
+			
+			@Step {
+				Getting document by it's `_id` from DB with that method will parse JSON into your model if you'll provide it as a generic type. 
+				
+				@Code(name: "main.swift", file: macOSTutorial-7.swift)
+			}
+			
+			@Step {
+				Deleting a document from DB is also easy. 
+				
+				@Code(name: "main.swift", file: macOSTutorial-8.swift)
+			}
+			
+			@Step {
+				More examples can be found in CouchDBClientTests.swift in the lib sources. 
+				
+				@Image(source: macOSTutorial-2.png, alt: "Add CouchDBClient as a Swift Package dependency.")
+			}
+        }
+    }
+}
