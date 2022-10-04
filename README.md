@@ -1,4 +1,4 @@
-# CouchDB Client for Vapor
+# CouchDB Client
 
 <p align="center">
 	<a href="https://github.com/makoni/couchdb-vapor">
