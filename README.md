@@ -6,7 +6,7 @@
     </a>
 </p>
 
-[![Platforms](https://img.shields.io/badge/platforms-macOS%2010.15%20|%20Ubuntu%20|%20iOS%2013-ff0000.svg?style=flat)](https://github.com/makoni/couchdb-vapor)
+[![Platforms](https://img.shields.io/badge/platforms-macOS%2012%20|%20Ubuntu%20|%20iOS%2015-ff0000.svg?style=flat)](https://github.com/makoni/couchdb-vapor)
 [![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://swift.org/package-manager/)
 [![Swift 5](https://img.shields.io/badge/swift-5.5-orange.svg?style=flat)](http://swift.org)
 [![Vapor 3](https://img.shields.io/badge/vapor-4.50.0-blue.svg?style=flat)](https://vapor.codes)
@@ -14,15 +14,11 @@
 
 
 This is simple lib to work with CouchDB in Swift.
-- Latest version is based on async/await and requires Swift 5.6 and newer. Works with Vapor 4.50 and newer.
+- Latest version is based on async/await and requires Swift 5.5 and newer. Works with Vapor 4.50 and newer.
 - Version 1.0.0 can be used with Vapor 4 without async/await. Swift 5.3 is required
 - You can use old version for Vapor 3 from vapor3 branch or using version < 1.0.0. 
 
 The only depndency for this lib is <a href="https://github.com/swift-server/async-http-client">async-http-client</a>
-
-## Documentaion
-
-You can find docs, examples and even tutorials [here](https://spaceinbox.me/docs/couchdbclient/documentation/couchdbclient). 
 
 ## Installation
 
@@ -30,102 +26,98 @@ You can find docs, examples and even tutorials [here](https://spaceinbox.me/docs
 
 Add to the `dependencies` value of your `Package.swift`.
 
+#### Swift 5
+
 ```swift
 dependencies: [
-    .package(url: "https://github.com/makoni/couchdb-vapor.git", from: "1.2.0"),
+    .package(url: "https://github.com/makoni/couchdb-vapor.git", from: "1.1.0"),
 ]
 ```
 
-## Initialization
+## Usage
+
+Get data In Vapor 4 routes:
 
 ```swift
-// use default params
-let myClient = CouchDBClient()
+// using default settings
+let couchDBClient = CouchDBClient()
+// providing settings
+let couchDBClient2 = CouchDBClient(couchProtocol: .http, couchHost: "127.0.0.1", couchPort: 5984, userName: "username", userPassword: "userpass")
 
-// provide your own params
-let couchDBClient = CouchDBClient(
-    couchProtocol: .http,
-    couchHost: "127.0.0.1",
-    couchPort: 5984,
-    userName: "admin",
-    userPassword: "myPassword"
-)
-```
-
-If you don’t want to have your password in the code you can pass COUCHDB_PASS param in you command line. For example you can run your Server Side Swift project:
-```bash
-COUCHDB_PASS=myPassword /path/.build/x86_64-unknown-linux-gnu/release/Run
-```
-Just use initializer without userPassword param:
-
-```swift
-let couchDBClient = CouchDBClient(
-    couchProtocol: .http,
-    couchHost: "127.0.0.1",
-    couchPort: 5984,
-    userName: "admin"
-)
-```
-
-## Usage examples
-
-Define your document model:
-
-```swift
-// Example struct
-struct ExpectedDoc: CouchDBRepresentable, Codable {
+// Sample document model
+struct ExpectedDoc: Codable {
     var name: String
-    var _id: String?
-    var _rev: String?
+    var _id: String
+    var _rev: String
+}
+
+// Sample view data
+struct PageData: Content {
+    let title: String
+}
+
+func routes(_ app: Application) throws {
+    app.get(":docId") { req async throws -> View in
+        let docId = req.parameters.get("docId")!
+
+        let couchResponse = try await couchDBClient.get(dbName: "yourDBname", uri: docId, worker: req.eventLoop)
+
+        guard let body = response.body, let bytes = body.readBytes(length: body.readableBytes) else { throw Abort(.notFound) }
+
+        let data = Data(bytes)		
+        let doc = try JSONDecoder().decode(ExpectedDoc.self, from: data)
+
+        let pageData = PageData(
+            title: doc.name
+        )
+	
+        return try await req.view().render("view-name", pageData)
+    }
 }
 ```
 
-### Insert data
+Insert data example:
+
 ```swift
-var testDoc = ExpectedDoc(name: "My name")
+let testData = [name: "some name"]
 
-try await couchDBClient.insert(
-    dbName: "databaseName",
-    doc: &testDoc
-)
+let data = try JSONEncoder().encode(testData)
 
-print(testDoc) // testDoc has _id and _rev values now
+let response = try await couchDBClient.insert(dbName: "yourDBname", body: HTTPBody(data: data), worker: req.eventLoop)
+print(response)
+// prints: CouchDBClient.CouchUpdateResponse(ok: true, id: "0a1eea865fdec7a00afb96685001c7be", rev: "1-e6bde9e60844ba5648cc61b446f9f4b3"))
 ```
 
-### Update data
+Update data example:
 
 ```swift
-// get data from DB by document ID
-var doc: ExpectedDoc = try await couchDBClient.get(dbName: "databaseName", uri: "documentId")
-print(doc)
+let updatedData = ExpectedDoc(name: "some new name", _id: "0a1eea865fdec7a00afb96685001c7be", _rev: "1-e6bde9e60844ba5648cc61b446f9f4b3")
 
-// Update value
-doc.name = "Updated name"
+let data = try JSONEncoder().encode(testData)
 
-try await couchDBClient.update(
-    dbName: testsDB,
-    doc: &doc
-)
-
-print(doc) // doc will have updated name and _rev values now
+let response = try await couchDBClient.update(dbName: "yourDBname", uri: updatedData._id, body: HTTPBody(data: data), worker: req.eventLoop)
+print(response)
+// prints: CouchDBClient.CouchUpdateResponse(ok: true, id: "0a1eea865fdec7a00afb96685001c7be", rev: "1-e6bde9e60844ba5648cc61b446f9f4b4"))
 ```
 
 Delete data example:
 
 ```swift
-let response = try await couchDBClient.delete(fromDb: "databaseName", doc: doc)
-// or by uri
-let response = try await couchDBClient.delete(fromDb: "databaseName", uri: doc._id,rev: doc._rev)
+let updatedData = ExpectedDoc(name: "some new name", _id: "0a1eea865fdec7a00afb96685001c7be", _rev: "1-e6bde9e60844ba5648cc61b446f9f4b4")
+
+let data = try JSONEncoder().encode(testData)
+
+let response = try await couchDBClient.delete(fromDb: "yourDBname", uri: updatedData._id, rev: updatedData._rev, worker: req.eventLoop)
+print(response)
+// prints: CouchDBClient.CouchUpdateResponse(ok: true, id: "0a1eea865fdec7a00afb96685001c7be", rev: "1-e6bde9e60844ba5648cc61b446f9f4b5"))
 ```
 
 Get all DBs example:
 
 ```swift
-let dbs = try await couchDBClient.getAllDBs()
+
+let dbs = try await couchDBClient.getAllDBs(worker: req.eventLoop)
+
 print(dbs)
 // prints: ["_global_changes", "_replicator", "_users", "yourDBname"]
 ```
-
-### Using with Vapor
-Here's a simple [tutorial](https://spaceinbox.me/docs/couchdbclient/tutorials/couchdbclient/vaportutorial) for Vapor.
-
