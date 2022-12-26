@@ -24,6 +24,9 @@ public enum CouchDBClientError: Error {
 	case updateError(error: CouchDBError)
 	/// Uknown response from CouchDB.
 	case unknownResponse
+	/// Wrong username or password.
+	case unauthorized
+}
 }
 
 /// A CouchDB client class with methods using Swift Concurrency.
@@ -148,6 +151,10 @@ public class CouchDBClient {
 			.execute(request: request)
 			.get()
 
+		if response.status == .unauthorized {
+			throw CouchDBClientError.unauthorized
+		}
+
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
 			throw CouchDBClientError.unknownResponse
 		}
@@ -231,10 +238,15 @@ public class CouchDBClient {
 
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: queryItems ?? [])
 		let request = try buildRequest(fromUrl: url, withMethod: .GET)
-
-		return try await httpClient
+		let response = try await httpClient
 			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
 			.get()
+
+		if response.status == .unauthorized {
+			throw CouchDBClientError.unauthorized
+		}
+
+		return response
 	}
 
 
@@ -266,6 +278,10 @@ public class CouchDBClient {
 	/// - Returns: An object or a struct (of generic type) parsed from JSON.
 	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		let response = try await get(dbName: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
+
+		if response.status == .unauthorized {
+			throw CouchDBClientError.unauthorized
+		}
 
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
 			throw CouchDBClientError.unknownResponse
@@ -353,6 +369,10 @@ public class CouchDBClient {
 		let response = try await httpClient
 			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
 			.get()
+
+		if response.status == .unauthorized {
+			throw CouchDBClientError.unauthorized
+		}
 		
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
 			throw CouchDBClientError.unknownResponse
@@ -487,6 +507,10 @@ public class CouchDBClient {
 		let response = try await httpClient
 			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
 			.get()
+
+		if response.status == .unauthorized {
+			throw CouchDBClientError.unauthorized
+		}
 		
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
 			throw CouchDBClientError.unknownResponse
@@ -590,6 +614,10 @@ public class CouchDBClient {
 			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
 			.get()
 
+		if response.status == .unauthorized {
+			throw CouchDBClientError.unauthorized
+		}
+
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
 			return CouchUpdateResponse(ok: false, id: "", rev: "")
 		}
@@ -676,6 +704,10 @@ internal extension CouchDBClient {
 		let response = try await httpClient
 			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
 			.get()
+
+		if response.status == .unauthorized {
+			throw CouchDBClientError.unauthorized
+		}
 
 		var cookie = ""
 		response.headers.forEach { (header: (name: String, value: String)) in
