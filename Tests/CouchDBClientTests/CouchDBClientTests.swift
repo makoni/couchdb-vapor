@@ -27,6 +27,15 @@ final class CouchDBClientTests: XCTestCase {
 	override func setUp() {
 		super.setUp()
 	}
+
+    func testDBExists() async throws {
+        do {
+            let exists = try await couchDBClient.dbExists(testsDB)
+            XCTAssertTrue(exists)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
 	
 	func testGetAllDbs() async throws {
 		do {

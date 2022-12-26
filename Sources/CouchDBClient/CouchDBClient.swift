@@ -183,6 +183,47 @@ public class CouchDBClient {
 		return try JSONDecoder().decode([String].self, from: data)
 	}
 
+	/// Check if DB exists
+	///
+	/// Example:
+	///
+	/// ```swift
+	/// let exists = try await couchDBClient.dbExists("myDBName")
+	/// ```
+	///
+	/// - Parameters:
+	///   - dbName: DB name.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
+	/// - Returns: True or false.
+	public func dbExists(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> Bool {
+		try await authIfNeed(eventLoopGroup: eventLoopGroup)
+
+		let httpClient: HTTPClient
+		if let eventLoopGroup = eventLoopGroup {
+			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
+		} else {
+			httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+		}
+
+		defer {
+			DispatchQueue.main.async {
+				try? httpClient.syncShutdown()
+			}
+		}
+
+		let url = buildUrl(path: "/" + dbName)
+		let request = try buildRequest(fromUrl: url, withMethod: .HEAD)
+		let response = try await httpClient
+			.execute(request: request)
+			.get()
+
+		if response.status == .unauthorized {
+			throw CouchDBClientError.unauthorized
+		}
+
+		return response.status == .ok
+	}
+
 	/// Get data from DB.
 	///
 	/// Examples:
