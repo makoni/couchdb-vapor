@@ -27,6 +27,26 @@ public enum CouchDBClientError: Error {
 	/// Wrong username or password.
 	case unauthorized
 }
+
+extension CouchDBClientError: LocalizedError {
+	public var errorDescription: String? {
+		switch self {
+		case .idMissing:
+			return "id property is empty or missing in provided document."
+		case .revMissing:
+			return "_rev property is empty or missing in provided document."
+		case .getError(let error):
+			return "Get request wasn't successful: \(error.localizedDescription)"
+		case .insertError(let error):
+			return "Insert request wasn't successful: \(error.localizedDescription)"
+		case .updateError(let error):
+			return "Update request wasn't successful: \(error.localizedDescription)"
+		case .unknownResponse:
+			return "Uknown response from CouchDB."
+		case .unauthorized:
+			return "Wrong username or password."
+		}
+	}
 }
 
 /// A CouchDB client class with methods using Swift Concurrency.
