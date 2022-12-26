@@ -11,6 +11,9 @@ CouchDBClient allows you to make simple requests to CouchDB. It's using Swift Co
 It's using [AsyncHTTPClient](https://github.com/swift-server/async-http-client) which makes it easy to use CouchDBClient for  server-side development with Vapor 4.
 
 Currently CouchDBClient supports:
+- Check if DB exists.
+- Create DB.
+- Delete DB.
 - Get databases list.
 - Get document by id or documents using view.
 - Insert/update documents.
