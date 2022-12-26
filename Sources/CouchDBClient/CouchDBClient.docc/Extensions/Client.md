@@ -11,13 +11,13 @@ A CouchDB client class with methods using Swift Concurrency.
 ### Initializer
 - ``init(couchProtocol:couchHost:couchPort:userName:userPassword:)``
 
-### Getting list of databases
+### Methods for databases
 - ``getAllDBs(eventLoopGroup:)``
-
-### Requests to a database
 - ``createDB(_:eventLoopGroup:)``
 - ``deleteDB(_:eventLoopGroup:)``
 - ``dbExists(_:eventLoopGroup:)``
+
+### Requests to a database
 - ``get(dbName:uri:queryItems:eventLoopGroup:)-2fzuv``
 - ``get(dbName:uri:queryItems:eventLoopGroup:)-53osp``
 - ``insert(dbName:doc:eventLoopGroup:)``
