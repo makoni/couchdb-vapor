@@ -23,12 +23,33 @@ final class CouchDBClientTests: XCTestCase {
 		userPassword: ProcessInfo.processInfo.environment["COUCHDB_PASS"] ?? ""
 	)
 	
-	
-	override func setUp() {
-		super.setUp()
+	override func setUp() async throws {
+        try await super.setUp()
 	}
+
+    func test0_CreateDB() async throws {
+        do {
+            let exists = try await couchDBClient.dbExists(testsDB)
+            if exists {
+                try await couchDBClient.deleteDB(testsDB)
+            }
+
+            try await couchDBClient.createDB(testsDB)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
+
+    func test1_DBExists() async throws {
+        do {
+            let exists = try await couchDBClient.dbExists(testsDB)
+            XCTAssertTrue(exists)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
 	
-	func testGetAllDbs() async throws {
+	func test3_GetAllDbs() async throws {
 		do {
 			let dbs = try await couchDBClient.getAllDBs()
 
@@ -40,7 +61,7 @@ final class CouchDBClientTests: XCTestCase {
 		}
 	}
 
-	func test_updateAndDeleteDocMethods() async throws {
+	func test4_updateAndDeleteDocMethods() async throws {
 		var testDoc = ExpectedDoc(name: "test name")
 		var expectedInsertId: String = ""
 		var expectedInsertRev: String = ""
@@ -120,7 +141,7 @@ final class CouchDBClientTests: XCTestCase {
 		}
 	}
 	
-	func testInsertGetUpdateDelete() async throws {
+	func test5_InsertGetUpdateDelete() async throws {
 		var testDoc = ExpectedDoc(name: "test name")
 		var expectedInsertId: String = ""
 		var expectedInsertRev: String = ""
@@ -207,7 +228,7 @@ final class CouchDBClientTests: XCTestCase {
 		}
 	}
 	
-	func testBuildUrl() {
+	func test6_BuildUrl() {
 		let expectedUrl = "http://127.0.0.1:5984?key=testKey"
 		let url = couchDBClient.buildUrl(path: "", query: [
 			URLQueryItem(name: "key", value: "testKey")
@@ -215,9 +236,17 @@ final class CouchDBClientTests: XCTestCase {
 		XCTAssertEqual(url, expectedUrl)
 	}
 
-	func testAuth() async throws {
+	func test7_Auth() async throws {
 		let session: CreateSessionResponse? = try await couchDBClient.authIfNeed()
 		XCTAssertNotNil(session)
 		XCTAssertEqual(true, session?.ok)
 	}
+
+    func test99_CreateDB() async throws {
+        do {
+            try await couchDBClient.deleteDB(testsDB)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
 }

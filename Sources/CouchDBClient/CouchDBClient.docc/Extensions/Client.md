@@ -15,6 +15,9 @@ A CouchDB client class with methods using Swift Concurrency.
 - ``getAllDBs(eventLoopGroup:)``
 
 ### Requests to a database
+- ``createDB(_:eventLoopGroup:)``
+- ``deleteDB(_:eventLoopGroup:)``
+- ``dbExists(_:eventLoopGroup:)``
 - ``get(dbName:uri:queryItems:eventLoopGroup:)-2fzuv``
 - ``get(dbName:uri:queryItems:eventLoopGroup:)-53osp``
 - ``insert(dbName:doc:eventLoopGroup:)``
