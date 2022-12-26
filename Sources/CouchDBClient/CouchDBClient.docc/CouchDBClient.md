@@ -12,6 +12,8 @@ It's using [AsyncHTTPClient](https://github.com/swift-server/async-http-client) 
 
 Currently CouchDBClient supports:
 - Check if DB exists.
+- Create DB.
+- Delete DB.
 - Get databases list.
 - Get document by id or documents using view.
 - Insert/update documents.

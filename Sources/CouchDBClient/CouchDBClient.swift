@@ -224,6 +224,122 @@ public class CouchDBClient {
 		return response.status == .ok
 	}
 
+    /// Create DB.
+    ///
+    ///  Example:
+    /// ```swift
+    /// try await couchDBClient.deleteDB("myDBName")
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - dbName: DB name.
+    ///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
+    /// - Returns: Request response.
+    @discardableResult public func createDB(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> UpdateDBResponse {
+		try await authIfNeed(eventLoopGroup: eventLoopGroup)
+
+		let httpClient: HTTPClient
+		if let eventLoopGroup = eventLoopGroup {
+			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
+		} else {
+			httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+		}
+
+		defer {
+			DispatchQueue.main.async {
+				try? httpClient.syncShutdown()
+			}
+		}
+
+		let url = buildUrl(path: "/\(dbName)")
+
+		let request = try self.buildRequest(fromUrl: url, withMethod: .PUT)
+
+		let response = try await httpClient
+			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
+			.get()
+
+		if response.status == .unauthorized {
+			throw CouchDBClientError.unauthorized
+		}
+
+		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
+			throw CouchDBClientError.unknownResponse
+		}
+
+		let data = Data(bytes)
+		let decoder = JSONDecoder()
+		decoder.dateDecodingStrategy = .secondsSince1970
+
+		do {
+			let decodedResponse = try decoder.decode(UpdateDBResponse.self, from: data)
+			return decodedResponse
+		} catch let parsingError {
+			if let couchdbError = try? decoder.decode(CouchDBError.self, from: data) {
+				throw CouchDBClientError.insertError(error: couchdbError)
+			}
+			throw parsingError
+		}
+	}
+
+    /// Delete DB.
+    ///
+    /// Example:
+    /// ```swift
+    /// try await couchDBClient.deleteDB("myDBName")
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - dbName: DB name.
+    ///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
+    /// - Returns: Request response.
+    @discardableResult public func deleteDB(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> UpdateDBResponse {
+        try await authIfNeed(eventLoopGroup: eventLoopGroup)
+
+        let httpClient: HTTPClient
+        if let eventLoopGroup = eventLoopGroup {
+            httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
+        } else {
+            httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+        }
+
+        defer {
+            DispatchQueue.main.async {
+                try? httpClient.syncShutdown()
+            }
+        }
+
+        let url = buildUrl(path: "/\(dbName)")
+
+        let request = try self.buildRequest(fromUrl: url, withMethod: .DELETE)
+
+        let response = try await httpClient
+            .execute(request: request, deadline: .now() + .seconds(requestsTimeout))
+            .get()
+
+        if response.status == .unauthorized {
+            throw CouchDBClientError.unauthorized
+        }
+
+        guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
+            throw CouchDBClientError.unknownResponse
+        }
+
+        let data = Data(bytes)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+
+        do {
+            let decodedResponse = try decoder.decode(UpdateDBResponse.self, from: data)
+            return decodedResponse
+        } catch let parsingError {
+            if let couchdbError = try? decoder.decode(CouchDBError.self, from: data) {
+                throw CouchDBClientError.insertError(error: couchdbError)
+            }
+            throw parsingError
+        }
+    }
+
 	/// Get data from DB.
 	///
 	/// Examples:
