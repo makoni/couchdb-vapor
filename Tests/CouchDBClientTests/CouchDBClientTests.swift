@@ -242,7 +242,7 @@ final class CouchDBClientTests: XCTestCase {
 		XCTAssertEqual(true, session?.ok)
 	}
 
-    func test99_CreateDB() async throws {
+    func test99_deleteDB() async throws {
         do {
             try await couchDBClient.deleteDB(testsDB)
         } catch {

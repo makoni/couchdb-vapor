@@ -269,7 +269,6 @@ public class CouchDBClient {
 
 		let data = Data(bytes)
 		let decoder = JSONDecoder()
-		decoder.dateDecodingStrategy = .secondsSince1970
 
 		do {
 			let decodedResponse = try decoder.decode(UpdateDBResponse.self, from: data)
@@ -327,7 +326,6 @@ public class CouchDBClient {
 
         let data = Data(bytes)
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
 
         do {
             let decodedResponse = try decoder.decode(UpdateDBResponse.self, from: data)
@@ -453,7 +451,7 @@ public class CouchDBClient {
 	///   - queryItems: Request query items.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: An object or a struct (of generic type) parsed from JSON.
-	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
+    public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		let response = try await get(dbName: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
 
 		if response.status == .unauthorized {
@@ -466,7 +464,7 @@ public class CouchDBClient {
 
 		let data = Data(bytes)
 		let decoder = JSONDecoder()
-		decoder.dateDecodingStrategy = .secondsSince1970
+		decoder.dateDecodingStrategy = dateDecodingStrategy
 
 		do {
 			let doc = try decoder.decode(T.self, from: data)
@@ -557,7 +555,6 @@ public class CouchDBClient {
 
 		let data = Data(bytes)
 		let decoder = JSONDecoder()
-		decoder.dateDecodingStrategy = .secondsSince1970
 
 		do {
 			let decodedResponse = try decoder.decode(CouchUpdateResponse.self, from: data)
@@ -605,12 +602,12 @@ public class CouchDBClient {
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` and Codable protocols.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Update response.
-	public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, eventLoopGroup: EventLoopGroup? = nil ) async throws {
+    public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard doc._rev?.isEmpty == false else { throw CouchDBClientError.revMissing }
 
 		let encoder = JSONEncoder()
-		encoder.dateEncodingStrategy = .secondsSince1970
+		encoder.dateEncodingStrategy = dateEncodingStrategy
 		let encodedData = try JSONEncoder().encode(doc)
 
 		let updateResponse = try await update(
@@ -695,7 +692,6 @@ public class CouchDBClient {
 
 		let data = Data(bytes)
 		let decoder = JSONDecoder()
-		decoder.dateDecodingStrategy = .secondsSince1970
 
 		do {
 			let decodedResponse = try decoder.decode(CouchUpdateResponse.self, from: data)
@@ -738,8 +734,11 @@ public class CouchDBClient {
 	///   - dbName: DB name.
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, eventLoopGroup: EventLoopGroup? = nil ) async throws {
-		let insertEncodeData = try JSONEncoder().encode(doc)
+    public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = dateEncodingStrategy
+        let insertEncodeData = try encoder.encode(doc)
+
 		let insertResponse = try await insert(
 			dbName: dbName,
 			body: .data(insertEncodeData),
