@@ -898,7 +898,15 @@ internal extension CouchDBClient {
         if var httpCookie, httpCookie.expires == nil {
             let formatter = DateFormatter()
             formatter.dateFormat = "E, dd-MMM-yyy HH:mm:ss z"
-            httpCookie.expires = formatter.date(from: cookie)
+
+            let expiresString = cookie.split(separator: ";")
+                .map({ $0.trimmingCharacters(in: .whitespaces) })
+                .first(where: { $0.hasPrefix("Expires=") })?
+                .split(separator: "=").last
+
+            if let expiresString {
+                httpCookie.expires = formatter.date(from: String(expiresString))
+            }
         }
 
         sessionCookieExpires = httpCookie?.expires
