@@ -78,6 +78,8 @@ public class CouchDBClient {
 	private var couchBaseURL: String = ""
 	/// Session cookie for requests that needs authorization.
 	private var sessionCookie: String?
+    /// Session cookie as Cookie struct
+    private var sessionCookieExpires: Date?
 	/// CouchDB user name.
 	private var userName: String = ""
 	/// CouchDB user password.
@@ -853,7 +855,7 @@ internal extension CouchDBClient {
 	@discardableResult
 	func authIfNeed(eventLoopGroup: EventLoopGroup? = nil) async throws -> CreateSessionResponse? {
 		// already authorized
-		if let authData = authData {
+		if let authData = authData, let sessionCookieExpires, sessionCookieExpires > Date() {
 			return authData
 		}
 		
@@ -891,6 +893,15 @@ internal extension CouchDBClient {
 				cookie = header.value
 			}
 		}
+
+        let httpCookie = HTTPClient.Cookie(header: cookie, defaultDomain: self.couchHost)
+        if var httpCookie, httpCookie.expires == nil {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "E, dd-MMM-yyy HH:mm:ss z"
+            httpCookie.expires = formatter.date(from: cookie)
+        }
+
+        sessionCookieExpires = httpCookie?.expires
 		sessionCookie = cookie
 
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else { return nil }
