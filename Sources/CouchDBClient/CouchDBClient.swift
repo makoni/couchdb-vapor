@@ -894,22 +894,25 @@ internal extension CouchDBClient {
 			}
 		}
 
-        let httpCookie = HTTPClient.Cookie(header: cookie, defaultDomain: self.couchHost)
-        if var httpCookie, httpCookie.expires == nil {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "E, dd-MMM-yyy HH:mm:ss z"
+        if let httpCookie = HTTPClient.Cookie(header: cookie, defaultDomain: self.couchHost) {
+            if httpCookie.expires == nil {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "E, dd-MMM-yyy HH:mm:ss z"
 
-            let expiresString = cookie.split(separator: ";")
-                .map({ $0.trimmingCharacters(in: .whitespaces) })
-                .first(where: { $0.hasPrefix("Expires=") })?
-                .split(separator: "=").last
+                let expiresString = cookie.split(separator: ";")
+                    .map({ $0.trimmingCharacters(in: .whitespaces) })
+                    .first(where: { $0.hasPrefix("Expires=") })?
+                    .split(separator: "=").last
 
-            if let expiresString {
-                httpCookie.expires = formatter.date(from: String(expiresString))
+                if let expiresString {
+                    let expires = formatter.date(from: String(expiresString))
+                    sessionCookieExpires = expires
+                }
+            } else {
+                sessionCookieExpires = httpCookie.expires
             }
         }
 
-        sessionCookieExpires = httpCookie?.expires
 		sessionCookie = cookie
 
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else { return nil }
