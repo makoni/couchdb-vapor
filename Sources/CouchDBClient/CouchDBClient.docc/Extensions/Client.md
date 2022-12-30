@@ -21,11 +21,11 @@ A CouchDB client class with methods using Swift Concurrency.
 - ``createDB(_:eventLoopGroup:)``
 - ``deleteDB(_:eventLoopGroup:)``
 - ``dbExists(_:eventLoopGroup:)``
-- ``get(dbName:uri:queryItems:eventLoopGroup:)-2fzuv``
-- ``get(dbName:uri:queryItems:eventLoopGroup:)-53osp``
-- ``insert(dbName:doc:eventLoopGroup:)``
+- ``get(dbName:uri:queryItems:eventLoopGroup:)``
+- ``get(dbName:uri:queryItems:dateDecodingStrategy:eventLoopGroup:)``
 - ``insert(dbName:body:eventLoopGroup:)``
-- ``update(dbName:doc:eventLoopGroup:)``
+- ``insert(dbName:doc:dateEncodingStrategy:eventLoopGroup:)``
+- ``update(dbName:doc:dateEncodingStrategy:eventLoopGroup:)``
 - ``update(dbName:uri:body:eventLoopGroup:)``
 - ``delete(fromDb:doc:eventLoopGroup:)``
 - ``delete(fromDb:uri:rev:eventLoopGroup:)``

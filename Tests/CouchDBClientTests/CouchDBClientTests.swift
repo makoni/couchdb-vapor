@@ -240,6 +240,7 @@ final class CouchDBClientTests: XCTestCase {
 		let session: CreateSessionResponse? = try await couchDBClient.authIfNeed()
 		XCTAssertNotNil(session)
 		XCTAssertEqual(true, session?.ok)
+		XCTAssertNotNil(couchDBClient.sessionCookieExpires)
 	}
 
     func test99_deleteDB() async throws {
