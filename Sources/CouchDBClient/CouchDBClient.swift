@@ -79,7 +79,7 @@ public class CouchDBClient {
 	/// Session cookie for requests that needs authorization.
 	private var sessionCookie: String?
     /// Session cookie as Cookie struct
-    private var sessionCookieExpires: Date?
+    internal var sessionCookieExpires: Date?
 	/// CouchDB user name.
 	private var userName: String = ""
 	/// CouchDB user password.
