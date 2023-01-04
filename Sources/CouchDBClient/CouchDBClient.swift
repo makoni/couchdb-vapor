@@ -889,7 +889,7 @@ internal extension CouchDBClient {
 
 		var cookie = ""
 		response.headers.forEach { (header: (name: String, value: String)) in
-			if header.name == "Set-Cookie" {
+			if header.name.lowercased() == "set-cookie" {
 				cookie = header.value
 			}
 		}
