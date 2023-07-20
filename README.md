@@ -8,8 +8,12 @@
 
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmakoni%2Fcouchdb-vapor%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/makoni/couchdb-vapor)
 [![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://swift.org/package-manager/)
-[![Swift 5](https://img.shields.io/badge/swift-5.6-orange.svg?style=flat)](http://swift.org)
-[![Vapor 3](https://img.shields.io/badge/vapor-4.50.0-blue.svg?style=flat)](https://vapor.codes)
+[![Swift 5](https://img.shields.io/badge/swift-5.6-orange.svg?style=flat)](http://swift.org) 
+[![Vapor 4](https://img.shields.io/badge/vapor-4.50.0-blue.svg?style=flat)](https://vapor.codes)
+
+[![Build on macOS](https://github.com/makoni/couchdb-vapor/actions/workflows/build-macos.yml/badge.svg?branch=master)](https://github.com/makoni/couchdb-vapor/actions/workflows/build-macos.yml)
+[![Build on Ubuntu](https://github.com/makoni/couchdb-vapor/actions/workflows/build-ubuntu.yml/badge.svg?branch=master)](https://github.com/makoni/couchdb-vapor/actions/workflows/build-ubuntu.yml)
+[![Test on Ubuntu](https://github.com/makoni/couchdb-vapor/actions/workflows/test-ubuntu.yml/badge.svg?branch=master)](https://github.com/makoni/couchdb-vapor/actions/workflows/test-ubuntu.yml)
 
 
 
