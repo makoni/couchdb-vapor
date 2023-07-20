@@ -31,16 +31,17 @@ jobs:
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest  
     services:
-      couchdb:
-        image: couchdb
-        ports:
-          - 5984:5984
 #       swift:
 #         image: swift
 #         ports:
 #           - 5984:5984
 
     steps:
+      - name: Start CouchDB
+        uses: iamssen/couchdb-github-action@master
+        with:
+          couchdb-version: ${{ matrix.couchdb }}
+          
 #       - name: Checkout
 #         uses: actions/checkout@master
 
