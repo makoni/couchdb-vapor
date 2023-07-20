@@ -24,9 +24,9 @@ jobs:
     name: Build on ubuntu-latest
     strategy:
       matrix:
-        swift: [5.8.1, 5.7.3]
+        swift: [5.8.1, 5.7.3, 5.6.3]
     container: 
-      image: swift:${{matrix.swift}} # swift:latest
+      image: swift:${{matrix.swift}}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
