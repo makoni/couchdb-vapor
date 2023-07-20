@@ -11,12 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: swift:${{matrix.swift}}
-    steps:
-      - name: Start CouchDB
-        uses: iamssen/couchdb-github-action@master
-        with:
-          couchdb-version: ${{ matrix.couchdb }}
-          
+    steps:          
       - name: Checkout
         uses: actions/checkout@master
 
