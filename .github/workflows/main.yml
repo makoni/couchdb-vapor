@@ -8,8 +8,7 @@ jobs:
     strategy:
       matrix:
         swift: [5.8.1, 5.7.3, 5.6.3]
-        os: [20.04, 22.04]
-    runs-on: ubuntu:${{ matrix.os }}
+    runs-on: ubuntu-latest
     container: 
       image: swift:${{matrix.swift}}
     steps:
