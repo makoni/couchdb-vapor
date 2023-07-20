@@ -42,30 +42,31 @@ jobs:
         swift: [5.8.1] # [5.8.1, 5.7.3, 5.6.3]
         couchdb: [latest] #[latest, "3.3", "3.2", "3.1"]
     container: swift:${{matrix.swift}}
-    services:
-      couchdb:
-        image: couchdb
-        ports:
-          - 5984:5984
+#     services:
+#       couchdb:
+#         image: couchdb
+#         ports:
+#           - 5984:5984
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@master
         
-#       - name: Start CouchDB
-#         uses: iamssen/couchdb-github-action@master
-#         with:
-#           couchdb-version: ${{ matrix.couchdb }}
+      - name: Start CouchDB
+        uses: iamssen/couchdb-github-action@master
+        with:
+          couchdb-version: ${{ matrix.couchdb }}
 
-#       - name: Test endpoint
-#         run: |
-#           curl -sS -f http://127.0.0.1:5984/
+      - name: Test endpoint
+        run: |
+          curl -sS -f http://127.0.0.1:5984/
+          swift --version
           
 #       - uses: swift-actions/setup-swift@v1.23.0
 #         with:
 #           swift-version: ${{ matrix.swift }}
-      - name: Get swift version
-        run: swift --version
+#       - name: Get swift version
+#         run: swift --version
 
 #      - name: Swift test
 #        run: COUCHDB_PASS=password swift test
