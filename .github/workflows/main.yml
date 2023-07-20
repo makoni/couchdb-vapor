@@ -22,8 +22,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Swift version
-        run: |
-          swift --version
+        run: swift --version
     
 
 #  macOS:
