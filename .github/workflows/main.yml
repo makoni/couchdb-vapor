@@ -3,23 +3,23 @@ name: Build on macOS and Ubuntu latest
 on: [push]
 
 jobs:
-  ubuntu_build:
-    name: Build on Ubuntu
-    strategy:
-      matrix:
-        swift: [5.8.1, 5.7.3, 5.6.3]
-    runs-on: ubuntu-latest
-    container: 
-      image: swift:${{matrix.swift}}
-    steps:          
-      - name: Checkout
-        uses: actions/checkout@master
+#   ubuntu_build:
+#     name: Build on Ubuntu
+#     strategy:
+#       matrix:
+#         swift: [5.8.1, 5.7.3, 5.6.3]
+#     runs-on: ubuntu-latest
+#     container: 
+#       image: swift:${{matrix.swift}}
+#     steps:          
+#       - name: Checkout
+#         uses: actions/checkout@master
 
-      - name: Swift version
-        run: swift --version
+#       - name: Swift version
+#         run: swift --version
         
-      - name: Swift build
-        run: swift build -c release
+#       - name: Swift build
+#         run: swift build -c release
     
 
 #  macOS:
@@ -40,33 +40,34 @@ jobs:
 #      run: echo Done
 
   # Label of the container job
-#   ubuntu:
-#     strategy:
-#       fail-fast: false
-#       matrix:
-#         swift: [5.6.3] # [5.8.1, 5.7.3, 5.6.3]
-#         couchdb: [latest] # [latest, "3.3", "3.2", "3.1"]
-#     runs-on: ubuntu-latest  
-#     services:
-#       swift:
-#         image: swift:${{ matrix.swift }}
-#     steps:
-#       - name: Start CouchDB
-#         uses: iamssen/couchdb-github-action@master
-#         with:
-#           couchdb-version: ${{ matrix.couchdb }}
+  ubuntu-test:
+    name: Run tests on Ubuntu
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        couchdb: [latest] # [latest, "3.3", "3.2", "3.1"]
+    runs-on: ubuntu-latest
+    services:
+      swift:
+        image: swift-latest
+    steps:
+      - name: Start CouchDB
+        uses: iamssen/couchdb-github-action@master
+        with:
+          couchdb-version: ${{ matrix.couchdb }}
           
 #       - name: Checkout
 #         uses: actions/checkout@master
 
-#       - name: Swift version
-#         run: |
-#           swift --version
-#       - name: Test endpoint
-#         run: |
-#           curl -sS -f http://127.0.0.1:5984/
-#       - name: Test authorization
-#         run: |
-#           curl -X POST -H "Content-Type: application/json; charset=utf-8" -d '{"name": "admin", "password": "password"}' http://127.0.0.1:5984/_session
+      - name: Swift version
+        run: |
+          swift --version
+      - name: Test endpoint
+        run: |
+          curl -sS -f http://127.0.0.1:5984/
+      - name: Test authorization
+        run: |
+          curl -X POST -H "Content-Type: application/json; charset=utf-8" -d '{"name": "admin", "password": "password"}' http://127.0.0.1:5984/_session
 #       - name: Swift test
 #         run: COUCHDB_PASS=password swift test     
