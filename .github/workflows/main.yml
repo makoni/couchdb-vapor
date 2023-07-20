@@ -2,6 +2,9 @@ name: Build on macOS and Ubuntu latest
 
 on: [push]
 
+env:
+  COUCHDB_PASS: password
+
 jobs:
 #  macOS:
 #    name: Build on macOS-latest
@@ -26,19 +29,24 @@ jobs:
       matrix:
         swift: [5.8.1] # [5.8.1, 5.7.3, 5.6.3]
     container: swift:${{matrix.swift}}
-    services:
-       couchdb:
-         image: couchdb
+#    services:
+#       couchdb:
+#         image: couchdb
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
+      - name: CouchDB in GitHub Actions
+        uses: iamssen/couchdb-github-action@0.3.0
+        with:
+          couchdb-version: "latest" # optional, default is 3.1.0
+          
+      - name: Checkout
+        uses: actions/checkout@master
 
-    - name: Swift build
-      run: swift build -c release
+#    - name: Swift build
+#      run: swift build -c release
       
-    - name: Swift test
-      run: swift test
+      - name: Swift test
+        run: swift test
             
-    - name: Done
-      run: echo Done
+      - name: Done
+        run: echo Done
