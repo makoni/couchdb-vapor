@@ -44,6 +44,10 @@ jobs:
 
 #    - name: Swift build
 #      run: swift build -c release
+
+      - name: install curl
+        run: |
+          apt install -y curl
       
       - name: Swift test
         run: |
