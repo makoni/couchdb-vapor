@@ -30,7 +30,7 @@ jobs:
         
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest  
-    services:
+#     services:
 #       swift:
 #         image: swift
 #         ports:
