@@ -39,7 +39,7 @@ jobs:
       - name: Start CouchDB
         uses: iamssen/couchdb-github-action@master
         with:
-          couchdb-version: ${ {matrix.couchdb }}
+          couchdb-version: ${{ matrix.couchdb }}
 
       - name: Test endpoint
         run: |
@@ -47,7 +47,7 @@ jobs:
           
       - uses: swift-actions/setup-swift@v1
         with:
-          swift-version: ${ {matrix.swift }}
+          swift-version: ${{ matrix.swift }}
       - name: Get swift version
         run: swift --version
 
