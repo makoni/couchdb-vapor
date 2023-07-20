@@ -17,6 +17,9 @@ jobs:
 
       - name: Swift version
         run: swift --version
+        
+      - name: Swift build
+        run: swift build -c release
     
 
 #  macOS:
