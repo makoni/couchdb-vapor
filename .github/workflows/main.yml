@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       swift:
-        image: swift-latest
+        image: swift:latest
     steps:
       - name: Start CouchDB
         uses: iamssen/couchdb-github-action@master
