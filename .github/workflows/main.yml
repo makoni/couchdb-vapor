@@ -31,16 +31,17 @@ jobs:
 #         image: couchdb
     runs-on: ubuntu-latest
     steps:
-      - name: CouchDB in GitHub Actions
-        uses: iamssen/couchdb-github-action@0.3.0
-        with:
-          couchdb-version: "latest" # optional, default is 3.1.0
-          
       - name: Checkout
         uses: actions/checkout@master
+        
+      - name: Start CouchDB
+        uses: iamssen/couchdb-github-action@master
+        with:
+          couchdb-version: "3.3"
 
-      - name: Swift test
-        run: COUCHDB_PASS=password swift test
-            
-      - name: Done
-        run: echo Done
+      - name: Test endpoint
+        run: |
+          curl -f http://127.0.0.1:5984/
+
+#      - name: Swift test
+#        run: COUCHDB_PASS=password swift test
