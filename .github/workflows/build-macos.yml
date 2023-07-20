@@ -1,0 +1,22 @@
+# This workflow will build a Swift project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
+
+name: Build on macOS
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+ macOS:
+   name: Build on macOS
+   runs-on: macOS-latest
+   steps:
+   - name: Print Swift version
+     run: swift --version
+   - name: Checkout
+     uses: actions/checkout@master
+   - name: Swift build
+     run: swift build -c release
