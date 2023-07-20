@@ -23,6 +23,7 @@ jobs:
   ubuntu:
     name: Build on ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         swift: [5.8.1] # [5.8.1, 5.7.3, 5.6.3]
     container: swift:${{matrix.swift}}
@@ -41,7 +42,7 @@ jobs:
 
       - name: Test endpoint
         run: |
-          curl -f http://127.0.0.1:5984/
+          curl -sS -f http://127.0.0.1:5984/
 
 #      - name: Swift test
 #        run: COUCHDB_PASS=password swift test
