@@ -25,16 +25,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        swift: [5.8.1] # [5.8.1, 5.7.3, 5.6.3]
+        swift: [5.6.3] # [5.8.1, 5.7.3, 5.6.3]
         couchdb: [latest] # [latest, "3.3", "3.2", "3.1"]
         
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest  
     services:
       swift:
-        image: swift
-#         ports:
-#           - 5984:5984
+        image: swift-${{ matrix.swift }}
 
     steps:
       - name: Start CouchDB
