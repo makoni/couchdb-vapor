@@ -1,0 +1,22 @@
+name: Build on Ubuntu
+
+on: [push]
+
+jobs:
+  ubuntu_build:
+    name: Build on Ubuntu
+    strategy:
+      matrix:
+        swift: [5.8.1, 5.7.3, 5.6.3]
+    runs-on: ubuntu-latest
+    container: 
+      image: swift:${{matrix.swift}}
+    steps:          
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Swift version
+        run: swift --version
+        
+      - name: Swift build
+        run: swift build -c release
