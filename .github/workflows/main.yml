@@ -29,16 +29,14 @@ jobs:
         couchdb: [latest] #[latest, "3.3", "3.2", "3.1"]
         
     # Containers must run in Linux based operating systems
-    runs-on: ubuntu-latest
-    # Docker Hub image that `container-job` executes in
-    container:
-      image: swift:${{matrix.swift}}
-  
+    runs-on: ubuntu-latest  
     services:
       couchdb:
         image: couchdb
         ports:
           - 5984:5984
+      swift:
+        image: swift
 
     steps:
 #       - name: Checkout
