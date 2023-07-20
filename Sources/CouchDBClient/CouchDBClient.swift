@@ -855,7 +855,7 @@ internal extension CouchDBClient {
 	@discardableResult
 	func authIfNeed(eventLoopGroup: EventLoopGroup? = nil) async throws -> CreateSessionResponse? {
 		// already authorized
-		if let authData = authData, let sessionCookieExpires, sessionCookieExpires > Date() {
+		if let authData = authData, let sessionCookieExpires = sessionCookieExpires, sessionCookieExpires > Date() {
 			return authData
 		}
 		
@@ -904,7 +904,7 @@ internal extension CouchDBClient {
 					.first(where: { $0.hasPrefix("Expires=") })?
 					.split(separator: "=").last
 				
-				if let expiresString {
+				if let expiresString = expiresString {
 					let expires = formatter.date(from: String(expiresString))
 					sessionCookieExpires = expires
 				}

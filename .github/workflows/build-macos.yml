@@ -4,8 +4,6 @@
 name: Build on macOS
 
 on:
-  push:
-    branches: [ "develop" ]
   pull_request:
     branches: [ "master" ]
 
