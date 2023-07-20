@@ -21,11 +21,25 @@ jobs:
 #      run: echo Done
 
   # Label of the container job
-#   container-job:
-#     # Containers must run in Linux based operating systems
-#     runs-on: ubuntu-latest
-#     # Docker Hub image that `container-job` executes in
-#     container: swift:${{matrix.swift}}
+  container-job:
+    # Containers must run in Linux based operating systems
+    runs-on: ubuntu-latest
+    # Docker Hub image that `container-job` executes in
+    container: swift:${{matrix.swift}}
+
+    steps:
+#       - name: Checkout
+#         uses: actions/checkout@master
+
+      - name: Start CouchDB
+        uses: iamssen/couchdb-github-action@master
+        with:
+          couchdb-version: ${{ matrix.couchdb }}
+          
+      - name: Test endpoint
+        run: |
+          curl -sS -f http://127.0.0.1:5984/
+          swift --version
 
 #     # Service containers to run with `container-job`
 #     services:
@@ -34,36 +48,29 @@ jobs:
 #         # Docker Hub image
 #         image: couchdb
       
-  ubuntu:
-    name: Build on ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        swift: [5.8.1] # [5.8.1, 5.7.3, 5.6.3]
-        couchdb: [latest] #[latest, "3.3", "3.2", "3.1"]
-    container:
-      image: swift:${{matrix.swift}}
-      ports:
-        - 5984:5984
-#     services:
-#       couchdb:
-#         image: couchdb
-#         ports:
-#           - 5984:5984
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@master
+#   ubuntu:
+#     name: Build on ubuntu-latest
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         swift: [5.8.1] # [5.8.1, 5.7.3, 5.6.3]
+#         couchdb: [latest] #[latest, "3.3", "3.2", "3.1"]
+#     container:
+#       image: swift:${{matrix.swift}}
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@master
         
-      - name: Start CouchDB
-        uses: iamssen/couchdb-github-action@master
-        with:
-          couchdb-version: ${{ matrix.couchdb }}
+#       - name: Start CouchDB
+#         uses: iamssen/couchdb-github-action@master
+#         with:
+#           couchdb-version: ${{ matrix.couchdb }}
 
-      - name: Test endpoint
-        run: |
-          curl -sS -f http://127.0.0.1:5984/
-          swift --version
+#       - name: Test endpoint
+#         run: |
+#           curl -sS -f http://127.0.0.1:5984/
+#           swift --version
           
 #       - uses: swift-actions/setup-swift@v1.23.0
 #         with:
