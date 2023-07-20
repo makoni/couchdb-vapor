@@ -35,27 +35,22 @@ jobs:
         image: couchdb
         ports:
           - 5984:5984
-      swift:
-        image: swift
+#       swift:
+#         image: swift
+#         ports:
+#           - 5984:5984
 
     steps:
 #       - name: Checkout
 #         uses: actions/checkout@master
 
-      - name: Swift version
-        run: |
-          swift --version
+#       - name: Swift version
+#         run: |
+#           swift --version
       - name: Test endpoint
         run: |
           curl -sS -f http://127.0.0.1:5984/
 
-#     # Service containers to run with `container-job`
-#     services:
-#       # Label used to access the service container
-#       couchdb:
-#         # Docker Hub image
-#         image: couchdb
-      
 #   ubuntu:
 #     name: Build on ubuntu-latest
 #     strategy:
