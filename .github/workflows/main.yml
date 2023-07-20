@@ -44,7 +44,7 @@ jobs:
     container:
       image: swift:${{matrix.swift}}
       ports:
-        - 5984
+        - 5984:5984
 #     services:
 #       couchdb:
 #         image: couchdb
