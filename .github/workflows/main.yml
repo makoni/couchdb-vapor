@@ -24,9 +24,11 @@ jobs:
     name: Build on ubuntu-latest
     strategy:
       matrix:
-        swift: [5.8.1, 5.7.3, 5.6.3]
-    container: 
-      image: swift:${{matrix.swift}}
+        swift: [5.8.1] # [5.8.1, 5.7.3, 5.6.3]
+    container: swift:${{matrix.swift}}
+    services:
+       couchdb:
+         image: couchdb
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -34,6 +36,9 @@ jobs:
 
     - name: Swift build
       run: swift build -c release
+      
+    - name: Swift test
+      run: swift test
             
     - name: Done
       run: echo Done
