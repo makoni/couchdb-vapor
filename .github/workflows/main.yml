@@ -25,8 +25,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        swift: [5.8.1, 5.7.3, 5.6.3]
-        couchdb: [latest, "3.3", "3.2", "3.1"]
+        swift: [5.8.1] # [5.8.1, 5.7.3, 5.6.3]
+        couchdb: [latest] # [latest, "3.3", "3.2", "3.1"]
         
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest  
@@ -42,8 +42,8 @@ jobs:
         with:
           couchdb-version: ${{ matrix.couchdb }}
           
-#       - name: Checkout
-#         uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@master
 
       - name: Swift version
         run: |
@@ -54,6 +54,8 @@ jobs:
       - name: Test authorization
         run: |
           curl -X POST -H "Content-Type: application/json; charset=utf-8" -d '{"name": "admin", "password": "password"}' http://127.0.0.1:5984/_session
+      - name: Swift test
+        run: COUCHDB_PASS=password swift test
 
 #   ubuntu:
 #     name: Build on ubuntu-latest
@@ -68,5 +70,4 @@ jobs:
 #     steps:
 #       - name: Checkout
 #         uses: actions/checkout@master
-#      - name: Swift test
-#        run: COUCHDB_PASS=password swift test
+     
