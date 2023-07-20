@@ -57,9 +57,9 @@ jobs:
 #         with:
 #           couchdb-version: ${{ matrix.couchdb }}
 
-      - name: Test endpoint
-        run: |
-          curl -sS -f http://127.0.0.1:5984/
+#       - name: Test endpoint
+#         run: |
+#           curl -sS -f http://127.0.0.1:5984/
           
 #       - uses: swift-actions/setup-swift@v1.23.0
 #         with:
