@@ -42,14 +42,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
-#    - name: Swift build
-#      run: swift build -c release
-
-      - name: curl
-        uses: sozo-design/curl@v1.0.2
-        with:
-          args: |
-            -X POST -H "Content-Type: application/json; charset=utf-8" -d '{"name": "admin", "password": $COUCHDB_PASS}' http://127.0.0.1:5984/_session
+      - name: Swift test
+        run: echo $COUCHDB_PASS
             
       - name: Done
         run: echo Done
