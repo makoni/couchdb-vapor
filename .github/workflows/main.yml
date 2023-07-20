@@ -45,7 +45,7 @@ jobs:
         run: |
           curl -sS -f http://127.0.0.1:5984/
           
-      - uses: swift-actions/setup-swift@v1
+      - uses: swift-actions/setup-swift@v1.23.0
         with:
           swift-version: ${{ matrix.swift }}
       - name: Get swift version
