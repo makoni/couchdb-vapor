@@ -42,10 +42,12 @@ jobs:
 #       - name: Checkout
 #         uses: actions/checkout@master
 
+      - name: Swift version
+        run: |
+          swift --version
       - name: Test endpoint
         run: |
           curl -sS -f http://127.0.0.1:5984/
-          swift --version
 
 #     # Service containers to run with `container-job`
 #     services:
