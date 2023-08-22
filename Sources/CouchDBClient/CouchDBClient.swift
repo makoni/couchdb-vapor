@@ -153,19 +153,19 @@ public class CouchDBClient {
 	public func getAllDBs(eventLoopGroup: EventLoopGroup? = nil) async throws -> [String] {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
-        let httpClient: HTTPClient
-        if let eventLoopGroup = eventLoopGroup {
-            httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-        } else {
-            httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
-        }
+		let httpClient: HTTPClient
+		if let eventLoopGroup = eventLoopGroup {
+			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
+		} else {
+			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+		}
 
 		defer {
 			DispatchQueue.main.async {
 				try? httpClient.syncShutdown()
 			}
 		}
-		
+
 		let url = buildUrl(path: "/_all_dbs")
 
 		let request = try buildRequest(fromUrl: url, withMethod: .GET)
@@ -204,7 +204,7 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
 		}
 
 		defer {
@@ -244,7 +244,7 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
 		}
 
 		defer {
@@ -283,62 +283,62 @@ public class CouchDBClient {
 		}
 	}
 
-    /// Delete DB.
-    ///
-    /// Example:
-    /// ```swift
-    /// try await couchDBClient.deleteDB("myDBName")
-    /// ```
-    ///
-    /// - Parameters:
-    ///   - dbName: DB name.
-    ///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-    /// - Returns: Request response.
-    @discardableResult public func deleteDB(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> UpdateDBResponse {
-        try await authIfNeed(eventLoopGroup: eventLoopGroup)
+	/// Delete DB.
+	///
+	/// Example:
+	/// ```swift
+	/// try await couchDBClient.deleteDB("myDBName")
+	/// ```
+	///
+	/// - Parameters:
+	///   - dbName: DB name.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
+	/// - Returns: Request response.
+	@discardableResult public func deleteDB(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> UpdateDBResponse {
+		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
-        let httpClient: HTTPClient
-        if let eventLoopGroup = eventLoopGroup {
-            httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-        } else {
-            httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
-        }
+		let httpClient: HTTPClient
+		if let eventLoopGroup = eventLoopGroup {
+			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
+		} else {
+			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+		}
 
-        defer {
-            DispatchQueue.main.async {
-                try? httpClient.syncShutdown()
-            }
-        }
+		defer {
+			DispatchQueue.main.async {
+				try? httpClient.syncShutdown()
+			}
+		}
 
-        let url = buildUrl(path: "/\(dbName)")
+		let url = buildUrl(path: "/\(dbName)")
 
-        let request = try self.buildRequest(fromUrl: url, withMethod: .DELETE)
+		let request = try self.buildRequest(fromUrl: url, withMethod: .DELETE)
 
-        let response = try await httpClient
-            .execute(request: request, deadline: .now() + .seconds(requestsTimeout))
-            .get()
+		let response = try await httpClient
+			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
+			.get()
 
-        if response.status == .unauthorized {
-            throw CouchDBClientError.unauthorized
-        }
+		if response.status == .unauthorized {
+			throw CouchDBClientError.unauthorized
+		}
 
-        guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
-            throw CouchDBClientError.unknownResponse
-        }
+		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
+			throw CouchDBClientError.unknownResponse
+		}
 
-        let data = Data(bytes)
-        let decoder = JSONDecoder()
+		let data = Data(bytes)
+		let decoder = JSONDecoder()
 
-        do {
-            let decodedResponse = try decoder.decode(UpdateDBResponse.self, from: data)
-            return decodedResponse
-        } catch let parsingError {
-            if let couchdbError = try? decoder.decode(CouchDBError.self, from: data) {
-                throw CouchDBClientError.insertError(error: couchdbError)
-            }
-            throw parsingError
-        }
-    }
+		do {
+			let decodedResponse = try decoder.decode(UpdateDBResponse.self, from: data)
+			return decodedResponse
+		} catch let parsingError {
+			if let couchdbError = try? decoder.decode(CouchDBError.self, from: data) {
+				throw CouchDBClientError.insertError(error: couchdbError)
+			}
+			throw parsingError
+		}
+	}
 
 	/// Get data from DB.
 	///
@@ -404,7 +404,7 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
 		}
 
 		defer {
@@ -453,7 +453,7 @@ public class CouchDBClient {
 	///   - queryItems: Request query items.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: An object or a struct (of generic type) parsed from JSON.
-    public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
+	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		let response = try await get(dbName: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
 
 		if response.status == .unauthorized {
@@ -506,7 +506,7 @@ public class CouchDBClient {
 	///
 	/// // encode document into JSON string
 	/// let data = try encoder.encode(updatedData)
-	/// 
+	///
 	/// let response = try await couchDBClient.update(
 	///     dbName: testsDB,
 	///     uri: doc._id!,
@@ -530,7 +530,7 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
 		}
 		
 		defer {
@@ -550,7 +550,7 @@ public class CouchDBClient {
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
 		}
-		
+
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
 			throw CouchDBClientError.unknownResponse
 		}
@@ -604,7 +604,7 @@ public class CouchDBClient {
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` and Codable protocols.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Update response.
-    public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
+	public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard doc._rev?.isEmpty == false else { throw CouchDBClientError.revMissing }
 
@@ -666,7 +666,7 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
 		}
 
 		defer {
@@ -687,7 +687,7 @@ public class CouchDBClient {
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
 		}
-		
+
 		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
 			throw CouchDBClientError.unknownResponse
 		}
@@ -736,10 +736,10 @@ public class CouchDBClient {
 	///   - dbName: DB name.
 	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-    public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = dateEncodingStrategy
-        let insertEncodeData = try encoder.encode(doc)
+	public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
+		let encoder = JSONEncoder()
+		encoder.dateEncodingStrategy = dateEncodingStrategy
+		let insertEncodeData = try encoder.encode(doc)
 
 		let insertResponse = try await insert(
 			dbName: dbName,
@@ -762,7 +762,7 @@ public class CouchDBClient {
 	/// ```swift
 	/// let response = try await couchDBClient.delete(fromDb: "databaseName", uri: doc._id, rev: doc._rev)
 	/// ```
-	/// 
+	///
 	/// - Parameters:
 	///   - dbName: DB name.
 	///   - uri: document uri (usually _id).
@@ -774,7 +774,7 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
 		}
 
 		defer {
@@ -839,9 +839,9 @@ internal extension CouchDBClient {
 		components.host = couchHost
 		components.port = couchPort
 		components.path = path
-		
+
 		components.queryItems = query.isEmpty ? nil : query
-		
+
 		if components.url?.absoluteString == nil {
 			assertionFailure("url should not be nil")
 		}
@@ -858,22 +858,22 @@ internal extension CouchDBClient {
 		if let authData = authData, let sessionCookieExpires = sessionCookieExpires, sessionCookieExpires > Date() {
 			return authData
 		}
-		
-        let httpClient: HTTPClient
-        if let eventLoopGroup = eventLoopGroup {
-            httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-        } else {
-            httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
-        }
-		
+
+		let httpClient: HTTPClient
+		if let eventLoopGroup = eventLoopGroup {
+			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
+		} else {
+			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+		}
+
 		defer {
 			DispatchQueue.main.async {
 				try? httpClient.syncShutdown()
 			}
 		}
-		
+
 		let url = buildUrl(path: "/_session")
-		
+
 		var request = try HTTPClient.Request(url:url, method: .POST)
 		request.headers.add(name: "Content-Type", value: "application/x-www-form-urlencoded")
 		let dataString = "name=\(userName)&password=\(userPassword)"
@@ -893,17 +893,17 @@ internal extension CouchDBClient {
 				cookie = header.value
 			}
 		}
-		
+
 		if let httpCookie = HTTPClient.Cookie(header: cookie, defaultDomain: self.couchHost) {
 			if httpCookie.expires == nil {
 				let formatter = DateFormatter()
 				formatter.dateFormat = "E, dd-MMM-yyy HH:mm:ss z"
-				
+
 				let expiresString = cookie.split(separator: ";")
 					.map({ $0.trimmingCharacters(in: .whitespaces) })
 					.first(where: { $0.hasPrefix("Expires=") })?
 					.split(separator: "=").last
-				
+
 				if let expiresString = expiresString {
 					let expires = formatter.date(from: String(expiresString))
 					sessionCookieExpires = expires
@@ -921,7 +921,7 @@ internal extension CouchDBClient {
 		authData = try JSONDecoder().decode(CreateSessionResponse.self, from: data)
 		return authData
 	}
-	
+
 	/// Build HTTP request from url string.
 	/// - Parameters:
 	///   - url: URL string.
