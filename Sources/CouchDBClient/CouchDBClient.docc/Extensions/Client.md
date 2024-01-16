@@ -27,5 +27,7 @@ A CouchDB client class with methods using Swift Concurrency.
 - ``insert(dbName:doc:dateEncodingStrategy:eventLoopGroup:)``
 - ``update(dbName:doc:dateEncodingStrategy:eventLoopGroup:)``
 - ``update(dbName:uri:body:eventLoopGroup:)``
+- ``find(in:body:eventLoopGroup:)``
+- ``find(in:selector:dateDecodingStrategy:eventLoopGroup:)``
 - ``delete(fromDb:doc:eventLoopGroup:)``
 - ``delete(fromDb:uri:rev:eventLoopGroup:)``

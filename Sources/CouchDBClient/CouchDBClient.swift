@@ -483,7 +483,7 @@ public class CouchDBClient {
 		}
 	}
     
-    /// Find data in DB.
+    /// Find data in DB by selector.
     ///
     /// Example:
     ///
@@ -527,7 +527,7 @@ public class CouchDBClient {
 		}
 	}
 	
-	/// Find data in DB.
+	/// Find data in DB by selector.
 	///
 	/// Example:
 	/// ```swift

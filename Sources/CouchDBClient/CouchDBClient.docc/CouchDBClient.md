@@ -17,6 +17,7 @@ Currently CouchDBClient supports:
 - Get databases list.
 - Get document by id or documents using view.
 - Insert/update documents.
+- Find documents by selector.
 - Delete documents.
 - CouchDB authorization.
 
