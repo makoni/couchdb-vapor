@@ -22,6 +22,8 @@ public enum CouchDBClientError: Error {
 	case insertError(error: CouchDBError)
 	/// Update request wasn't successful.
 	case updateError(error: CouchDBError)
+	/// Find request wasn't successful.
+	case findError(error: CouchDBError)
 	/// Uknown response from CouchDB.
 	case unknownResponse
 	/// Wrong username or password.
@@ -41,6 +43,8 @@ extension CouchDBClientError: LocalizedError {
 			return "Insert request wasn't successful: \(error.localizedDescription)"
 		case .updateError(let error):
 			return "Update request wasn't successful: \(error.localizedDescription)"
+		case .findError(let error):
+			return "Find request wasn't successful: \(error.localizedDescription)"
 		case .unknownResponse:
 			return "Uknown response from CouchDB."
 		case .unauthorized:
@@ -477,6 +481,96 @@ public class CouchDBClient {
 			}
 			throw parsingError
 		}
+	}
+    
+    /// Find data in DB by selector.
+    ///
+    /// Example:
+    ///
+    /// ```swift
+    /// // find documents in DB by selector
+	/// let selector = ["selector": ["name": "Sam"]]
+    /// let docs: [ExpectedDoc] = try await couchDBClient.find(in: testsDB, selector: selector)
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - in dbName: DB name.
+    ///   - selector: Codable representation of json selector query.
+    ///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
+    /// - Returns: Array of documents [T].
+	public func find<T: Codable & CouchDBRepresentable>(in dbName: String, selector: Codable, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> [T] {
+		let encoder = JSONEncoder()
+		let selectorData = try encoder.encode(selector)
+
+		let findResponse = try await find(
+			in: dbName,
+			body: .data(selectorData),
+			eventLoopGroup: eventLoopGroup
+		)
+
+		guard var body = findResponse.body, let bytes = body.readBytes(length: body.readableBytes) else {
+			throw CouchDBClientError.unknownResponse
+		}
+
+		let data = Data(bytes)
+		let decoder = JSONDecoder()
+		decoder.dateDecodingStrategy = dateDecodingStrategy
+
+		do {
+			let doc = try decoder.decode(CouchDBFindResponse<T>.self, from: data)
+			return doc.docs
+		} catch let parsingError {
+			if let couchdbError = try? decoder.decode(CouchDBError.self, from: data) {
+				throw CouchDBClientError.findError(error: couchdbError)
+			}
+			throw parsingError
+		}
+	}
+	
+	/// Find data in DB by selector.
+	///
+	/// Example:
+	/// ```swift
+	/// let selector = ["selector": ["name": "Greg"]]
+	/// let bodyData = try JSONEncoder().encode(selector)
+	/// var findResponse = try await couchDBClient.find(in: testsDB, body: .data(bodyData))
+	///
+	/// let bytes = findResponse.body!.readBytes(length: findResponse.body!.readableBytes)!
+	/// let docs = try JSONDecoder().decode(CouchDBFindResponse<ExpectedDoc>.self, from: Data(bytes)).docs
+	/// ```
+	/// - Parameters:
+	///   - dbName: DB name.
+	///   - body: Request body data.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
+	/// - Returns: Request response.
+	public func find(in dbName: String, body: HTTPClient.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
+		try await authIfNeed(eventLoopGroup: eventLoopGroup)
+
+		let httpClient: HTTPClient
+		if let eventLoopGroup = eventLoopGroup {
+			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
+		} else {
+			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+		}
+
+		defer {
+			DispatchQueue.main.async {
+				try? httpClient.syncShutdown()
+			}
+		}
+
+		let url = buildUrl(path: "/" + dbName + "/_find", query: [])
+		var request = try buildRequest(fromUrl: url, withMethod: .POST)
+		request.body = body
+		let response = try await httpClient
+			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
+			.get()
+
+		if response.status == .unauthorized {
+			throw CouchDBClientError.unauthorized
+		}
+
+		return response
 	}
 
 	/// Update data in DB.

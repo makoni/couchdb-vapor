@@ -27,7 +27,7 @@ final class CouchDBClientTests: XCTestCase {
         try await super.setUp()
 	}
 
-    func test0_CreateDB() async throws {
+    func test00_CreateDB() async throws {
         do {
             let exists = try await couchDBClient.dbExists(testsDB)
             if exists {
@@ -40,7 +40,7 @@ final class CouchDBClientTests: XCTestCase {
         }
     }
 
-    func test1_DBExists() async throws {
+    func test01_DBExists() async throws {
         do {
             let exists = try await couchDBClient.dbExists(testsDB)
             XCTAssertTrue(exists)
@@ -49,7 +49,7 @@ final class CouchDBClientTests: XCTestCase {
         }
     }
 	
-	func test3_GetAllDbs() async throws {
+	func test03_GetAllDbs() async throws {
 		do {
 			let dbs = try await couchDBClient.getAllDBs()
 
@@ -61,7 +61,7 @@ final class CouchDBClientTests: XCTestCase {
 		}
 	}
 
-	func test4_updateAndDeleteDocMethods() async throws {
+	func test04_updateAndDeleteDocMethods() async throws {
 		var testDoc = ExpectedDoc(name: "test name")
 		var expectedInsertId: String = ""
 		var expectedInsertRev: String = ""
@@ -141,7 +141,7 @@ final class CouchDBClientTests: XCTestCase {
 		}
 	}
 	
-	func test5_InsertGetUpdateDelete() async throws {
+	func test05_InsertGetUpdateDelete() async throws {
 		var testDoc = ExpectedDoc(name: "test name")
 		var expectedInsertId: String = ""
 		var expectedInsertRev: String = ""
@@ -228,7 +228,7 @@ final class CouchDBClientTests: XCTestCase {
 		}
 	}
 	
-	func test6_BuildUrl() {
+	func test06_BuildUrl() {
 		let expectedUrl = "http://127.0.0.1:5984?key=testKey"
 		let url = couchDBClient.buildUrl(path: "", query: [
 			URLQueryItem(name: "key", value: "testKey")
@@ -236,11 +236,65 @@ final class CouchDBClientTests: XCTestCase {
 		XCTAssertEqual(url, expectedUrl)
 	}
 
-	func test7_Auth() async throws {
+	func test07_Auth() async throws {
 		let session: CreateSessionResponse? = try await couchDBClient.authIfNeed()
 		XCTAssertNotNil(session)
 		XCTAssertEqual(true, session?.ok)
 		XCTAssertNotNil(couchDBClient.sessionCookieExpires)
+	}
+
+	func test08_find_with_body() async throws {
+		do {
+			let testDoc = ExpectedDoc(name: "Greg")
+			let insertEncodedData = try JSONEncoder().encode(testDoc)
+			let insertResponse = try await couchDBClient.insert(
+				dbName: testsDB,
+				body: .data(insertEncodedData)
+			)
+
+			let selector = ["selector": ["name": "Greg"]]
+			let bodyData = try JSONEncoder().encode(selector)
+			var findResponse = try await couchDBClient.find(in: testsDB, body: .data(bodyData))
+
+			let bytes = findResponse.body!.readBytes(length: findResponse.body!.readableBytes)!
+			let decodedResponse = try JSONDecoder().decode(CouchDBFindResponse<ExpectedDoc>.self, from: Data(bytes))
+
+			XCTAssertTrue(decodedResponse.docs.count > 0)
+			XCTAssertEqual(decodedResponse.docs.first!._id, insertResponse.id)
+
+			_ = try await couchDBClient.delete(
+				fromDb: testsDB,
+				uri: decodedResponse.docs.first!._id!,
+				rev: decodedResponse.docs.first!._rev!
+			)
+		} catch {
+			XCTFail(error.localizedDescription)
+		}
+	}
+
+	func test09_find_with_generics() async throws {
+		do {
+			let testDoc = ExpectedDoc(name: "Sam")
+			let insertEncodedData = try JSONEncoder().encode(testDoc)
+			let insertResponse = try await couchDBClient.insert(
+				dbName: testsDB,
+				body: .data(insertEncodedData)
+			)
+
+			let selector = ["selector": ["name": "Sam"]]
+			let docs: [ExpectedDoc] = try await couchDBClient.find(in: testsDB, selector: selector)
+
+			XCTAssertTrue(docs.count > 0)
+			XCTAssertEqual(docs.first!._id, insertResponse.id)
+
+			_ = try await couchDBClient.delete(
+				fromDb: testsDB,
+				uri: docs.first!._id!,
+				rev: docs.first!._rev!
+			)
+		} catch {
+			XCTFail(error.localizedDescription)
+		}
 	}
 
     func test99_deleteDB() async throws {
