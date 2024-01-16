@@ -479,7 +479,7 @@ public class CouchDBClient {
 		}
 	}
     
-    /// Find data on DB.
+    /// Find data in DB.
     ///
     /// Examples:
     ///
@@ -511,15 +511,15 @@ public class CouchDBClient {
     /// - Returns: Array of documents [T].
 	public func find<T: Codable & CouchDBRepresentable>(in dbName: String, selector: Codable, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> [T] {
 		let encoder = JSONEncoder()
-		let insertEncodeData = try encoder.encode(selector)
+		let selectorData = try encoder.encode(selector)
 
-		let insertResponse = try await find(
+		let findResponse = try await find(
 			in: dbName,
-			body: .data(insertEncodeData),
+			body: .data(selectorData),
 			eventLoopGroup: eventLoopGroup
 		)
 
-		guard var body = insertResponse.body, let bytes = body.readBytes(length: body.readableBytes) else {
+		guard var body = findResponse.body, let bytes = body.readBytes(length: body.readableBytes) else {
 			throw CouchDBClientError.unknownResponse
 		}
 
