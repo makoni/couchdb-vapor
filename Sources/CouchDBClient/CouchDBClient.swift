@@ -478,6 +478,96 @@ public class CouchDBClient {
 			throw parsingError
 		}
 	}
+    
+    /// Find data on DB.
+    ///
+    /// Examples:
+    ///
+    /// Define your document model:
+    /// ```swift
+    /// // Example struct
+    /// struct ExpectedDoc: CouchDBRepresentable, Codable {
+    ///     var name: String
+    ///     var _id: String?
+    ///     var _rev: String?
+    /// }
+    /// ```
+    ///
+    /// Find documents by selector:
+    /// ```swift
+    /// // find documents from DB by selector
+    /// var response = try await couchDBClient.get(in: "databaseName", selector: ["selector": ["name": "Greg"]])
+    ///
+    /// // parse JSON
+    /// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
+    /// let docs = try JSONDecoder().decode([ExpectedDoc].self, from: Data(bytes))
+    /// ```
+    ///
+    ///
+    /// - Parameters:
+    ///   - in dbName: DB name.
+    ///   - selector: Codable representation of json selector query.
+    ///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
+    /// - Returns: Array of documents [T].
+    public func find<T: Codable & CouchDBRepresentable>(in dbName: String, selector: Codable, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> [T] {
+        let encoder = JSONEncoder()
+        let insertEncodeData = try encoder.encode(selector)
+
+        let insertResponse = try await find(
+            in: dbName,
+            body: .data(insertEncodeData),
+            eventLoopGroup: eventLoopGroup
+        )
+
+        guard var body = insertResponse.body, let bytes = body.readBytes(length: body.readableBytes) else {
+            throw CouchDBClientError.unknownResponse
+        }
+
+        let data = Data(bytes)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = dateDecodingStrategy
+
+        do {
+            let doc = try decoder.decode(CouchDBFindResponse<T>.self, from: data)
+            return doc.docs
+        } catch let parsingError {
+            if let couchdbError = try? decoder.decode(CouchDBError.self, from: data) {
+                throw CouchDBClientError.getError(error: couchdbError)
+            }
+            throw parsingError
+        }
+        
+    }
+    
+    public func find(in dbName: String, body: HTTPClient.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
+        try await authIfNeed(eventLoopGroup: eventLoopGroup)
+
+        let httpClient: HTTPClient
+        if let eventLoopGroup = eventLoopGroup {
+            httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
+        } else {
+            httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+        }
+
+        defer {
+            DispatchQueue.main.async {
+                try? httpClient.syncShutdown()
+            }
+        }
+
+        let url = buildUrl(path: "/" + dbName + "/_find", query: [])
+        var request = try buildRequest(fromUrl: url, withMethod: .POST)
+        request.body = body
+        let response = try await httpClient
+            .execute(request: request, deadline: .now() + .seconds(requestsTimeout))
+            .get()
+
+        if response.status == .unauthorized {
+            throw CouchDBClientError.unauthorized
+        }
+
+        return response
+    }
 
 	/// Update data in DB.
 	///
