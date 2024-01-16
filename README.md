@@ -129,6 +129,13 @@ print(dbs)
 // prints: ["_global_changes", "_replicator", "_users", "yourDBname"]
 ```
 
+Find documents in DB by selector:
+```swift
+let selector = ["selector": ["name": "Sam"]]
+let docs: [ExpectedDoc] = try await couchDBClient.find(in: "databaseName", selector: selector)
+print(docs)
+```
+
 ### Using with Vapor
 Here's a simple [tutorial](https://spaceinbox.me/docs/couchdbclient/tutorials/couchdbclient/vaportutorial) for Vapor.
 
