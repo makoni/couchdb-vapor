@@ -261,6 +261,37 @@ final class CouchDBClientTests: XCTestCase {
 
 			XCTAssertTrue(decodedResponse.docs.count > 0)
 			XCTAssertEqual(decodedResponse.docs.first!._id, insertResponse.id)
+
+			_ = try await couchDBClient.delete(
+				fromDb: testsDB,
+				uri: decodedResponse.docs.first!._id!,
+				rev: decodedResponse.docs.first!._rev!
+			)
+		} catch {
+			XCTFail(error.localizedDescription)
+		}
+	}
+
+	func test09_find_with_generics() async throws {
+		do {
+			let testDoc = ExpectedDoc(name: "Sam")
+			let insertEncodedData = try JSONEncoder().encode(testDoc)
+			let insertResponse = try await couchDBClient.insert(
+				dbName: testsDB,
+				body: .data(insertEncodedData)
+			)
+
+			let selector = ["selector": ["name": "Sam"]]
+			let docs: [ExpectedDoc] = try await couchDBClient.find(in: testsDB, selector: selector)
+
+			XCTAssertTrue(docs.count > 0)
+			XCTAssertEqual(docs.first!._id, insertResponse.id)
+
+			_ = try await couchDBClient.delete(
+				fromDb: testsDB,
+				uri: docs.first!._id!,
+				rev: docs.first!._rev!
+			)
 		} catch {
 			XCTFail(error.localizedDescription)
 		}
