@@ -496,7 +496,7 @@ public class CouchDBClient {
     /// Find documents by selector:
     /// ```swift
     /// // find documents from DB by selector
-    /// var response = try await couchDBClient.get(in: "databaseName", selector: ["selector": ["name": "Greg"]])
+    /// var response = try await couchDBClient.find(in: "databaseName", selector: ["selector": ["name": "Greg"]])
     ///
     /// // parse JSON
     /// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
