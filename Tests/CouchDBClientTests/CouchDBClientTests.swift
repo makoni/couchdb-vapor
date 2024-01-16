@@ -27,7 +27,7 @@ final class CouchDBClientTests: XCTestCase {
         try await super.setUp()
 	}
 
-    func test0_CreateDB() async throws {
+    func test00_CreateDB() async throws {
         do {
             let exists = try await couchDBClient.dbExists(testsDB)
             if exists {
@@ -40,7 +40,7 @@ final class CouchDBClientTests: XCTestCase {
         }
     }
 
-    func test1_DBExists() async throws {
+    func test01_DBExists() async throws {
         do {
             let exists = try await couchDBClient.dbExists(testsDB)
             XCTAssertTrue(exists)
@@ -49,7 +49,7 @@ final class CouchDBClientTests: XCTestCase {
         }
     }
 	
-	func test3_GetAllDbs() async throws {
+	func test03_GetAllDbs() async throws {
 		do {
 			let dbs = try await couchDBClient.getAllDBs()
 
@@ -61,7 +61,7 @@ final class CouchDBClientTests: XCTestCase {
 		}
 	}
 
-	func test4_updateAndDeleteDocMethods() async throws {
+	func test04_updateAndDeleteDocMethods() async throws {
 		var testDoc = ExpectedDoc(name: "test name")
 		var expectedInsertId: String = ""
 		var expectedInsertRev: String = ""
@@ -141,7 +141,7 @@ final class CouchDBClientTests: XCTestCase {
 		}
 	}
 	
-	func test5_InsertGetUpdateDelete() async throws {
+	func test05_InsertGetUpdateDelete() async throws {
 		var testDoc = ExpectedDoc(name: "test name")
 		var expectedInsertId: String = ""
 		var expectedInsertRev: String = ""
@@ -228,7 +228,7 @@ final class CouchDBClientTests: XCTestCase {
 		}
 	}
 	
-	func test6_BuildUrl() {
+	func test06_BuildUrl() {
 		let expectedUrl = "http://127.0.0.1:5984?key=testKey"
 		let url = couchDBClient.buildUrl(path: "", query: [
 			URLQueryItem(name: "key", value: "testKey")
@@ -236,14 +236,14 @@ final class CouchDBClientTests: XCTestCase {
 		XCTAssertEqual(url, expectedUrl)
 	}
 
-	func test7_Auth() async throws {
+	func test07_Auth() async throws {
 		let session: CreateSessionResponse? = try await couchDBClient.authIfNeed()
 		XCTAssertNotNil(session)
 		XCTAssertEqual(true, session?.ok)
 		XCTAssertNotNil(couchDBClient.sessionCookieExpires)
 	}
 
-	func test8_find_with_body() async throws {
+	func test08_find_with_body() async throws {
 		do {
 			let testDoc = ExpectedDoc(name: "Greg")
 			let insertEncodedData = try JSONEncoder().encode(testDoc)
