@@ -485,28 +485,13 @@ public class CouchDBClient {
     
     /// Find data in DB.
     ///
-    /// Examples:
+    /// Example:
     ///
-    /// Define your document model:
     /// ```swift
-    /// // Example struct
-    /// struct ExpectedDoc: CouchDBRepresentable, Codable {
-    ///     var name: String
-    ///     var _id: String?
-    ///     var _rev: String?
-    /// }
+    /// // find documents in DB by selector
+	/// let selector = ["selector": ["name": "Sam"]]
+    /// let docs: [ExpectedDoc] = try await couchDBClient.find(in: testsDB, selector: selector)
     /// ```
-    ///
-    /// Find documents by selector:
-    /// ```swift
-    /// // find documents from DB by selector
-    /// var response = try await couchDBClient.find(in: "databaseName", selector: ["selector": ["name": "Greg"]])
-    ///
-    /// // parse JSON
-    /// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
-    /// let docs = try JSONDecoder().decode([ExpectedDoc].self, from: Data(bytes))
-    /// ```
-    ///
     ///
     /// - Parameters:
     ///   - in dbName: DB name.
