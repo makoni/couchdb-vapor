@@ -537,7 +537,23 @@ public class CouchDBClient {
 			throw parsingError
 		}
 	}
-
+	
+	/// Find data in DB.
+	///
+	/// Example:
+	/// ```swift
+	/// let selector = ["selector": ["name": "Greg"]]
+	/// let bodyData = try JSONEncoder().encode(selector)
+	/// var findResponse = try await couchDBClient.find(in: testsDB, body: .data(bodyData))
+	///
+	/// let bytes = findResponse.body!.readBytes(length: findResponse.body!.readableBytes)!
+	/// let docs = try JSONDecoder().decode(CouchDBFindResponse<ExpectedDoc>.self, from: Data(bytes)).docs
+	/// ```
+	/// - Parameters:
+	///   - dbName: DB name.
+	///   - body: Request body data.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
+	/// - Returns: Request response.
 	public func find(in dbName: String, body: HTTPClient.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
