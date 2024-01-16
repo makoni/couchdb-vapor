@@ -243,6 +243,29 @@ final class CouchDBClientTests: XCTestCase {
 		XCTAssertNotNil(couchDBClient.sessionCookieExpires)
 	}
 
+	func test8_find_with_body() async throws {
+		do {
+			let testDoc = ExpectedDoc(name: "Greg")
+			let insertEncodedData = try JSONEncoder().encode(testDoc)
+			let insertResponse = try await couchDBClient.insert(
+				dbName: testsDB,
+				body: .data(insertEncodedData)
+			)
+
+			let selector = ["selector": ["name": "Greg"]]
+			let bodyData = try JSONEncoder().encode(selector)
+			var findResponse = try await couchDBClient.find(in: testsDB, body: .data(bodyData))
+
+			let bytes = findResponse.body!.readBytes(length: findResponse.body!.readableBytes)!
+			let decodedResponse = try JSONDecoder().decode(CouchDBFindResponse<ExpectedDoc>.self, from: Data(bytes))
+
+			XCTAssertTrue(decodedResponse.docs.count > 0)
+			XCTAssertEqual(decodedResponse.docs.first!._id, insertResponse.id)
+		} catch {
+			XCTFail(error.localizedDescription)
+		}
+	}
+
     func test99_deleteDB() async throws {
         do {
             try await couchDBClient.deleteDB(testsDB)
