@@ -22,6 +22,8 @@ public enum CouchDBClientError: Error {
 	case insertError(error: CouchDBError)
 	/// Update request wasn't successful.
 	case updateError(error: CouchDBError)
+	/// Find request wasn't successful.
+	case findError(error: CouchDBError)
 	/// Uknown response from CouchDB.
 	case unknownResponse
 	/// Wrong username or password.
@@ -41,6 +43,8 @@ extension CouchDBClientError: LocalizedError {
 			return "Insert request wasn't successful: \(error.localizedDescription)"
 		case .updateError(let error):
 			return "Update request wasn't successful: \(error.localizedDescription)"
+		case .findError(let error):
+			return "Find request wasn't successful: \(error.localizedDescription)"
 		case .unknownResponse:
 			return "Uknown response from CouchDB."
 		case .unauthorized:
@@ -532,7 +536,7 @@ public class CouchDBClient {
 			return doc.docs
 		} catch let parsingError {
 			if let couchdbError = try? decoder.decode(CouchDBError.self, from: data) {
-				throw CouchDBClientError.getError(error: couchdbError)
+				throw CouchDBClientError.findError(error: couchdbError)
 			}
 			throw parsingError
 		}
