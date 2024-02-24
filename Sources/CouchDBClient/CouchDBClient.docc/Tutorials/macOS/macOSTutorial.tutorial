@@ -7,7 +7,7 @@
     
     @Section(title: "Initializaton") {
         @ContentAndMedia {
-			Adding CouchDBClient in your project.
+			Adding CouchDBClient to your project.
             
             @Image(source: chapter1.png, alt: "Application icon")
         }
@@ -38,7 +38,7 @@
 			}
 			
 			@Step {
-				Define a model for your CouchDB document. It should confirm to `Codable` and `CouchDBRepresentable` protocols.
+				Define a model for your CouchDB document. It should conform to `Codable` and `CouchDBRepresentable` protocols.
 				
 				@Code(name: "main.swift", file: macOSTutorial-4.swift)
 			}
@@ -50,13 +50,13 @@
 			}
 			
 			@Step {
-				Here's an example of updating the document. CouchDBClient will also update `_rev` value of your document with the value from CouchDB after saving. 
+				Here's an example of updating the document. CouchDBClient will also update the `_rev` value of your document with the value from CouchDB after saving. 
 				
 				@Code(name: "main.swift", file: macOSTutorial-6.swift)
 			}
 			
 			@Step {
-				Getting document by it's `_id` from DB with that method will parse JSON into your model if you'll provide it as a generic type. 
+				Getting a document by its `_id` from DB with that method will parse JSON into your model if you provide it as a generic type. 
 				
 				@Code(name: "main.swift", file: macOSTutorial-7.swift)
 			}
