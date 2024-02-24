@@ -32,13 +32,13 @@
 			}
 			
 			@Step {
-				Define you data model for CouchDB document. Nested `Row` and `RowsResponse` models will be used to parse CouchDB responses.
+				Define your data model for CouchDB documents. Nested `Row` and `RowsResponse` models will be used to parse CouchDB responses.
 				
 				@Code(name: "main.swift", file: VaporTutorial-3.swift)
 			}
 			
 			@Step {
-				Get you document from DB. That example is using `CouchDB View` to find the document by url field. It's map function needs `key` param which is `appUrl` in our case.
+				Get your document from DB. That example is using `CouchDB View` to find the document by the url field. Its map function needs a `key` param which is `appUrl` in our case.
 				
 				@Code(name: "main.swift", file: VaporTutorial-4.swift)
 			}

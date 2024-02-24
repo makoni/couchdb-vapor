@@ -16,14 +16,14 @@
 
 
 
-This is simple lib to work with CouchDB in Swift.
+This is a simple lib to work with CouchDB in Swift.
 - Latest version is based on async/await and requires Swift 5.6 and newer. Works with Vapor 4.50 and newer.
 - Version 1.0.0 can be used with Vapor 4 without async/await. Swift 5.3 is required
-- You can use old version for Vapor 3 from vapor3 branch or using version < 1.0.0. 
+- You can use the old version for Vapor 3 from vapor3 branch or using version < 1.0.0.  
 
-The only depndency for this lib is <a href="https://github.com/swift-server/async-http-client">async-http-client</a>
+The only dependency for this lib is <a href="https://github.com/swift-server/async-http-client">async-http-client</a>
 
-## Documentaion
+## Documentation
 
 You can find docs, examples and even tutorials [here](https://spaceinbox.me/docs/couchdbclient/documentation/couchdbclient). 
 
@@ -55,7 +55,7 @@ let couchDBClient = CouchDBClient(
 )
 ```
 
-If you don’t want to have your password in the code you can pass COUCHDB_PASS param in you command line. For example you can run your Server Side Swift project:
+If you don’t want to have your password in the code you can pass COUCHDB_PASS param in your command line. For example you can run your Server Side Swift project:
 ```bash
 COUCHDB_PASS=myPassword /path/.build/x86_64-unknown-linux-gnu/release/Run
 ```
@@ -113,7 +113,7 @@ try await couchDBClient.update(
 print(doc) // doc will have updated name and _rev values now
 ```
 
-Delete data example:
+Delete data:
 
 ```swift
 let response = try await couchDBClient.delete(fromDb: "databaseName", doc: doc)
