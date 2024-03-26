@@ -704,7 +704,7 @@ public class CouchDBClient {
 
 		let encoder = JSONEncoder()
 		encoder.dateEncodingStrategy = dateEncodingStrategy
-		let encodedData = try JSONEncoder().encode(doc)
+		let encodedData = try encoder.encode(doc)
 
 		let updateResponse = try await update(
 			dbName: dbName,
