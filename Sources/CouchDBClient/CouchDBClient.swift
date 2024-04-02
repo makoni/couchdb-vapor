@@ -176,20 +176,21 @@ public class CouchDBClient {
 
 		let url = buildUrl(path: "/_all_dbs")
 
-		let request = try buildRequest(fromUrl: url, withMethod: .GET)
+		let request = try buildRequestNew(fromUrl: url, withMethod: .GET)
 		let response = try await httpClient
-			.execute(request: request)
-			.get()
+			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
 		}
 
-		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
-			throw CouchDBClientError.unknownResponse
-		}
+		let body = response.body
+		let expectedBytes = response.headers.first(name: "content-length").flatMap(Int.init)
+		var bytes = try await body.collect(upTo: expectedBytes ?? 1024 * 1024 * 10)
 
-		let data = Data(bytes)
+		guard let data = bytes.readData(length: bytes.readableBytes) else {
+			throw CouchDBClientError.noData
+		}
 		return try JSONDecoder().decode([String].self, from: data)
 	}
 
@@ -725,7 +726,7 @@ public class CouchDBClient {
 		doc._id = updateResponse.id
 	}
 
-	/// Insert data in DB.
+	/// Insert data in DB. Accepts HTTPClientRequest.Body as body parameter.
 	///
 	/// Examples:
 	///
@@ -744,9 +745,11 @@ public class CouchDBClient {
 	/// let testDoc = ExpectedDoc(name: "My name")
 	/// let data = try JSONEncoder().encode(testData)
 	///
+	/// let body: HTTPClientRequest.Body = .bytes(ByteBuffer(data: insertEncodeData))
+	///
 	/// let response = try await couchDBClient.insert(
 	///     dbName: "databaseName",
-	///     body: .data(data)
+	///     body: body
 	/// )
 	///
 	/// print(response)
@@ -757,7 +760,7 @@ public class CouchDBClient {
 	///   - body: Request body data.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Insert request response.
-	public func insert(dbName: String, body: HTTPClient.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
+	public func insert(dbName: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
 		let httpClient: HTTPClient
@@ -775,22 +778,24 @@ public class CouchDBClient {
 
 		let url = buildUrl(path: "/\(dbName)")
 
-		var request = try self.buildRequest(fromUrl: url, withMethod: .POST)
+		var request = try self.buildRequestNew(fromUrl: url, withMethod: .POST)
 		request.body = body
 
 		let response = try await httpClient
-			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
-			.get()
+			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
 		}
 
-		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
-			throw CouchDBClientError.unknownResponse
+		let body = response.body
+		let expectedBytes = response.headers.first(name: "content-length").flatMap(Int.init)
+		var bytes = try await body.collect(upTo: expectedBytes ?? 1024 * 1024 * 10)
+
+		guard let data = bytes.readData(length: bytes.readableBytes) else {
+			throw CouchDBClientError.noData
 		}
 
-		let data = Data(bytes)
 		let decoder = JSONDecoder()
 
 		do {
@@ -839,9 +844,11 @@ public class CouchDBClient {
 		encoder.dateEncodingStrategy = dateEncodingStrategy
 		let insertEncodeData = try encoder.encode(doc)
 
+		let body: HTTPClientRequest.Body = .bytes(ByteBuffer(data: insertEncodeData))
+
 		let insertResponse = try await insert(
 			dbName: dbName,
-			body: .data(insertEncodeData),
+			body: body,
 			eventLoopGroup: eventLoopGroup
 		)
 
@@ -1037,5 +1044,18 @@ internal extension CouchDBClient {
 			headers: headers,
 			body: nil
 		)
+	}
+
+	func buildRequestNew(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClientRequest  {
+		var headers = HTTPHeaders()
+		headers.add(name: "Content-Type", value: "application/json")
+		if let cookie = sessionCookie {
+			headers.add(name: "Cookie", value: cookie)
+		}
+
+		var request = HTTPClientRequest(url: url)
+		request.method = method
+		request.headers = headers
+		return request
 	}
 }
