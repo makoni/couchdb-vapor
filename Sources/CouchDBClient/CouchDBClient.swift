@@ -223,10 +223,9 @@ public class CouchDBClient {
 		}
 
 		let url = buildUrl(path: "/" + dbName)
-		let request = try buildRequest(fromUrl: url, withMethod: .HEAD)
+		let request = try buildRequestNew(fromUrl: url, withMethod: .HEAD)
 		let response = try await httpClient
-			.execute(request: request)
-			.get()
+			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
