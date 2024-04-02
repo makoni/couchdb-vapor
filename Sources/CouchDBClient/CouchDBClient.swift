@@ -322,21 +322,23 @@ public class CouchDBClient {
 
 		let url = buildUrl(path: "/\(dbName)")
 
-		let request = try self.buildRequest(fromUrl: url, withMethod: .DELETE)
+		let request = try self.buildRequestNew(fromUrl: url, withMethod: .DELETE)
 
 		let response = try await httpClient
-			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
-			.get()
+			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
 		}
 
-		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
-			throw CouchDBClientError.unknownResponse
+		let body = response.body
+		let expectedBytes = response.headers.first(name: "content-length").flatMap(Int.init)
+		var bytes = try await body.collect(upTo: expectedBytes ?? 1024 * 1024 * 10)
+
+		guard let data = bytes.readData(length: bytes.readableBytes) else {
+			throw CouchDBClientError.noData
 		}
 
-		let data = Data(bytes)
 		let decoder = JSONDecoder()
 
 		do {
