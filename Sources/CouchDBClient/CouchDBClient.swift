@@ -176,7 +176,7 @@ public class CouchDBClient {
 
 		let url = buildUrl(path: "/_all_dbs")
 
-		let request = try buildRequestNew(fromUrl: url, withMethod: .GET)
+		let request = try buildRequest(fromUrl: url, withMethod: .GET)
 		let response = try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
@@ -223,7 +223,7 @@ public class CouchDBClient {
 		}
 
 		let url = buildUrl(path: "/" + dbName)
-		let request = try buildRequestNew(fromUrl: url, withMethod: .HEAD)
+		let request = try buildRequest(fromUrl: url, withMethod: .HEAD)
 		let response = try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
@@ -263,7 +263,7 @@ public class CouchDBClient {
 
 		let url = buildUrl(path: "/\(dbName)")
 
-		let request = try self.buildRequestNew(fromUrl: url, withMethod: .PUT)
+		let request = try self.buildRequest(fromUrl: url, withMethod: .PUT)
 
 		let response = try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
@@ -322,7 +322,7 @@ public class CouchDBClient {
 
 		let url = buildUrl(path: "/\(dbName)")
 
-		let request = try self.buildRequestNew(fromUrl: url, withMethod: .DELETE)
+		let request = try self.buildRequest(fromUrl: url, withMethod: .DELETE)
 
 		let response = try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
@@ -447,7 +447,7 @@ public class CouchDBClient {
 		}
 
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: queryItems ?? [])
-		let request = try buildRequestNew(fromUrl: url, withMethod: .GET)
+		let request = try buildRequest(fromUrl: url, withMethod: .GET)
 		let response = try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
@@ -595,7 +595,7 @@ public class CouchDBClient {
 		}
 
 		let url = buildUrl(path: "/" + dbName + "/_find", query: [])
-		var request = try buildRequestNew(fromUrl: url, withMethod: .POST)
+		var request = try buildRequest(fromUrl: url, withMethod: .POST)
 		request.body = body
 		let response = try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
@@ -669,7 +669,7 @@ public class CouchDBClient {
 		}
 
 		let url = buildUrl(path: "/" + dbName + "/" + uri)
-		var request = try buildRequestNew(fromUrl: url, withMethod: .PUT)
+		var request = try buildRequest(fromUrl: url, withMethod: .PUT)
 		request.body = body
 
 		let response = try await httpClient
@@ -812,7 +812,7 @@ public class CouchDBClient {
 
 		let url = buildUrl(path: "/\(dbName)")
 
-		var request = try self.buildRequestNew(fromUrl: url, withMethod: .POST)
+		var request = try self.buildRequest(fromUrl: url, withMethod: .POST)
 		request.body = body
 
 		let response = try await httpClient
@@ -925,7 +925,7 @@ public class CouchDBClient {
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: [
 			URLQueryItem(name: "rev", value: rev)
 		])
-		let request = try self.buildRequestNew(fromUrl: url, withMethod: .DELETE)
+		let request = try self.buildRequest(fromUrl: url, withMethod: .DELETE)
 
 		let response = try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
@@ -1063,7 +1063,7 @@ internal extension CouchDBClient {
 		return authData
 	}
 
-	func buildRequestNew(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClientRequest  {
+	func buildRequest(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClientRequest  {
 		var headers = HTTPHeaders()
 		headers.add(name: "Content-Type", value: "application/json")
 		if let cookie = sessionCookie {
