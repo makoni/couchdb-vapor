@@ -532,18 +532,22 @@ public class CouchDBClient {
 	public func find<T: Codable & CouchDBRepresentable>(in dbName: String, selector: Codable, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> [T] {
 		let encoder = JSONEncoder()
 		let selectorData = try encoder.encode(selector)
+		let requestBody: HTTPClientRequest.Body = .bytes(ByteBuffer(data: selectorData))
 
 		let findResponse = try await find(
 			in: dbName,
-			body: .data(selectorData),
+			body: requestBody,
 			eventLoopGroup: eventLoopGroup
 		)
 
-		guard var body = findResponse.body, let bytes = body.readBytes(length: body.readableBytes) else {
-			throw CouchDBClientError.unknownResponse
+		let body = findResponse.body
+		let expectedBytes = findResponse.headers.first(name: "content-length").flatMap(Int.init)
+		var bytes = try await body.collect(upTo: expectedBytes ?? 1024 * 1024 * 10)
+
+		guard let data = bytes.readData(length: bytes.readableBytes) else {
+			throw CouchDBClientError.noData
 		}
 
-		let data = Data(bytes)
 		let decoder = JSONDecoder()
 		decoder.dateDecodingStrategy = dateDecodingStrategy
 
@@ -574,7 +578,7 @@ public class CouchDBClient {
 	///   - body: Request body data.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Request response.
-	public func find(in dbName: String, body: HTTPClient.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
+	public func find(in dbName: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
 		let httpClient: HTTPClient
@@ -591,11 +595,10 @@ public class CouchDBClient {
 		}
 
 		let url = buildUrl(path: "/" + dbName + "/_find", query: [])
-		var request = try buildRequest(fromUrl: url, withMethod: .POST)
+		var request = try buildRequestNew(fromUrl: url, withMethod: .POST)
 		request.body = body
 		let response = try await httpClient
-			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
-			.get()
+			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
@@ -922,21 +925,23 @@ public class CouchDBClient {
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: [
 			URLQueryItem(name: "rev", value: rev)
 		])
-		let request = try self.buildRequest(fromUrl: url, withMethod: .DELETE)
+		let request = try self.buildRequestNew(fromUrl: url, withMethod: .DELETE)
 
 		let response = try await httpClient
-			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
-			.get()
+			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
 		}
 
-		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
+		let body = response.body
+		let expectedBytes = response.headers.first(name: "content-length").flatMap(Int.init)
+		var bytes = try await body.collect(upTo: expectedBytes ?? 1024 * 1024 * 10)
+
+		guard let data = bytes.readData(length: bytes.readableBytes) else {
 			return CouchUpdateResponse(ok: false, id: "", rev: "")
 		}
 
-		let data = Data(bytes)
 		return try JSONDecoder().decode(CouchUpdateResponse.self, from: data)
 	}
 
@@ -1056,25 +1061,6 @@ internal extension CouchDBClient {
 		let data = Data(bytes)
 		authData = try JSONDecoder().decode(CreateSessionResponse.self, from: data)
 		return authData
-	}
-
-	/// Build HTTP request from url string.
-	/// - Parameters:
-	///   - url: URL string.
-	///   - method: HTTP method.
-	/// - Returns: HTTP Request.
-	func buildRequest(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClient.Request  {
-		var headers = HTTPHeaders()
-		headers.add(name: "Content-Type", value: "application/json")
-		if let cookie = sessionCookie {
-			headers.add(name: "Cookie", value: cookie)
-		}
-		return try HTTPClient.Request(
-			url: url,
-			method: method,
-			headers: headers,
-			body: nil
-		)
 	}
 
 	func buildRequestNew(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClientRequest  {

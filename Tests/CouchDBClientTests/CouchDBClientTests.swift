@@ -272,15 +272,31 @@ final class CouchDBClientTests: XCTestCase {
 				body: .bytes(ByteBuffer(data: insertEncodedData))
 			)
 
+			try await Task.sleep(nanoseconds: NSEC_PER_SEC * 2)
+
 			let selector = ["selector": ["name": "Greg"]]
 			let bodyData = try JSONEncoder().encode(selector)
-			var findResponse = try await couchDBClient.find(in: testsDB, body: .data(bodyData))
+			let requestBody: HTTPClientRequest.Body = .bytes(ByteBuffer(data: bodyData))
 
-			let bytes = findResponse.body!.readBytes(length: findResponse.body!.readableBytes)!
-			let decodedResponse = try JSONDecoder().decode(CouchDBFindResponse<ExpectedDoc>.self, from: Data(bytes))
+			let findResponse = try await couchDBClient.find(
+				in: testsDB,
+				body: requestBody
+			)
+
+			let body = findResponse.body
+			let expectedBytes = findResponse.headers.first(name: "content-length").flatMap(Int.init)
+			var bytes = try await body.collect(upTo: expectedBytes ?? 1024 * 1024 * 10)
+
+			guard let data = bytes.readData(length: bytes.readableBytes) else {
+				throw CouchDBClientError.noData
+			}
+
+			let decodedResponse = try JSONDecoder().decode(CouchDBFindResponse<ExpectedDoc>.self, from: data)
 
 			XCTAssertTrue(decodedResponse.docs.count > 0)
 			XCTAssertEqual(decodedResponse.docs.first!._id, insertResponse.id)
+
+			try await Task.sleep(nanoseconds: NSEC_PER_SEC * 2)
 
 			_ = try await couchDBClient.delete(
 				fromDb: testsDB,
@@ -301,11 +317,15 @@ final class CouchDBClientTests: XCTestCase {
 				body: .bytes(ByteBuffer(data: insertEncodedData))
 			)
 
+			try await Task.sleep(nanoseconds: NSEC_PER_SEC * 2)
+
 			let selector = ["selector": ["name": "Sam"]]
 			let docs: [ExpectedDoc] = try await couchDBClient.find(in: testsDB, selector: selector)
 
 			XCTAssertTrue(docs.count > 0)
 			XCTAssertEqual(docs.first!._id, insertResponse.id)
+
+			try await Task.sleep(nanoseconds: NSEC_PER_SEC * 2)
 
 			_ = try await couchDBClient.delete(
 				fromDb: testsDB,
