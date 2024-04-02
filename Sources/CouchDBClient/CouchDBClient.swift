@@ -631,11 +631,12 @@ public class CouchDBClient {
 	///
 	/// // encode document into JSON string
 	/// let data = try encoder.encode(updatedData)
+	/// let body: HTTPClientRequest.Body = .bytes(ByteBuffer(data: data))
 	///
 	/// let response = try await couchDBClient.update(
 	///     dbName: testsDB,
 	///     uri: doc._id!,
-	///     body: .data(data)
+	///     body: body
 	/// )
 	///
 	/// print(response)
@@ -645,10 +646,10 @@ public class CouchDBClient {
 	/// - Parameters:
 	///   - dbName: DB name.
 	///   - uri: URI (view or document id).
-	///   - body: Request body data. New will be created if nil value provided.
+	///   - body: Request body data.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Update response.
-	public func update(dbName: String, uri: String, body: HTTPClient.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
+	public func update(dbName: String, uri: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
 		let httpClient: HTTPClient
@@ -665,22 +666,24 @@ public class CouchDBClient {
 		}
 
 		let url = buildUrl(path: "/" + dbName + "/" + uri)
-		var request = try buildRequest(fromUrl: url, withMethod: .PUT)
+		var request = try buildRequestNew(fromUrl: url, withMethod: .PUT)
 		request.body = body
 
 		let response = try await httpClient
-			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
-			.get()
+			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
 		}
 
-		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
-			throw CouchDBClientError.unknownResponse
+		let body = response.body
+		let expectedBytes = response.headers.first(name: "content-length").flatMap(Int.init)
+		var bytes = try await body.collect(upTo: expectedBytes ?? 1024 * 1024 * 10)
+
+		guard let data = bytes.readData(length: bytes.readableBytes) else {
+			throw CouchDBClientError.noData
 		}
 
-		let data = Data(bytes)
 		let decoder = JSONDecoder()
 
 		do {
@@ -737,10 +740,12 @@ public class CouchDBClient {
 		encoder.dateEncodingStrategy = dateEncodingStrategy
 		let encodedData = try encoder.encode(doc)
 
+		let body: HTTPClientRequest.Body = .bytes(ByteBuffer(data: encodedData))
+
 		let updateResponse = try await update(
 			dbName: dbName,
 			uri: id,
-			body: .data(encodedData),
+			body: body,
 			eventLoopGroup: eventLoopGroup
 		)
 
