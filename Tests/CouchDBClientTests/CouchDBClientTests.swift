@@ -198,10 +198,12 @@ final class CouchDBClientTests: XCTestCase {
 
 		do {
 			let updateEncodedData = try JSONEncoder().encode(testDoc)
+			let body: HTTPClientRequest.Body = .bytes(ByteBuffer(data: updateEncodedData))
+
 			let updateResponse = try await couchDBClient.update(
 				dbName: testsDB,
 				uri: expectedInsertId,
-				body: .data(updateEncodedData)
+				body: body
 			)
 
 			XCTAssertFalse(updateResponse.rev.isEmpty)
