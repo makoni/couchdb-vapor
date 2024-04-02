@@ -28,6 +28,8 @@ public enum CouchDBClientError: Error {
 	case unknownResponse
 	/// Wrong username or password.
 	case unauthorized
+	/// Missing data in response body.
+	case noData
 }
 
 extension CouchDBClientError: LocalizedError {
@@ -49,6 +51,8 @@ extension CouchDBClientError: LocalizedError {
 			return "Uknown response from CouchDB."
 		case .unauthorized:
 			return "Wrong username or password."
+		case .noData:
+			return "Missing data in response body."
 		}
 	}
 }
