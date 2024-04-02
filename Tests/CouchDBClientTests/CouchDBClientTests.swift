@@ -115,14 +115,20 @@ final class CouchDBClientTests: XCTestCase {
 		XCTAssertEqual(testDoc._id, expectedInsertId)
 
 		// get updated doc
-		var getResponse2 = try await couchDBClient.get(
+		let getResponse2 = try await couchDBClient.get(
 			dbName: testsDB,
 			uri: expectedInsertId
 		)
 		XCTAssertNotNil(getResponse2.body)
 
-		let bytes2 = getResponse2.body!.readBytes(length: getResponse2.body!.readableBytes)!
-		testDoc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes2))
+		let expectedBytes2 = getResponse2.headers.first(name: "content-length").flatMap(Int.init) ?? 1024 * 1024 * 10
+		var bytes2 = try await getResponse2.body.collect(upTo: expectedBytes2)
+		let data2 = bytes2.readData(length: bytes2.readableBytes)
+
+		testDoc = try JSONDecoder().decode(
+			ExpectedDoc.self,
+			from: data2!
+		)
 
 		XCTAssertEqual(expectedName, testDoc.name)
 
@@ -151,7 +157,7 @@ final class CouchDBClientTests: XCTestCase {
 			let insertEncodeData = try JSONEncoder().encode(testDoc)
 			let response = try await couchDBClient.insert(
 				dbName: testsDB,
-				body: .data(insertEncodeData)
+				body: .bytes(ByteBuffer(data: insertEncodeData))
 			)
 
 			XCTAssertEqual(response.ok, true)
@@ -167,11 +173,17 @@ final class CouchDBClientTests: XCTestCase {
 		// Test Get
 		var expectedName = testDoc.name
 		do {
-			var response = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId)
+			let response = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId)
 			XCTAssertNotNil(response.body)
 
-			let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
-			testDoc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes))
+			let expectedBytes = response.headers.first(name: "content-length").flatMap(Int.init) ?? 1024 * 1024 * 10
+			var bytes = try await response.body.collect(upTo: expectedBytes)
+			let data = bytes.readData(length: bytes.readableBytes)
+
+			testDoc = try JSONDecoder().decode(
+				ExpectedDoc.self,
+				from: data!
+			)
 
 			XCTAssertEqual(expectedName, testDoc.name)
 			XCTAssertEqual(testDoc._rev, expectedInsertRev)
@@ -197,14 +209,20 @@ final class CouchDBClientTests: XCTestCase {
 			XCTAssertNotEqual(updateResponse.rev, expectedInsertRev)
 			XCTAssertEqual(updateResponse.id, expectedInsertId)
 
-			var getResponse = try await couchDBClient.get(
+			let getResponse = try await couchDBClient.get(
 				dbName: testsDB,
 				uri: expectedInsertId
 			)
 			XCTAssertNotNil(getResponse.body)
 
-			let bytes = getResponse.body!.readBytes(length: getResponse.body!.readableBytes)!
-			testDoc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes))
+			let expectedBytes = getResponse.headers.first(name: "content-length").flatMap(Int.init) ?? 1024 * 1024 * 10
+			var bytes = try await getResponse.body.collect(upTo: expectedBytes)
+			let data = bytes.readData(length: bytes.readableBytes)
+
+			testDoc = try JSONDecoder().decode(
+				ExpectedDoc.self,
+				from: data!
+			)
 
 			XCTAssertEqual(expectedName, testDoc.name)
 		} catch let error {
@@ -249,7 +267,7 @@ final class CouchDBClientTests: XCTestCase {
 			let insertEncodedData = try JSONEncoder().encode(testDoc)
 			let insertResponse = try await couchDBClient.insert(
 				dbName: testsDB,
-				body: .data(insertEncodedData)
+				body: .bytes(ByteBuffer(data: insertEncodedData))
 			)
 
 			let selector = ["selector": ["name": "Greg"]]
@@ -278,7 +296,7 @@ final class CouchDBClientTests: XCTestCase {
 			let insertEncodedData = try JSONEncoder().encode(testDoc)
 			let insertResponse = try await couchDBClient.insert(
 				dbName: testsDB,
-				body: .data(insertEncodedData)
+				body: .bytes(ByteBuffer(data: insertEncodedData))
 			)
 
 			let selector = ["selector": ["name": "Sam"]]

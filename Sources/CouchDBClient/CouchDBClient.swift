@@ -369,11 +369,22 @@ public class CouchDBClient {
 	/// Get document by ID:
 	/// ```swift
 	/// // get data from DB by document ID
-	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId")
+	/// var response = try await couchDBClient.get(
+	///     dbName: "databaseName",
+	///     uri: "documentId"
+	/// )
 	///
 	/// // parse JSON
-	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
-	/// let doc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes))
+	/// let expectedBytes = response.headers
+	///     .first(name: "content-length")
+	///     .flatMap(Int.init) ?? 1024 * 1024 * 10
+	/// var bytes = try await response.body.collect(upTo: expectedBytes)
+	/// let data = bytes.readData(length: bytes.readableBytes)
+	///
+	/// let doc = try JSONDecoder().decode(
+	///     ExpectedDoc.self,
+	///     from: data!
+	/// )
 	/// ```
 	///
 	/// You can also provide CouchDB view document as uri and key in query.
@@ -397,8 +408,18 @@ public class CouchDBClient {
 	///     uri: "_design/all/_view/by_url",
 	///     query: ["key": "\"\(url)\""]
 	/// )
-	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
-	/// let decodedResponse = try JSONDecoder().decode(RowsResponse.self, from: data)
+	///
+	/// let expectedBytes = response.headers
+	///     .first(name: "content-length")
+	///     .flatMap(Int.init) ?? 1024 * 1024 * 10
+	/// var bytes = try await response.body.collect(upTo: expectedBytes)
+	/// let data = bytes.readData(length: bytes.readableBytes)
+	///
+	/// let decodedResponse = try JSONDecoder().decode(
+	///     RowsResponse.self,
+	///     from: data!
+	/// )
+	///
 	/// print(decodedResponse.rows)
 	/// print(decodedResponse.rows.first?.value)
 	/// ```
@@ -409,7 +430,7 @@ public class CouchDBClient {
 	///   - query: Request query items.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Request response.
-	public func get(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
+	public func get(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
 		let httpClient: HTTPClient
@@ -426,10 +447,9 @@ public class CouchDBClient {
 		}
 
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: queryItems ?? [])
-		let request = try buildRequest(fromUrl: url, withMethod: .GET)
+		let request = try buildRequestNew(fromUrl: url, withMethod: .GET)
 		let response = try await httpClient
-			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
-			.get()
+			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
@@ -466,17 +486,20 @@ public class CouchDBClient {
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: An object or a struct (of generic type) parsed from JSON.
 	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
-		let response = try await get(dbName: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
+		let response: HTTPClientResponse = try await get(dbName: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
 
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
 		}
 
-		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else {
-			throw CouchDBClientError.unknownResponse
+		let body = response.body
+		let expectedBytes = response.headers.first(name: "content-length").flatMap(Int.init)
+		var bytes = try await body.collect(upTo: expectedBytes ?? 1024 * 1024 * 10)
+
+		guard let data = bytes.readData(length: bytes.readableBytes) else {
+			throw CouchDBClientError.noData
 		}
 
-		let data = Data(bytes)
 		let decoder = JSONDecoder()
 		decoder.dateDecodingStrategy = dateDecodingStrategy
 
