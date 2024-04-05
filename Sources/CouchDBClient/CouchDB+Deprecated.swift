@@ -68,7 +68,7 @@ extension CouchDBClient {
 	///   - query: Request query items.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Request response.
-	@available(*, deprecated, message: "Use the new get(fromDB:uri:queryItems) method.")
+	@available(*, deprecated, message: "Use the new `get(fromDB:uri:queryItems:eventLoopGroup)` method.")
 	public func get(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -114,7 +114,7 @@ extension CouchDBClient {
 	///   - body: Request body data.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Request response.
-	@available(*, deprecated, message: "Use the new get(fromDB:uri:queryItems) method.")
+	@available(*, deprecated, message: "Use the new 'find(inDB:body:eventLoopGroup)' method.")
 	public func find(in dbName: String, body: HTTPClient.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClient.Response {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
