@@ -465,6 +465,11 @@ public class CouchDBClient {
 		return response
 	}
 
+	@available(*, deprecated, renamed: "get", message: "Renamed to: get(fromDB:uri:queryItems:dateDecodingStrategy:eventLoopGroup)")
+	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
+		return try await get(fromDB: dbName, uri: uri, queryItems: queryItems, dateDecodingStrategy: dateDecodingStrategy, eventLoopGroup: eventLoopGroup)
+	}
+
 
 	/// Get a document from DB. It will parse JSON using provided generic type. Check an example in Discussion.
 	///
@@ -492,7 +497,7 @@ public class CouchDBClient {
 	///   - queryItems: Request query items.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: An object or a struct (of generic type) parsed from JSON.
-	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
+	public func get <T: Codable & CouchDBRepresentable>(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		let response: HTTPClientResponse = try await get(fromDB: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
 
 		if response.status == .unauthorized {
@@ -520,7 +525,12 @@ public class CouchDBClient {
 			throw parsingError
 		}
 	}
-    
+
+	@available(*, deprecated, renamed: "find", message: "Renamed to: find(inDB:selector:dateDecodingStrategy:eventLoopGroup)")
+	public func find<T: Codable & CouchDBRepresentable>(in dbName: String, selector: Codable, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> [T] {
+		return try await find(inDB: dbName, selector: selector, dateDecodingStrategy: dateDecodingStrategy, eventLoopGroup: eventLoopGroup)
+	}
+
     /// Find data in DB by selector.
     ///
     /// Example:
@@ -536,7 +546,7 @@ public class CouchDBClient {
     ///   - selector: Codable representation of json selector query.
     ///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
     /// - Returns: Array of documents [T].
-	public func find<T: Codable & CouchDBRepresentable>(in dbName: String, selector: Codable, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> [T] {
+	public func find<T: Codable & CouchDBRepresentable>(inDB dbName: String, selector: Codable, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> [T] {
 		let encoder = JSONEncoder()
 		let selectorData = try encoder.encode(selector)
 		let requestBody: HTTPClientRequest.Body = .bytes(ByteBuffer(data: selectorData))

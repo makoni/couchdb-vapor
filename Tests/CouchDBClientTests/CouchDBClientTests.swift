@@ -85,7 +85,7 @@ final class CouchDBClientTests: XCTestCase {
 
 		// get inserted doc
 		do {
-			testDoc = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId)
+			testDoc = try await couchDBClient.get(fromDB: testsDB, uri: expectedInsertId)
 		} catch CouchDBClientError.getError(let error) {
 			XCTFail(error.reason)
 			return
@@ -315,7 +315,7 @@ final class CouchDBClientTests: XCTestCase {
 			)
 
 			let selector = ["selector": ["name": "Sam"]]
-			let docs: [ExpectedDoc] = try await couchDBClient.find(in: testsDB, selector: selector)
+			let docs: [ExpectedDoc] = try await couchDBClient.find(inDB: testsDB, selector: selector)
 
 			XCTAssertTrue(docs.count > 0)
 			XCTAssertEqual(docs.first!._id, insertResponse.id)
