@@ -150,7 +150,7 @@ extension CouchDBClient {
 	///   - url: URL string.
 	///   - method: HTTP method.
 	/// - Returns: HTTP Request.
-	func buildRequestOld(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClient.Request  {
+	private func buildRequestOld(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClient.Request  {
 		var headers = HTTPHeaders()
 		headers.add(name: "Content-Type", value: "application/json")
 		if let cookie = sessionCookie {
