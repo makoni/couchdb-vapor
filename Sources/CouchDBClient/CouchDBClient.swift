@@ -404,7 +404,7 @@ public class CouchDBClient {
 	/// Get data and parse RowsResponse:
 	/// ```swift
 	/// let response = try await couchDBClient.get(
-	///     dbName: "databaseName",
+	///     fromDB: "databaseName",
 	///     uri: "_design/all/_view/by_url",
 	///     query: ["key": "\"\(url)\""]
 	/// )
@@ -482,7 +482,7 @@ public class CouchDBClient {
 	/// Get document by ID:
 	/// ```swift
 	/// // get data from DB by document ID
-	/// let doc: ExpectedDoc = try await couchDBClient.get(dbName: "databaseName", uri: "documentId")
+	/// let doc: ExpectedDoc = try await couchDBClient.get(fromDB: "databaseName", uri: "documentId")
 	/// ```
 	///
 	/// - Parameters:
@@ -527,7 +527,7 @@ public class CouchDBClient {
     /// ```swift
     /// // find documents in DB by selector
 	/// let selector = ["selector": ["name": "Sam"]]
-    /// let docs: [ExpectedDoc] = try await couchDBClient.find(in: testsDB, selector: selector)
+    /// let docs: [ExpectedDoc] = try await couchDBClient.find(inDB: testsDB, selector: selector)
     /// ```
     ///
     /// - Parameters:
@@ -574,7 +574,7 @@ public class CouchDBClient {
 	/// ```swift
 	/// let selector = ["selector": ["name": "Greg"]]
 	/// let bodyData = try JSONEncoder().encode(selector)
-	/// var findResponse = try await couchDBClient.find(in: testsDB, body: .data(bodyData))
+	/// var findResponse = try await couchDBClient.find(inDB: testsDB, body: .data(bodyData))
 	///
 	/// let bytes = findResponse.body!.readBytes(length: findResponse.body!.readableBytes)!
 	/// let docs = try JSONDecoder().decode(CouchDBFindResponse<ExpectedDoc>.self, from: Data(bytes)).docs
