@@ -1056,9 +1056,14 @@ internal extension CouchDBClient {
 
 		sessionCookie = cookie
 
-		guard var body = response.body, let bytes = body.readBytes(length: body.readableBytes) else { return nil }
+		let body = response.body
+		let expectedBytes = response.headers.first(name: "content-length").flatMap(Int.init)
+		var bytes = try await body.collect(upTo: expectedBytes ?? 1024 * 1024 * 10)
 
-		let data = Data(bytes)
+		guard let data = bytes.readData(length: bytes.readableBytes) else {
+			throw CouchDBClientError.noData
+		}
+
 		authData = try JSONDecoder().decode(CreateSessionResponse.self, from: data)
 		return authData
 	}
