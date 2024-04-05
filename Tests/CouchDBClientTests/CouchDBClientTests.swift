@@ -272,7 +272,6 @@ final class CouchDBClientTests: XCTestCase {
 				body: .bytes(ByteBuffer(data: insertEncodedData))
 			)
 
-			try await Task.sleep(nanoseconds: NSEC_PER_SEC * 2)
 
 			let selector = ["selector": ["name": "Greg"]]
 			let bodyData = try JSONEncoder().encode(selector)
@@ -294,14 +293,12 @@ final class CouchDBClientTests: XCTestCase {
 			let decodedResponse = try JSONDecoder().decode(CouchDBFindResponse<ExpectedDoc>.self, from: data)
 
 			XCTAssertTrue(decodedResponse.docs.count > 0)
-			XCTAssertEqual(decodedResponse.docs.first!._id, insertResponse.id)
-
-			try await Task.sleep(nanoseconds: NSEC_PER_SEC * 2)
+			XCTAssertTrue(decodedResponse.docs.contains(where: { $0._id == insertResponse.id }))
 
 			_ = try await couchDBClient.delete(
 				fromDb: testsDB,
-				uri: decodedResponse.docs.first!._id!,
-				rev: decodedResponse.docs.first!._rev!
+				uri: insertResponse.id,
+				rev: insertResponse.rev
 			)
 		} catch {
 			XCTFail(error.localizedDescription)
@@ -317,15 +314,11 @@ final class CouchDBClientTests: XCTestCase {
 				body: .bytes(ByteBuffer(data: insertEncodedData))
 			)
 
-			try await Task.sleep(nanoseconds: NSEC_PER_SEC * 2)
-
 			let selector = ["selector": ["name": "Sam"]]
 			let docs: [ExpectedDoc] = try await couchDBClient.find(in: testsDB, selector: selector)
 
 			XCTAssertTrue(docs.count > 0)
 			XCTAssertEqual(docs.first!._id, insertResponse.id)
-
-			try await Task.sleep(nanoseconds: NSEC_PER_SEC * 2)
 
 			_ = try await couchDBClient.delete(
 				fromDb: testsDB,
