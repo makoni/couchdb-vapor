@@ -465,12 +465,6 @@ public class CouchDBClient {
 		return response
 	}
 
-	@available(*, deprecated, renamed: "get", message: "Renamed to: get(fromDB:uri:queryItems:dateDecodingStrategy:eventLoopGroup)")
-	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
-		return try await get(fromDB: dbName, uri: uri, queryItems: queryItems, dateDecodingStrategy: dateDecodingStrategy, eventLoopGroup: eventLoopGroup)
-	}
-
-
 	/// Get a document from DB. It will parse JSON using provided generic type. Check an example in Discussion.
 	///
 	/// Example:
@@ -524,11 +518,6 @@ public class CouchDBClient {
 			}
 			throw parsingError
 		}
-	}
-
-	@available(*, deprecated, renamed: "find", message: "Renamed to: find(inDB:selector:dateDecodingStrategy:eventLoopGroup)")
-	public func find<T: Codable & CouchDBRepresentable>(in dbName: String, selector: Codable, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> [T] {
-		return try await find(inDB: dbName, selector: selector, dateDecodingStrategy: dateDecodingStrategy, eventLoopGroup: eventLoopGroup)
 	}
 
     /// Find data in DB by selector.

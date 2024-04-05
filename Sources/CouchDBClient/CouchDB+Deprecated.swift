@@ -163,4 +163,14 @@ extension CouchDBClient {
 			body: nil
 		)
 	}
+
+	@available(*, deprecated, renamed: "get", message: "Renamed to: get(fromDB:uri:queryItems:dateDecodingStrategy:eventLoopGroup)")
+	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
+		return try await get(fromDB: dbName, uri: uri, queryItems: queryItems, dateDecodingStrategy: dateDecodingStrategy, eventLoopGroup: eventLoopGroup)
+	}
+
+	@available(*, deprecated, renamed: "find", message: "Renamed to: find(inDB:selector:dateDecodingStrategy:eventLoopGroup)")
+	public func find<T: Codable & CouchDBRepresentable>(in dbName: String, selector: Codable, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> [T] {
+		return try await find(inDB: dbName, selector: selector, dateDecodingStrategy: dateDecodingStrategy, eventLoopGroup: eventLoopGroup)
+	}
 }
