@@ -85,7 +85,7 @@ public class CouchDBClient {
 	/// Base URL.
 	private var couchBaseURL: String = ""
 	/// Session cookie for requests that needs authorization.
-	private var sessionCookie: String?
+	internal var sessionCookie: String?
 	/// Session cookie as Cookie struct
 	internal var sessionCookieExpires: Date?
 	/// CouchDB user name.
@@ -430,7 +430,7 @@ public class CouchDBClient {
 	///   - query: Request query items.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Request response.
-	public func get(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
+	public func get(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
 		let httpClient: HTTPClient
@@ -493,7 +493,7 @@ public class CouchDBClient {
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: An object or a struct (of generic type) parsed from JSON.
 	public func get <T: Codable & CouchDBRepresentable>(dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
-		let response: HTTPClientResponse = try await get(dbName: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
+		let response: HTTPClientResponse = try await get(fromDB: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
 
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
@@ -542,7 +542,7 @@ public class CouchDBClient {
 		let requestBody: HTTPClientRequest.Body = .bytes(ByteBuffer(data: selectorData))
 
 		let findResponse = try await find(
-			in: dbName,
+			inDB: dbName,
 			body: requestBody,
 			eventLoopGroup: eventLoopGroup
 		)
@@ -585,7 +585,7 @@ public class CouchDBClient {
 	///   - body: Request body data.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Request response.
-	public func find(in dbName: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
+	public func find(inDB dbName: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
 		let httpClient: HTTPClient

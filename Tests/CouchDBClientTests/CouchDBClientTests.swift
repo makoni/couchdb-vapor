@@ -116,7 +116,7 @@ final class CouchDBClientTests: XCTestCase {
 
 		// get updated doc
 		let getResponse2 = try await couchDBClient.get(
-			dbName: testsDB,
+			fromDB: testsDB,
 			uri: expectedInsertId
 		)
 		XCTAssertNotNil(getResponse2.body)
@@ -173,7 +173,7 @@ final class CouchDBClientTests: XCTestCase {
 		// Test Get
 		var expectedName = testDoc.name
 		do {
-			let response = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId)
+			let response = try await couchDBClient.get(fromDB: testsDB, uri: expectedInsertId)
 			XCTAssertNotNil(response.body)
 
 			let expectedBytes = response.headers.first(name: "content-length").flatMap(Int.init) ?? 1024 * 1024 * 10
@@ -212,7 +212,7 @@ final class CouchDBClientTests: XCTestCase {
 			XCTAssertEqual(updateResponse.id, expectedInsertId)
 
 			let getResponse = try await couchDBClient.get(
-				dbName: testsDB,
+				fromDB: testsDB,
 				uri: expectedInsertId
 			)
 			XCTAssertNotNil(getResponse.body)
@@ -278,7 +278,7 @@ final class CouchDBClientTests: XCTestCase {
 			let requestBody: HTTPClientRequest.Body = .bytes(ByteBuffer(data: bodyData))
 
 			let findResponse = try await couchDBClient.find(
-				in: testsDB,
+				inDB: testsDB,
 				body: requestBody
 			)
 
