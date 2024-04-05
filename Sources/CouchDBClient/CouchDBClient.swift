@@ -448,12 +448,19 @@ public class CouchDBClient {
 
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: queryItems ?? [])
 		let request = try buildRequest(fromUrl: url, withMethod: .GET)
-		let response = try await httpClient
+		var response = try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
 		}
+
+		let body = response.body
+		let expectedBytes = response.headers.first(name: "content-length").flatMap(Int.init) ?? 1024 * 1024 * 10
+
+		response.body = .bytes(
+			try await body.collect(upTo: expectedBytes)
+		)
 
 		return response
 	}
@@ -597,12 +604,19 @@ public class CouchDBClient {
 		let url = buildUrl(path: "/" + dbName + "/_find", query: [])
 		var request = try buildRequest(fromUrl: url, withMethod: .POST)
 		request.body = body
-		let response = try await httpClient
+		var response = try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
 		}
+
+		let body = response.body
+		let expectedBytes = response.headers.first(name: "content-length").flatMap(Int.init) ?? 1024 * 1024 * 10
+
+		response.body = .bytes(
+			try await body.collect(upTo: expectedBytes)
+		)
 
 		return response
 	}
@@ -1015,14 +1029,14 @@ internal extension CouchDBClient {
 
 		let url = buildUrl(path: "/_session")
 
-		var request = try HTTPClient.Request(url:url, method: .POST)
+		var request = HTTPClientRequest(url: url)
+		request.method = .POST
 		request.headers.add(name: "Content-Type", value: "application/x-www-form-urlencoded")
 		let dataString = "name=\(userName)&password=\(userPassword)"
-		request.body = HTTPClient.Body.string(dataString)
+		request.body = .bytes(ByteBuffer(string: dataString))
 
 		let response = try await httpClient
-			.execute(request: request, deadline: .now() + .seconds(requestsTimeout))
-			.get()
+			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
 			throw CouchDBClientError.unauthorized
