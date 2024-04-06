@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Every CouchDB document should have **\_id** and **\_rev** properties. Both should be optional **String?** type. Unfortunatelly DocC ignores properties starting with `_` symbol so check the example in Overview section.
+/// Every CouchDB document should have **\_id** and **\_rev** properties. Both should be optional **String?** type. Unfortunately DocC ignores properties starting with `_` symbol so check the example in the Overview section.
 ///
 /// Example:
 /// ```swift
