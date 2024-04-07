@@ -8,6 +8,7 @@
 import Foundation
 import NIO
 import NIOHTTP1
+import NIOFoundationCompat
 import AsyncHTTPClient
 
 /// CouchDB client errors.
