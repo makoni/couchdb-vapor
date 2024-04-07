@@ -12,23 +12,23 @@ import AsyncHTTPClient
 
 /// CouchDB client errors.
 public enum CouchDBClientError: Error {
-	/// **id** property is empty or missing in provided document.
+	/// **id** property is empty or missing in the provided document.
 	case idMissing
-	/// **\_rev** property is empty or missing in provided document.
+	/// **\_rev** property is empty or missing in the provided document.
 	case revMissing
-	/// Get request wasn't successful.
+	/// The Get request wasn't successful.
 	case getError(error: CouchDBError)
-	/// Insert request wasn't successful.
+	/// The Insert request wasn't successful.
 	case insertError(error: CouchDBError)
-	/// Update request wasn't successful.
+	/// The Update request wasn't successful.
 	case updateError(error: CouchDBError)
-	/// Find request wasn't successful.
+	/// The Find request wasn't successful.
 	case findError(error: CouchDBError)
-	/// Uknown response from CouchDB.
+	/// Unknown response from CouchDB.
 	case unknownResponse
 	/// Wrong username or password.
 	case unauthorized
-	/// Missing data in response body.
+	/// Missing data in the response body.
 	case noData
 }
 
@@ -36,23 +36,23 @@ extension CouchDBClientError: LocalizedError {
 	public var errorDescription: String? {
 		switch self {
 		case .idMissing:
-			return "id property is empty or missing in provided document."
+			return "id property is empty or missing in the provided document."
 		case .revMissing:
-			return "_rev property is empty or missing in provided document."
+			return "_rev property is empty or missing in the provided document."
 		case .getError(let error):
-			return "Get request wasn't successful: \(error.localizedDescription)"
+			return "The Get request wasn't successful: \(error.localizedDescription)"
 		case .insertError(let error):
-			return "Insert request wasn't successful: \(error.localizedDescription)"
+			return "The Insert request wasn't successful: \(error.localizedDescription)"
 		case .updateError(let error):
-			return "Update request wasn't successful: \(error.localizedDescription)"
+			return "The Update request wasn't successful: \(error.localizedDescription)"
 		case .findError(let error):
-			return "Find request wasn't successful: \(error.localizedDescription)"
+			return "The Find request wasn't successful: \(error.localizedDescription)"
 		case .unknownResponse:
-			return "Uknown response from CouchDB."
+			return "Unknown response from CouchDB."
 		case .unauthorized:
 			return "Wrong username or password."
 		case .noData:
-			return "Missing data in response body."
+			return "Missing data in the response body."
 		}
 	}
 }
@@ -61,18 +61,18 @@ extension CouchDBClientError: LocalizedError {
 public class CouchDBClient {
 	/// Protocol (URL scheme) that should be used to perform requests to CouchDB.
 	public enum CouchDBProtocol: String {
-		/// Use HTTP protocol.
+		/// HTTP protocol.
 		case http
-		/// Use HTTPS protocol.
+		/// HTTPS protocol.
 		case https
 	}
 	
 	// MARK: - Public properties
 	
-	/// Flag if did authorize in CouchDB.
+	/// Flag if authorized in CouchDB.
 	public var isAuthorized: Bool { authData?.ok ?? false }
 
-	/// You can set timeout for requests in seconds. Default value is 30.
+	/// You can set a timeout for requests in seconds. Default value is 30.
 	public var requestsTimeout: Int64 = 30
 	
 	// MARK: - Private properties
@@ -84,9 +84,9 @@ public class CouchDBClient {
 	private var couchPort: Int = 5984
 	/// Base URL.
 	private var couchBaseURL: String = ""
-	/// Session cookie for requests that needs authorization.
+	/// Session cookie for requests that need authorization.
 	internal var sessionCookie: String?
-	/// Session cookie as Cookie struct
+	/// Session cookie as Cookie struct.
 	internal var sessionCookieExpires: Date?
 	/// CouchDB user name.
 	private var userName: String = ""
@@ -149,7 +149,7 @@ public class CouchDBClient {
 	
 	// MARK: - Public methods
 
-	/// Get DBs list.
+	/// Get a database list.
 	///
 	/// Example:
 	/// ```swift
@@ -157,7 +157,7 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Parameter eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Array of strings containing DBs names.
+	/// - Returns: Array of strings containing database names.
 	public func getAllDBs(eventLoopGroup: EventLoopGroup? = nil) async throws -> [String] {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -194,7 +194,7 @@ public class CouchDBClient {
 		return try JSONDecoder().decode([String].self, from: data)
 	}
 
-	/// Check if DB exists
+	/// Check if database exists.
 	///
 	/// Example:
 	///
@@ -203,7 +203,7 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name.
+	///   - dbName: Database name.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: True or false.
 	public func dbExists(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> Bool {
@@ -234,7 +234,7 @@ public class CouchDBClient {
 		return response.status == .ok
 	}
 
-    /// Create DB.
+    /// Create a database.
     ///
     ///  Example:
     /// ```swift
@@ -242,9 +242,9 @@ public class CouchDBClient {
     /// ```
     ///
     /// - Parameters:
-    ///   - dbName: DB name.
+    ///   - dbName: Database name.
     ///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-    /// - Returns: Request response.
+    /// - Returns: Creation response.
     @discardableResult public func createDB(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> UpdateDBResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -293,7 +293,7 @@ public class CouchDBClient {
 		}
 	}
 
-	/// Delete DB.
+	/// Delete a database.
 	///
 	/// Example:
 	/// ```swift
@@ -301,9 +301,9 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name.
+	///   - dbName: Database name.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Request response.
+	/// - Returns: Deletion response.
 	@discardableResult public func deleteDB(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> UpdateDBResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -352,14 +352,14 @@ public class CouchDBClient {
 		}
 	}
 
-	/// Get data from DB.
+	/// Get data from a database.
 	///
 	/// Examples:
 	///
-	/// Define your document model:
+	/// Define your document data model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
+	/// struct ExpectedDoc: CouchDBRepresentable {
 	///     var name: String
 	///     var _id: String?
 	///     var _rev: String?
@@ -387,9 +387,9 @@ public class CouchDBClient {
 	/// )
 	/// ```
 	///
-	/// You can also provide CouchDB view document as uri and key in query.
+	/// You can also provide a CouchDB view document as uri and key in the query.
 	///
-	/// Get data and parse RowsResponse:
+	/// Get data and parse `RowsResponse`:
 	/// ```swift
 	/// let response = try await couchDBClient.get(
 	///     fromDB: "databaseName",
@@ -413,11 +413,11 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name.
+	///   - dbName: Database name.
 	///   - uri: URI (view or document id).
 	///   - query: Request query items.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Request response.
+	/// - Returns: Response.
 	public func get(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -453,14 +453,14 @@ public class CouchDBClient {
 		return response
 	}
 
-	/// Get a document from DB. It will parse JSON using provided generic type. Check an example in Discussion.
+	/// Get a document from a database. It will parse JSON using the provided generic type. Check an example in Discussion.
 	///
 	/// Example:
 	///
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
+	/// struct ExpectedDoc: CouchDBRepresentable {
 	///     var name: String
 	///     var _id: String?
 	///     var _rev: String?
@@ -469,17 +469,17 @@ public class CouchDBClient {
 	///
 	/// Get document by ID:
 	/// ```swift
-	/// // get data from DB by document ID
+	/// // get data from the database by document ID
 	/// let doc: ExpectedDoc = try await couchDBClient.get(fromDB: "databaseName", uri: "documentId")
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name.
+	///   - dbName: Database name.
 	///   - uri: URI (view or document id).
 	///   - queryItems: Request query items.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: An object or a struct (of generic type) parsed from JSON.
-	public func get <T: Codable & CouchDBRepresentable>(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
+	public func get <T: CouchDBRepresentable>(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		let response: HTTPClientResponse = try await get(fromDB: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
 
 		if response.status == .unauthorized {
@@ -508,22 +508,22 @@ public class CouchDBClient {
 		}
 	}
 
-    /// Find data in DB by selector.
+    /// Find data in a database by selector.
     ///
     /// Example:
     ///
     /// ```swift
-    /// // find documents in DB by selector
+    /// // find documents in the database by selector
 	/// let selector = ["selector": ["name": "Sam"]]
     /// let docs: [ExpectedDoc] = try await couchDBClient.find(inDB: testsDB, selector: selector)
     /// ```
     ///
     /// - Parameters:
-    ///   - in dbName: DB name.
-    ///   - selector: Codable representation of json selector query.
+    ///   - in dbName: Database name.
+    ///   - selector: Codable representation of the JSON selector query.
     ///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-    /// - Returns: Array of documents [T].
-	public func find<T: Codable & CouchDBRepresentable>(inDB dbName: String, selector: Codable, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> [T] {
+    /// - Returns: Array of `[T]` documents.
+	public func find<T: CouchDBRepresentable>(inDB dbName: String, selector: Codable, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> [T] {
 		let encoder = JSONEncoder()
 		let selectorData = try encoder.encode(selector)
 		let requestBody: HTTPClientRequest.Body = .bytes(ByteBuffer(data: selectorData))
@@ -556,7 +556,7 @@ public class CouchDBClient {
 		}
 	}
 	
-	/// Find data in DB by selector.
+	/// Find data in a database by selector.
 	///
 	/// Example:
 	/// ```swift
@@ -568,10 +568,10 @@ public class CouchDBClient {
 	/// let docs = try JSONDecoder().decode(CouchDBFindResponse<ExpectedDoc>.self, from: Data(bytes)).docs
 	/// ```
 	/// - Parameters:
-	///   - dbName: DB name.
+	///   - dbName: Database name.
 	///   - body: Request body data.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Request response.
+	/// - Returns: Response.
 	public func find(inDB dbName: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -608,14 +608,14 @@ public class CouchDBClient {
 		return response
 	}
 
-	/// Update data in DB.
+	/// Update data in a database.
 	///
 	/// Examples:
 	///
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
+	/// struct ExpectedDoc: CouchDBRepresentable {
 	///     var name: String
 	///     var _id: String?
 	///     var _rev: String?
@@ -623,17 +623,17 @@ public class CouchDBClient {
 	/// ```
 	/// Get document by ID and update it:
 	/// ```swift
-	/// // get data from DB by document ID
+	/// // get data from the database by document ID
 	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId")
 	///
 	/// // parse JSON
 	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
 	/// var doc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes))
 	///
-	/// // Update value
+	/// // update some value
 	/// doc.name = "Updated name"
 	///
-	/// // encode document into JSON string
+	/// // encode document into a JSON string
 	/// let data = try encoder.encode(updatedData)
 	/// let body: HTTPClientRequest.Body = .bytes(ByteBuffer(data: data))
 	///
@@ -648,7 +648,7 @@ public class CouchDBClient {
 	///
 	///
 	/// - Parameters:
-	///   - dbName: DB name.
+	///   - dbName: Database name.
 	///   - uri: URI (view or document id).
 	///   - body: Request body data.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
@@ -701,22 +701,22 @@ public class CouchDBClient {
 		}
 	}
 
-	/// Update document in DB. That method will mutate `doc` to update it's `_rev` with the value from CouchDB response.
+	/// Update document in a database. That method will mutate `doc` to update its `_rev` with the value from CouchDB response.
 	///
 	/// Examples:
 	///
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
+	/// struct ExpectedDoc: CouchDBRepresentable {
 	///     var name: String
 	///     var _id: String?
 	///     var _rev: String?
 	/// }
 	/// ```
-	/// Get document by ID and update it:
+	/// Get a document by ID and update it:
 	/// ```swift
-	/// // get data from DB by document ID
+	/// // get data from the database by document ID
 	/// var doc: ExpectedDoc = try await couchDBClient.get(dbName: "databaseName", uri: "documentId")
 	/// print(doc)
 	///
@@ -732,11 +732,11 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name. That method will mutate `doc` to update it's `_id` and `_rev` properties from insert request.
-	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` and Codable protocols.
+	///   - dbName: Database name. That method will mutate `doc` to update its `_id` and `_rev` properties from insert request.
+	///   - doc: Document object/struct. Should conform to the ``CouchDBRepresentable`` protocol.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Update response.
-	public func update <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
+	public func update <T: CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard doc._rev?.isEmpty == false else { throw CouchDBClientError.revMissing }
 
@@ -761,14 +761,14 @@ public class CouchDBClient {
 		doc._id = updateResponse.id
 	}
 
-	/// Insert data in DB. Accepts HTTPClientRequest.Body as body parameter.
+	/// Insert data in a database. Accepts `HTTPClientRequest.Body` as body parameter.
 	///
 	/// Examples:
 	///
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
+	/// struct ExpectedDoc: CouchDBRepresentable {
 	///     var name: String
 	///     var _id: String?
 	///     var _rev: String?
@@ -791,10 +791,10 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name.
+	///   - dbName: Database name.
 	///   - body: Request body data.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Insert request response.
+	/// - Returns: Insertion response.
 	public func insert(dbName: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -844,14 +844,14 @@ public class CouchDBClient {
 		}
 	}
 
-	/// Insert document in DB. That method will mutate `doc` to update it's `_id` and `_rev` with the values from CouchDB response.
+	/// Insert document in a database. That method will mutate `doc` to update its `_id` and `_rev` with the values from CouchDB response.
 	///
 	/// Examples:
 	///
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable, Codable {
+	/// struct ExpectedDoc: CouchDBRepresentable {
 	///     var name: String
 	///     var _id: String?
 	///     var _rev: String?
@@ -871,10 +871,10 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name.
-	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
+	///   - dbName: Database name.
+	///   - doc: Document object/struct. Should conform to the ``CouchDBRepresentable`` protocol.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	public func insert <T: Codable & CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
+	public func insert <T: CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
 		let encoder = JSONEncoder()
 		encoder.dateEncodingStrategy = dateEncodingStrategy
 		let insertEncodeData = try encoder.encode(doc)
@@ -895,7 +895,7 @@ public class CouchDBClient {
 		doc._id = insertResponse.id
 	}
 
-	/// Delete document from DB by URI.
+	/// Delete a document from a database by URI.
 	///
 	/// Examples:
 	///
@@ -904,7 +904,7 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name.
+	///   - dbName: Database name.
 	///   - uri: document uri (usually _id).
 	///   - rev: document revision.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
@@ -946,7 +946,7 @@ public class CouchDBClient {
 		return try JSONDecoder().decode(CouchUpdateResponse.self, from: data)
 	}
 
-	/// Delete document from DB.
+	/// Delete a document from a database.
 	///
 	/// Examples:
 	///
@@ -955,8 +955,8 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Parameters:
-	///   - dbName: DB name.
-	///   - doc: Document object/struct. Should confirm to ``CouchDBRepresentable`` protocol.
+	///   - dbName: Database name.
+	///   - doc: Document object/struct. Should conform to the ``CouchDBRepresentable`` protocol.
 	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
 	/// - Returns: Delete request response.
 	public func delete(fromDb dbName: String, doc: CouchDBRepresentable, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
