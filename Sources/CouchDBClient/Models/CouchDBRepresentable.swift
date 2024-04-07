@@ -12,13 +12,13 @@ import Foundation
 /// Example:
 /// ```swift
 /// // Example struct
-/// struct ExpectedDoc: CouchDBRepresentable, Codable {
+/// struct ExpectedDoc: CouchDBRepresentable {
 ///   var name: String
 ///   var _id: String?
 ///   var _rev: String?
 /// }
 /// ```
-public protocol CouchDBRepresentable {
+public protocol CouchDBRepresentable: Codable {
 	/// Document ID.
 	var _id: String? { get set }
 	/// Revision MVCC token.
