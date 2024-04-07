@@ -32,7 +32,7 @@
 			}
 			
 			@Step {
-				Define your data model for CouchDB documents. Nested `Row` and `RowsResponse` models will be used to parse CouchDB responses.
+				Define your data model for CouchDB documents. `RowsResponse` model from the `CouchDBClient` library will be used to parse CouchDB responses.
 				
 				@Code(name: "main.swift", file: VaporTutorial-3.swift)
 			}
