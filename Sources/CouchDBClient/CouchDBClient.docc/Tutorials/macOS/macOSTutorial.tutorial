@@ -1,29 +1,29 @@
 @Tutorial(time: 10) {
-    @Intro(title: "Using in macOS app") {
+	@Intro(title: "Using in macOS app") {
 		Learn how to use CouchDBClient in your macOS app
-        
+		
 		@Image(source: chapter1.png, alt: "Application icon")
-    }
-    
-    @Section(title: "Initializaton") {
-        @ContentAndMedia {
+	}
+	
+	@Section(title: "Initialization") {
+		@ContentAndMedia {
 			Adding CouchDBClient to your project.
-            
-            @Image(source: chapter1.png, alt: "Application icon")
-        }
-        
-        @Steps {
-            @Step {
+			
+			@Image(source: chapter1.png, alt: "Application icon")
+		}
+		
+		@Steps {
+			@Step {
 				Add `CouchDBClient` as a Swift Package dependency.
-                
-                @Image(source: macOSTutorial-1.png, alt: "Add CouchDBClient as a Swift Package dependency.")
-            }
-            
-            @Step {
-                Here's an example app.
-                
-                @Code(name: "main.swift", file: macOSTutorial-1.swift)
-            }
+				
+				@Image(source: macOSTutorial-1.png, alt: "Add CouchDBClient as a Swift Package dependency.")
+			}
+			
+			@Step {
+				Here's an example app.
+				
+				@Code(name: "main.swift", file: macOSTutorial-1.swift)
+			}
 			
 			@Step {
 				Import `CouchDBClient`.
@@ -56,13 +56,13 @@
 			}
 			
 			@Step {
-				Getting a document by its `_id` from DB with that method will parse JSON into your model if you provide it as a generic type. 
+				Getting a document by its `_id` from a database with that method will parse JSON into your model if you provide it as a generic type.
 				
 				@Code(name: "main.swift", file: macOSTutorial-7.swift)
 			}
 			
 			@Step {
-				Deleting a document from DB is also easy. 
+				Deleting a document from a database is also easy. 
 				
 				@Code(name: "main.swift", file: macOSTutorial-8.swift)
 			}
@@ -72,6 +72,6 @@
 				
 				@Image(source: macOSTutorial-2.png, alt: "Add CouchDBClient as a Swift Package dependency.")
 			}
-        }
-    }
+		}
+	}
 }
