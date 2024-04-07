@@ -8,18 +8,6 @@ struct MyApp: Content, CouchDBRepresentable {
     let url: String
     let _id: String
     var _rev: String
-    
-    /// Row model for CouchDB
-    struct Row: Content {
-        let value: AppOnSiteModel
-    }
-    
-    /// Rows response
-    struct RowsResponse: Content {
-        let total_rows: Int
-        let offset: Int
-        let rows: [Row]
-    }
 }
 
 func routes(_ app: Application) throws {
@@ -38,7 +26,7 @@ func routes(_ app: Application) throws {
         guard let bytes = response.body else { throw Abort(.notFound) }
         
         let data = Data(buffer: bytes)
-        let decodeResponse = try JSONDecoder().decode(RowsResponse.self, from: data)
+        let decodeResponse = try JSONDecoder().decode(RowsResponse<MyApp>.self, from: data)
         
         guard let myApp = decodeResponse.rows.first?.value else {
             throw Abort(.notFound)

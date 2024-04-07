@@ -6,7 +6,7 @@ import AsyncHTTPClient
 
 final class CouchDBClientTests: XCTestCase {
 
-	struct ExpectedDoc: CouchDBRepresentable, Codable {
+	struct ExpectedDoc: CouchDBRepresentable {
 		var name: String
 		var _id: String?
 		var _rev: String?
@@ -85,7 +85,7 @@ final class CouchDBClientTests: XCTestCase {
 
 		// get inserted doc
 		do {
-			testDoc = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId)
+			testDoc = try await couchDBClient.get(fromDB: testsDB, uri: expectedInsertId)
 		} catch CouchDBClientError.getError(let error) {
 			XCTFail(error.reason)
 			return
@@ -115,14 +115,20 @@ final class CouchDBClientTests: XCTestCase {
 		XCTAssertEqual(testDoc._id, expectedInsertId)
 
 		// get updated doc
-		var getResponse2 = try await couchDBClient.get(
-			dbName: testsDB,
+		let getResponse2 = try await couchDBClient.get(
+			fromDB: testsDB,
 			uri: expectedInsertId
 		)
 		XCTAssertNotNil(getResponse2.body)
 
-		let bytes2 = getResponse2.body!.readBytes(length: getResponse2.body!.readableBytes)!
-		testDoc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes2))
+		let expectedBytes2 = getResponse2.headers.first(name: "content-length").flatMap(Int.init) ?? 1024 * 1024 * 10
+		var bytes2 = try await getResponse2.body.collect(upTo: expectedBytes2)
+		let data2 = bytes2.readData(length: bytes2.readableBytes)
+
+		testDoc = try JSONDecoder().decode(
+			ExpectedDoc.self,
+			from: data2!
+		)
 
 		XCTAssertEqual(expectedName, testDoc.name)
 
@@ -151,7 +157,7 @@ final class CouchDBClientTests: XCTestCase {
 			let insertEncodeData = try JSONEncoder().encode(testDoc)
 			let response = try await couchDBClient.insert(
 				dbName: testsDB,
-				body: .data(insertEncodeData)
+				body: .bytes(ByteBuffer(data: insertEncodeData))
 			)
 
 			XCTAssertEqual(response.ok, true)
@@ -167,11 +173,17 @@ final class CouchDBClientTests: XCTestCase {
 		// Test Get
 		var expectedName = testDoc.name
 		do {
-			var response = try await couchDBClient.get(dbName: testsDB, uri: expectedInsertId)
+			let response = try await couchDBClient.get(fromDB: testsDB, uri: expectedInsertId)
 			XCTAssertNotNil(response.body)
 
-			let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
-			testDoc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes))
+			let expectedBytes = response.headers.first(name: "content-length").flatMap(Int.init) ?? 1024 * 1024 * 10
+			var bytes = try await response.body.collect(upTo: expectedBytes)
+			let data = bytes.readData(length: bytes.readableBytes)
+
+			testDoc = try JSONDecoder().decode(
+				ExpectedDoc.self,
+				from: data!
+			)
 
 			XCTAssertEqual(expectedName, testDoc.name)
 			XCTAssertEqual(testDoc._rev, expectedInsertRev)
@@ -186,10 +198,12 @@ final class CouchDBClientTests: XCTestCase {
 
 		do {
 			let updateEncodedData = try JSONEncoder().encode(testDoc)
+			let body: HTTPClientRequest.Body = .bytes(ByteBuffer(data: updateEncodedData))
+
 			let updateResponse = try await couchDBClient.update(
 				dbName: testsDB,
 				uri: expectedInsertId,
-				body: .data(updateEncodedData)
+				body: body
 			)
 
 			XCTAssertFalse(updateResponse.rev.isEmpty)
@@ -197,14 +211,20 @@ final class CouchDBClientTests: XCTestCase {
 			XCTAssertNotEqual(updateResponse.rev, expectedInsertRev)
 			XCTAssertEqual(updateResponse.id, expectedInsertId)
 
-			var getResponse = try await couchDBClient.get(
-				dbName: testsDB,
+			let getResponse = try await couchDBClient.get(
+				fromDB: testsDB,
 				uri: expectedInsertId
 			)
 			XCTAssertNotNil(getResponse.body)
 
-			let bytes = getResponse.body!.readBytes(length: getResponse.body!.readableBytes)!
-			testDoc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes))
+			let expectedBytes = getResponse.headers.first(name: "content-length").flatMap(Int.init) ?? 1024 * 1024 * 10
+			var bytes = try await getResponse.body.collect(upTo: expectedBytes)
+			let data = bytes.readData(length: bytes.readableBytes)
+
+			testDoc = try JSONDecoder().decode(
+				ExpectedDoc.self,
+				from: data!
+			)
 
 			XCTAssertEqual(expectedName, testDoc.name)
 		} catch let error {
@@ -249,23 +269,36 @@ final class CouchDBClientTests: XCTestCase {
 			let insertEncodedData = try JSONEncoder().encode(testDoc)
 			let insertResponse = try await couchDBClient.insert(
 				dbName: testsDB,
-				body: .data(insertEncodedData)
+				body: .bytes(ByteBuffer(data: insertEncodedData))
 			)
+
 
 			let selector = ["selector": ["name": "Greg"]]
 			let bodyData = try JSONEncoder().encode(selector)
-			var findResponse = try await couchDBClient.find(in: testsDB, body: .data(bodyData))
+			let requestBody: HTTPClientRequest.Body = .bytes(ByteBuffer(data: bodyData))
 
-			let bytes = findResponse.body!.readBytes(length: findResponse.body!.readableBytes)!
-			let decodedResponse = try JSONDecoder().decode(CouchDBFindResponse<ExpectedDoc>.self, from: Data(bytes))
+			let findResponse = try await couchDBClient.find(
+				inDB: testsDB,
+				body: requestBody
+			)
+
+			let body = findResponse.body
+			let expectedBytes = findResponse.headers.first(name: "content-length").flatMap(Int.init)
+			var bytes = try await body.collect(upTo: expectedBytes ?? 1024 * 1024 * 10)
+
+			guard let data = bytes.readData(length: bytes.readableBytes) else {
+				throw CouchDBClientError.noData
+			}
+
+			let decodedResponse = try JSONDecoder().decode(CouchDBFindResponse<ExpectedDoc>.self, from: data)
 
 			XCTAssertTrue(decodedResponse.docs.count > 0)
-			XCTAssertEqual(decodedResponse.docs.first!._id, insertResponse.id)
+			XCTAssertTrue(decodedResponse.docs.contains(where: { $0._id == insertResponse.id }))
 
 			_ = try await couchDBClient.delete(
 				fromDb: testsDB,
-				uri: decodedResponse.docs.first!._id!,
-				rev: decodedResponse.docs.first!._rev!
+				uri: insertResponse.id,
+				rev: insertResponse.rev
 			)
 		} catch {
 			XCTFail(error.localizedDescription)
@@ -278,11 +311,11 @@ final class CouchDBClientTests: XCTestCase {
 			let insertEncodedData = try JSONEncoder().encode(testDoc)
 			let insertResponse = try await couchDBClient.insert(
 				dbName: testsDB,
-				body: .data(insertEncodedData)
+				body: .bytes(ByteBuffer(data: insertEncodedData))
 			)
 
 			let selector = ["selector": ["name": "Sam"]]
-			let docs: [ExpectedDoc] = try await couchDBClient.find(in: testsDB, selector: selector)
+			let docs: [ExpectedDoc] = try await couchDBClient.find(inDB: testsDB, selector: selector)
 
 			XCTAssertTrue(docs.count > 0)
 			XCTAssertEqual(docs.first!._id, insertResponse.id)

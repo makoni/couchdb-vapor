@@ -11,7 +11,7 @@ let couchDBClient = CouchDBClient(
 
 let dbName = "fortests"
 
-struct MyDoc: CouchDBRepresentable, Codable {
+struct MyDoc: CouchDBRepresentable {
     var _id: String?
     var _rev: String?
     var title: String

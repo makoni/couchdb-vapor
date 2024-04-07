@@ -1,29 +1,29 @@
 @Tutorial(time: 15) {
-    @Intro(title: "Using with Vapor in server-side app") {
+	@Intro(title: "Using with Vapor in server-side app") {
 		Use CouchDBClient for developing server-side apps built with Vapor.
-        
+		
 		@Image(source: chapter1.png, alt: "Application icon")
-    }
-    
-    @Section(title: "Use CouchDBClient in macOS app") {
-        @ContentAndMedia {
+	}
+	
+	@Section(title: "Use CouchDBClient in macOS app") {
+		@ContentAndMedia {
 			Vapor is built on top of  Apple's [SwiftNIO](https://github.com/apple/swift-nio). `CouchDBClient` is compatible with SwiftNIO and can be used for server-side development.
-            
-            @Image(source: chapter1.png, alt: "Application icon")
-        }
-        
-        @Steps {
-            @Step {
+			
+			@Image(source: chapter1.png, alt: "Application icon")
+		}
+		
+		@Steps {
+			@Step {
 				Add `CouchDBClient` as a Swift Package dependency.
-                
-                @Image(source: VaporTutorial-1.png, alt: "Add CouchDBClient as a Swift Package dependency.")
-            }
-            
-            @Step {
+				
+				@Image(source: VaporTutorial-1.png, alt: "Add CouchDBClient as a Swift Package dependency.")
+			}
+			
+			@Step {
 				Open `routes.swift` in your Vapor project.
-                
-                @Code(name: "main.swift", file: VaporTutorial-1.swift)
-            }
+				
+				@Code(name: "main.swift", file: VaporTutorial-1.swift)
+			}
 			
 			@Step {
 				Import `CouchDBClient` and create a client instance.
@@ -32,13 +32,13 @@
 			}
 			
 			@Step {
-				Define your data model for CouchDB documents. Nested `Row` and `RowsResponse` models will be used to parse CouchDB responses.
+				Define your data model for CouchDB documents. `RowsResponse` model from the `CouchDBClient` library will be used to parse CouchDB responses.
 				
 				@Code(name: "main.swift", file: VaporTutorial-3.swift)
 			}
 			
 			@Step {
-				Get your document from DB. That example is using `CouchDB View` to find the document by the url field. Its map function needs a `key` param which is `appUrl` in our case.
+				Get your document from a database. That example is using `CouchDB View` to find the document by the url field. Its map function needs a `key` param which is `appUrl` in our case.
 				
 				@Code(name: "main.swift", file: VaporTutorial-4.swift)
 			}
@@ -54,6 +54,6 @@
 				
 				@Code(name: "main.swift", file: VaporTutorial-6.swift)
 			}
-        }
-    }
+		}
+	}
 }
