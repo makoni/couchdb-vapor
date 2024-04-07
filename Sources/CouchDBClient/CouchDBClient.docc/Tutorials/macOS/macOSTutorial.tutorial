@@ -38,7 +38,7 @@
 			}
 			
 			@Step {
-				Define a model for your CouchDB document. It should conform to `Codable` and `CouchDBRepresentable` protocols.
+				Define a model for your CouchDB document. It should conform to the `CouchDBRepresentable` protocol.
 				
 				@Code(name: "main.swift", file: macOSTutorial-4.swift)
 			}
