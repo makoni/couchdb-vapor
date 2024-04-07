@@ -388,18 +388,6 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// You can also provide CouchDB view document as uri and key in query.
-	/// Define Row and RowsResponse models:
-	/// ```swift
-	/// struct Row: Codable {
-	///     let value: ExpectedDoc
-	/// }
-	///
-	/// struct RowsResponse: Codable {
-	///     let total_rows: Int
-	///     let offset: Int
-	///     let rows: [Row]
-	/// }
-	/// ```
 	///
 	/// Get data and parse RowsResponse:
 	/// ```swift
@@ -416,7 +404,7 @@ public class CouchDBClient {
 	/// let data = bytes.readData(length: bytes.readableBytes)
 	///
 	/// let decodedResponse = try JSONDecoder().decode(
-	///     RowsResponse.self,
+	///     RowsResponse<ExpectedDoc>.self,
 	///     from: data!
 	/// )
 	///

@@ -36,20 +36,8 @@ extension CouchDBClient {
 	/// ```
 	///
 	/// You can also provide CouchDB view document as uri and key in query.
-	/// Define Row and RowsResponse models:
-	/// ```swift
-	/// struct Row: Codable {
-	///     let value: ExpectedDoc
-	/// }
 	///
-	/// struct RowsResponse: Codable {
-	///     let total_rows: Int
-	///     let offset: Int
-	///     let rows: [Row]
-	/// }
-	/// ```
-	///
-	/// Get data and parse RowsResponse:
+	/// Get data and parse `RowsResponse`:
 	/// ```swift
 	/// let response = try await couchDBClient.get(
 	///     dbName: "databaseName",
@@ -57,7 +45,7 @@ extension CouchDBClient {
 	///     query: ["key": "\"\(url)\""]
 	/// )
 	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
-	/// let decodedResponse = try JSONDecoder().decode(RowsResponse.self, from: data)
+	/// let decodedResponse = try JSONDecoder().decode(RowsResponse<ExpectedDoc>.self, from: data)
 	/// print(decodedResponse.rows)
 	/// print(decodedResponse.rows.first?.value)
 	/// ```
