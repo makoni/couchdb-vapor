@@ -15,7 +15,7 @@ Currently CouchDBClient supports:
 - Create DB.
 - Delete DB.
 - Get databases list.
-- Get document by id or documents using view.
+- Get a document by id or documents using a view.
 - Insert/update documents.
 - Find documents by selector.
 - Delete documents.
