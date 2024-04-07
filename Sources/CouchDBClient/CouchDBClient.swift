@@ -114,7 +114,7 @@ public class CouchDBClient {
 	///      userPassword: "myPassword"
 	///  )
 	///  ```
-	///  If you don't want to have your password in the code you can pass `COUCHDB_PASS` param in you command line.
+	///  If you don't want to have your password in the code you can pass `COUCHDB_PASS` param in your command line.
 	///  For example you can run your Server Side Swift project:
 	///  ```bash
 	///  COUCHDB_PASS=myPassword /path/.build/x86_64-unknown-linux-gnu/release/Run
@@ -130,9 +130,9 @@ public class CouchDBClient {
 	///  ```
 	///
 	/// - Parameters:
-	///   - couchProtocol: Protocol for requests (check ``CouchDBProtocol`` enum for avaiable values).
-	///   - couchHost: Host of CouchDB instance.
-	///   - couchPort: Port CouchDB works on.
+	///   - couchProtocol: Protocol for requests (check the ``CouchDBProtocol`` enum for available values).
+	///   - couchHost: Host of the CouchDB instance.
+	///   - couchPort: Port that CouchDB works on.
 	///   - userName: Username.
 	///   - userPassword: User password.
 	public init(couchProtocol: CouchDBProtocol = .http, couchHost: String = "127.0.0.1", couchPort: Int = 5984, userName: String = "", userPassword: String = "") {
