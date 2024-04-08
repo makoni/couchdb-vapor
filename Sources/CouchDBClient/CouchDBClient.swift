@@ -166,12 +166,14 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+			httpClient = HTTPClient.shared
 		}
 
 		defer {
-			DispatchQueue.main.async {
-				try? httpClient.syncShutdown()
+			if eventLoopGroup != nil {
+				DispatchQueue.main.async {
+					try? httpClient.syncShutdown()
+				}
 			}
 		}
 
@@ -214,12 +216,14 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+			httpClient = HTTPClient.shared
 		}
 
 		defer {
-			DispatchQueue.main.async {
-				try? httpClient.syncShutdown()
+			if eventLoopGroup != nil {
+				DispatchQueue.main.async {
+					try? httpClient.syncShutdown()
+				}
 			}
 		}
 
@@ -253,12 +257,14 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+			httpClient = HTTPClient.shared
 		}
 
 		defer {
-			DispatchQueue.main.async {
-				try? httpClient.syncShutdown()
+			if eventLoopGroup != nil {
+				DispatchQueue.main.async {
+					try? httpClient.syncShutdown()
+				}
 			}
 		}
 
@@ -312,12 +318,14 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+			httpClient = HTTPClient.shared
 		}
 
 		defer {
-			DispatchQueue.main.async {
-				try? httpClient.syncShutdown()
+			if eventLoopGroup != nil {
+				DispatchQueue.main.async {
+					try? httpClient.syncShutdown()
+				}
 			}
 		}
 
@@ -426,12 +434,14 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+			httpClient = HTTPClient.shared
 		}
 
 		defer {
-			DispatchQueue.main.async {
-				try? httpClient.syncShutdown()
+			if eventLoopGroup != nil {
+				DispatchQueue.main.async {
+					try? httpClient.syncShutdown()
+				}
 			}
 		}
 
@@ -580,12 +590,14 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+			httpClient = HTTPClient.shared
 		}
 
 		defer {
-			DispatchQueue.main.async {
-				try? httpClient.syncShutdown()
+			if eventLoopGroup != nil {
+				DispatchQueue.main.async {
+					try? httpClient.syncShutdown()
+				}
 			}
 		}
 
@@ -661,12 +673,14 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+			httpClient = HTTPClient.shared
 		}
 		
 		defer {
-			DispatchQueue.main.async {
-				try? httpClient.syncShutdown()
+			if eventLoopGroup != nil {
+				DispatchQueue.main.async {
+					try? httpClient.syncShutdown()
+				}
 			}
 		}
 
@@ -803,12 +817,14 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+			httpClient = HTTPClient.shared
 		}
 
 		defer {
-			DispatchQueue.main.async {
-				try? httpClient.syncShutdown()
+			if eventLoopGroup != nil {
+				DispatchQueue.main.async {
+					try? httpClient.syncShutdown()
+				}
 			}
 		}
 
@@ -915,12 +931,14 @@ public class CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+			httpClient = HTTPClient.shared
 		}
 
 		defer {
-			DispatchQueue.main.async {
-				try? httpClient.syncShutdown()
+			if eventLoopGroup != nil {
+				DispatchQueue.main.async {
+					try? httpClient.syncShutdown()
+				}
 			}
 		}
 
@@ -1006,12 +1024,14 @@ internal extension CouchDBClient {
 		if let eventLoopGroup = eventLoopGroup {
 			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 		} else {
-			httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+			httpClient = HTTPClient.shared
 		}
 
 		defer {
-			DispatchQueue.main.async {
-				try? httpClient.syncShutdown()
+			if eventLoopGroup != nil {
+				DispatchQueue.main.async {
+					try? httpClient.syncShutdown()
+				}
 			}
 		}
 
