@@ -2,7 +2,7 @@
 
 <p align="center">
 	<a href="https://github.com/makoni/couchdb-vapor">
-        <img src="https://arm1.ru/img/uploaded/images/CouchDBVapor.png" height="200">
+        <img src="https://spaceinbox.me/images/appicons/5cff134d1bb4a2e90faea5cf4e0002a2.svg?27-63e8b3d0649ee091a982fe61adc8672a" height="200">
     </a>
 </p>
 
