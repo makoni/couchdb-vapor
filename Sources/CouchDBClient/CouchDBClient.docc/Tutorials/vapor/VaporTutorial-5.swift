@@ -14,7 +14,7 @@ func routes(_ app: Application) throws {
     app.get(":appUrl") { req async throws -> View in
         let url = req.parameters.get("appUrl")!
         let response = try await couchDBClient.get(
-            dbName: "myDB",
+            fromDB: "myDB",
             uri: "_design/all/_view/by_url",
             queryItems: [
                 URLQueryItem(name: "key", value: "\"\(url)\"")

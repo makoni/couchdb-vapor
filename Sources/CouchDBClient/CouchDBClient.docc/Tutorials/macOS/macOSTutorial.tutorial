@@ -2,14 +2,14 @@
 	@Intro(title: "Using in macOS app") {
 		Learn how to use CouchDBClient in your macOS app
 		
-		@Image(source: chapter1.png, alt: "Application icon")
+		@Image(source: curlybraces.square.fill.svg, alt: "Application icon")
 	}
 	
 	@Section(title: "Initialization") {
 		@ContentAndMedia {
 			Adding CouchDBClient to your project.
 			
-			@Image(source: chapter1.png, alt: "Application icon")
+			@Image(source: macbook.svg, alt: "Application icon")
 		}
 		
 		@Steps {

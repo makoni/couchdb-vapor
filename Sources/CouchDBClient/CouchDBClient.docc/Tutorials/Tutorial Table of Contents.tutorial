@@ -8,7 +8,7 @@
     @Chapter(name: "Getting started") {
 		Learn how to use CouchDBClient.
         
-		@Image(source: chapter1.png, alt: "CouchDBClient logo")
+		@Image(source: curlybraces.square.fill.svg, alt: "CouchDBClient logo")
         
         @TutorialReference(tutorial: "doc:macOSTutorial")
 		@TutorialReference(tutorial: "doc:VaporTutorial")

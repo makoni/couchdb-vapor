@@ -2,14 +2,14 @@
 	@Intro(title: "Using with Vapor in server-side app") {
 		Use CouchDBClient for developing server-side apps built with Vapor.
 		
-		@Image(source: chapter1.png, alt: "Application icon")
+		@Image(source: curlybraces.square.fill.svg, alt: "Application icon")
 	}
 	
-	@Section(title: "Use CouchDBClient in macOS app") {
+	@Section(title: "Use CouchDBClient with Vapor") {
 		@ContentAndMedia {
 			Vapor is built on top of  Apple's [SwiftNIO](https://github.com/apple/swift-nio). `CouchDBClient` is compatible with SwiftNIO and can be used for server-side development.
 			
-			@Image(source: chapter1.png, alt: "Application icon")
+			@Image(source: vapor.svg, alt: "Application icon")
 		}
 		
 		@Steps {
