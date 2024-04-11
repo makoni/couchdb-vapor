@@ -2,7 +2,7 @@
     @Intro(title: "Getting started") {
         Check tutorials for using the lib in a macOS app or with Vapor for server-side development.
         
-        @Image(source: logo.png, alt: "CouchDBClient logo")
+        @Image(source: logo.svg, alt: "CouchDBClient logo")
     }
     
     @Chapter(name: "Getting started") {
@@ -17,7 +17,7 @@
 	@Chapter(name: "Errors handling") {
 		Examples of handling CouchDBClient errors and errors from CouchDB.
 		
-		@Image(source: chapter1.png, alt: "CouchDBClient logo")
+		@Image(source: errors.svg, alt: "CouchDBClient logo")
 		
 		@TutorialReference(tutorial: "doc:ErrorsHandlingTutorial")
 	}
