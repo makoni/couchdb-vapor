@@ -2,14 +2,14 @@
 	@Intro(title: "Handling CouchDB errors") {
 		Use CouchDBClient in a macOS app
 		
-		@Image(source: chapter1.png, alt: "Application icon")
+		@Image(source: errors.svg, alt: "Application icon")
 	}
 	
-	@Section(title: "macOS app example") {
+	@Section(title: "Catching errors") {
 		@ContentAndMedia {
 			Use CouchDBClient in a macOS app
 			
-			@Image(source: chapter1.png, alt: "Application icon")
+			@Image(source: errors.svg, alt: "Error icon")
 		}
 		
 		@Steps {

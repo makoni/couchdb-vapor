@@ -379,7 +379,7 @@ public class CouchDBClient {
 	/// ```swift
 	/// // get data from DB by document ID
 	/// var response = try await couchDBClient.get(
-	///     dbName: "databaseName",
+	///     fromDB: "databaseName",
 	///     uri: "documentId"
 	/// )
 	///
@@ -637,7 +637,7 @@ public class CouchDBClient {
 	/// Get document by ID and update it:
 	/// ```swift
 	/// // get data from the database by document ID
-	/// var response = try await couchDBClient.get(dbName: "databaseName", uri: "documentId")
+	/// var response = try await couchDBClient.get(fromDB: "databaseName", uri: "documentId")
 	///
 	/// // parse JSON
 	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
@@ -732,7 +732,7 @@ public class CouchDBClient {
 	/// Get a document by ID and update it:
 	/// ```swift
 	/// // get data from the database by document ID
-	/// var doc: ExpectedDoc = try await couchDBClient.get(dbName: "databaseName", uri: "documentId")
+	/// var doc: ExpectedDoc = try await couchDBClient.get(fromDB: "databaseName", uri: "documentId")
 	/// print(doc)
 	///
 	/// // Update value

@@ -25,7 +25,7 @@ Task {
     print(doc)
     
     do {
-        let docFromDB: MyDoc = try await couchDBClient.get(dbName: dbName, uri: doc._id!)
+        let docFromDB: MyDoc = try await couchDBClient.get(fromDB: dbName, uri: doc._id!)
     } catch CouchDBClientError.getError(let error) {
         print(error.reason)
         return

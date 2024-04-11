@@ -99,7 +99,7 @@ print(testDoc) // testDoc has _id and _rev values now
 
 ```swift
 // get data from a database by document ID
-var doc: ExpectedDoc = try await couchDBClient.get(dbName: "databaseName", uri: "documentId")
+var doc: ExpectedDoc = try await couchDBClient.get(fromDB: "databaseName", uri: "documentId")
 print(doc)
 
 // Update value
