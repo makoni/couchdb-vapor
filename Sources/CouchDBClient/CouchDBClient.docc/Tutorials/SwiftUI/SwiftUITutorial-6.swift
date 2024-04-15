@@ -19,25 +19,25 @@ class MyDoc: Identifiable, CouchDBRepresentable {
 
 @Observable class DocsStore {
     var docs = [MyDoc]()
-    
+
     func getDocs() async throws {
         let response = try await couchDBClient.get(
             fromDB: dbName,
             uri: "_design/all/_view/list"
         )
-        
+
         let expectedBytes = response.headers
             .first(name: "content-length")
             .flatMap(Int.init) ?? 1024 * 1024 * 10
         var bytes = try await response.body.collect(upTo: expectedBytes)
-        
+
         guard let data = bytes.readData(length: bytes.readableBytes) else { return }
-        
+
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
-        
+
         let decodeResponse = try decoder.decode(RowsResponse<MyDoc>.self, from: data)
-        
+
         await MainActor.run { [self] in
             docs = decodeResponse.rows.map({ $0.value })
         }

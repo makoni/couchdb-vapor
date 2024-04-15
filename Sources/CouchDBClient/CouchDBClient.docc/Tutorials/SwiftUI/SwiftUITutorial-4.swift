@@ -18,7 +18,6 @@ class MyDoc: Identifiable, CouchDBRepresentable {
 }
 
 struct ContentView: View {
-    @State var docsStore = DocsStore()
     var body: some View {
         VStack {
             Image(systemName: "globe")

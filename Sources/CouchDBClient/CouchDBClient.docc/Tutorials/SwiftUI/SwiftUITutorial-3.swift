@@ -12,7 +12,6 @@ let couchDBClient = CouchDBClient(
 let dbName = "fortests"
 
 struct ContentView: View {
-    @State var docsStore = DocsStore()
     var body: some View {
         VStack {
             Image(systemName: "globe")
