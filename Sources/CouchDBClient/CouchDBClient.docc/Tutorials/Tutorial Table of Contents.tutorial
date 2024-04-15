@@ -11,6 +11,7 @@
 		@Image(source: curlybraces.square.fill.svg, alt: "CouchDBClient logo")
         
         @TutorialReference(tutorial: "doc:macOSTutorial")
+		@TutorialReference(tutorial: "doc:SwiftUITutorial")
 		@TutorialReference(tutorial: "doc:VaporTutorial")
     }
 	
