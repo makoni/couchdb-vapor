@@ -11,8 +11,8 @@ let package = Package(
 		.library(name: "CouchDBClient", targets: ["CouchDBClient"]),
 	],
 	dependencies: [
-		.package(url: "https://github.com/swift-server/async-http-client", from: "1.21.0"),
-		.package(url: "https://github.com/apple/swift-docc-plugin", from: "1.3.0")
+		.package(url: "https://github.com/swift-server/async-http-client.git", from: "1.21.0"),
+		.package(url: "https://github.com/apple/swift-docc-plugin.git", from: "1.3.0")
 	],
 	targets: [
 		// Targets are the basic building blocks of a package. A target can define a module or a test suite.
