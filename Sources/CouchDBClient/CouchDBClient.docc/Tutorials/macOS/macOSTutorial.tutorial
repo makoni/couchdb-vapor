@@ -1,6 +1,6 @@
 @Tutorial(time: 10) {
-	@Intro(title: "Using in macOS app") {
-		Learn how to use CouchDBClient in your macOS app
+	@Intro(title: "macOS app example") {
+		Learn how to use `CouchDBClient` in a macOS app
 		
 		@Image(source: curlybraces.square.fill.svg, alt: "Application icon")
 	}
@@ -32,7 +32,7 @@
 			}
 			
 			@Step {
-				Create a CouchDBClient object, define database name and create a worker to perform requests.
+				Create a CouchDBClient object, define connection settings and database name.
 				
 				@Code(name: "main.swift", file: macOSTutorial-3.swift)
 			}
