@@ -139,13 +139,8 @@ public class CouchDBClient {
 	///  )
 	///  ```
 	///
-	/// - Parameters:
-	///   - couchProtocol: Protocol for requests (check the ``CouchDBProtocol`` enum for available values).
-	///   - couchHost: Host of the CouchDB instance.
-	///   - couchPort: Port that CouchDB works on.
-	///   - userName: Username.
-	///   - userPassword: User password.
-	public init(couchProtocol: CouchDBProtocol = .http, couchHost: String = "127.0.0.1", couchPort: Int = 5984, userName: String = "", userPassword: String = "") {
+	/// - Note: It's important to ensure that the CouchDB server is running and accessible at the specified `couchHost` and `couchPort` before attempting to connect.
+	public init(couchProtocol: CouchDBProtocol = .http, couchHost: String = "127.0.0.1", couchPort: Int = 5984, userName: String, userPassword: String = "") {
 		self.couchProtocol = couchProtocol
 		self.couchHost = couchHost
 		self.couchPort = couchPort
