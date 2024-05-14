@@ -916,14 +916,29 @@ public class CouchDBClient {
 		doc._id = updateResponse.id
 	}
 
-	/// Insert data in a database. Accepts `HTTPClientRequest.Body` as body parameter.
+	/// Inserts a new document into a specified database on the CouchDB server.
 	///
-	/// Examples:
+	/// This asynchronous function sends a POST request to the CouchDB server to insert a new document into the given database. It can optionally use a custom `EventLoopGroup` for the network request.
+	///
+	/// - Parameters:
+	///   - dbName: The name of the database into which the new document will be inserted.
+	///   - body: The `HTTPClientRequest.Body` containing the content of the new document.
+	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	/// - Returns: A `CouchUpdateResponse` object containing the result of the insert operation.
+	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`, a `noData` error if there is no response data, or an `insertError` with the underlying `CouchDBError` if the decoding fails.
+	///
+	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL for the database, it sets the request body and executes the request.
+	///
+	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. The function collects the response body up to a specified byte limit or the `content-length` header's value. It then decodes the response data into a `CouchUpdateResponse` object.
+	///
+	/// If the decoding process encounters an error, it attempts to decode a `CouchDBError` object and throws an `insertError` with the decoded error. If this also fails, it throws the original parsing error.
+	///
+	/// Example usage:
 	///
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable {
+	/// struct MyCouchDBDocument: CouchDBRepresentable {
 	///     var name: String
 	///     var _id: String?
 	///     var _rev: String?
@@ -932,24 +947,20 @@ public class CouchDBClient {
 	///
 	///	Create a new document and insert:
 	/// ```swift
-	/// let testDoc = ExpectedDoc(name: "My name")
+	/// let testDoc = MyCouchDBDocument(name: "My name")
 	/// let data = try JSONEncoder().encode(testData)
 	///
 	/// let body: HTTPClientRequest.Body = .bytes(ByteBuffer(data: insertEncodeData))
 	///
 	/// let response = try await couchDBClient.insert(
-	///     dbName: "databaseName",
+	///     dbName: "myDatabase",
 	///     body: body
 	/// )
 	///
 	/// print(response)
 	/// ```
 	///
-	/// - Parameters:
-	///   - dbName: Database name.
-	///   - body: Request body data.
-	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Insertion response.
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and document insertion.
 	public func insert(dbName: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
