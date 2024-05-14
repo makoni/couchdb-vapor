@@ -1012,14 +1012,26 @@ public class CouchDBClient {
 		}
 	}
 
-	/// Insert document in a database. That method will mutate `doc` to update its `_id` and `_rev` with the values from CouchDB response.
+	/// Inserts a new document conforming to `CouchDBRepresentable` into a specified database on the CouchDB server.
 	///
-	/// Examples:
+	/// This asynchronous generic function inserts a new document into the specified database. The document must conform to the `CouchDBRepresentable` protocol, which includes `_id` and `_rev` properties. It can optionally use a custom `EventLoopGroup` for the network request and specify a date encoding strategy.
 	///
+	/// - Parameters:
+	///   - dbName: The name of the database into which the new document will be inserted.
+	///   - doc: A reference to the document of type `T` that will be inserted. The document type `T` must conform to `CouchDBRepresentable`.
+	///   - dateEncodingStrategy: The strategy to use for encoding dates within the document. Defaults to `.secondsSince1970`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	/// - Throws: An error of type `CouchDBClientError` if the server responds with an unknown response.
+	///
+	/// The function encodes the document using a `JSONEncoder` with the specified date encoding strategy. The encoded document is sent as the body of a POST request to the server.
+	///
+	/// If the server's response indicates success, the function updates the document's `_rev` (and `_id` if necessary) with the new revision information from the server. If the server's response is not successful, it throws an `unknownResponse` error.
+	///
+	/// Example usage:
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable {
+	/// struct MyCouchDBDocument: CouchDBRepresentable {
 	///     var name: String
 	///     var _id: String?
 	///     var _rev: String?
@@ -1028,20 +1040,17 @@ public class CouchDBClient {
 	///
 	///	Create a new document and insert:
 	/// ```swift
-	/// var testDoc = ExpectedDoc(name: "My name")
+	/// var testDoc = MyCouchDBDocument(name: "My name")
 	///
 	/// try await couchDBClient.insert(
-	///     dbName: "databaseName",
+	///     dbName: "myDatabase",
 	///     doc: &testDoc
 	/// )
 	///
 	/// print(testDoc) // testDoc has _id and _rev values now
 	/// ```
 	///
-	/// - Parameters:
-	///   - dbName: Database name.
-	///   - doc: Document object/struct. Should conform to the ``CouchDBRepresentable`` protocol.
-	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with document insertion and server responses.
 	public func insert <T: CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
 		let encoder = JSONEncoder()
 		encoder.dateEncodingStrategy = dateEncodingStrategy
