@@ -60,11 +60,15 @@ extension CouchDBClientError: LocalizedError {
 
 /// A CouchDB client class with methods using Swift Concurrency.
 public class CouchDBClient {
-	/// Protocol (URL scheme) that should be used to perform requests to CouchDB.
+	/// An enumeration that defines the protocol types supported for connecting to a CouchDB server.
+	///
+	/// - Cases:
+	///   - http: Represents the HTTP protocol for unencrypted network communication.
+	///   - https: Represents the HTTPS protocol for secure, encrypted network communication.
+	///
+	/// - Note: Always prefer using `https` for secure communication, especially when transmitting sensitive data.
 	public enum CouchDBProtocol: String {
-		/// HTTP protocol.
 		case http
-		/// HTTPS protocol.
 		case https
 	}
 	
