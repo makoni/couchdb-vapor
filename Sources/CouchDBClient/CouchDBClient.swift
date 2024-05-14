@@ -666,23 +666,39 @@ public class CouchDBClient {
 			throw parsingError
 		}
 	}
-	
-	/// Find data in a database by selector.
+
+	/// Executes a find query on a specified database on the CouchDB server.
 	///
-	/// Example:
+	/// This asynchronous function sends a POST request with a custom body to the CouchDB server's `_find` endpoint to execute a query in the specified database. It can optionally use a custom `EventLoopGroup` for the network request.
+	///
+	/// - Parameters:
+	///   - dbName: The name of the database in which to perform the find query.
+	///   - body: The `HTTPClientRequest.Body` containing the encoded query to be sent to the server.
+	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	/// - Returns: An `HTTPClientResponse` object containing the server's response to the find query.
+	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`.
+	///
+	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL for the `_find` endpoint, it sets the request body and executes the request.
+	///
+	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. The function collects the response body up to a specified byte limit or the `content-length` header's value. The response body is then updated with the collected bytes before returning.
+	///
+	/// Example usage:
 	/// ```swift
 	/// let selector = ["selector": ["name": "Greg"]]
 	/// let bodyData = try JSONEncoder().encode(selector)
-	/// var findResponse = try await couchDBClient.find(inDB: testsDB, body: .data(bodyData))
+	/// var findResponse = try await couchDBClient.find(
+	///     inDB: testsDB, 
+	///     body: .data(bodyData)
+	/// )
 	///
 	/// let bytes = findResponse.body!.readBytes(length: findResponse.body!.readableBytes)!
-	/// let docs = try JSONDecoder().decode(CouchDBFindResponse<ExpectedDoc>.self, from: Data(bytes)).docs
+	/// let docs = try JSONDecoder().decode(
+	///     CouchDBFindResponse<ExpectedDoc>.self,
+	///     from: Data(bytes)
+	/// ).docs
 	/// ```
-	/// - Parameters:
-	///   - dbName: Database name.
-	///   - body: Request body data.
-	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Response.
+	///
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues.
 	public func find(inDB dbName: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
