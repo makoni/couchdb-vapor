@@ -99,9 +99,18 @@ public class CouchDBClient {
 
 	// MARK: - Initializer
 
-	/// Initialize CouchDB with connection params and credentials.
+	/// Initializes a new instance of a CouchDB client.
 	///
-	///	Example:
+	/// This initializer sets up the client with default values for connecting to a CouchDB server. It allows for optional customization of the connection parameters such as protocol, host, port, and user credentials.
+	///
+	/// - Parameters:
+	///   - couchProtocol: The protocol used for connecting to the CouchDB server. Defaults to `.http`.
+	///   - couchHost: The hostname or IP address of the CouchDB server. Defaults to `"127.0.0.1"`.
+	///   - couchPort: The port number on which the CouchDB server is listening. Defaults to `5984`.
+	///   - userName: The username for authentication with the CouchDB server.
+	///   - userPassword: The password for authentication with the CouchDB server. If left empty, the initializer attempts to read the password from the `COUCHDB_PASS` environment variable. If the environment variable is also not set, it defaults to an empty string.
+	///
+	///	Example usage:
 	///  ```swift
 	///  // use default params
 	///  let myClient = CouchDBClient()
