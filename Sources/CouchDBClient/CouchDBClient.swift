@@ -517,14 +517,41 @@ public class CouchDBClient {
 		return response
 	}
 
-	/// Get a document from a database. It will parse JSON using the provided generic type. Check an example in Discussion.
 	///
-	/// Example:
+	///
+	/// - Parameters:
+	///   - dbName: Database name.
+	///   - uri: URI (view or document id).
+	///   - queryItems: Request query items.
+	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
+	/// - Returns: An object or a struct (of generic type) parsed from JSON.
+
+
+	/// Retrieves a document of a specified type from a database on the CouchDB server.
+	///
+	/// This asynchronous generic function sends a GET request to the CouchDB server to retrieve a document from a specific database and URI. It decodes the document into the specified `CouchDBRepresentable` type. The function can optionally use a custom `EventLoopGroup` for the network request, include query items, and specify a date decoding strategy.
+	///
+	/// - Parameters:
+	///   - dbName: The name of the database from which to fetch the document.
+	///   - uri: The URI path to the specific document within the database.
+	///   - queryItems: An optional array of `URLQueryItem` to specify query parameters for the request.
+	///   - dateDecodingStrategy: The strategy to use for decoding dates. Defaults to `.secondsSince1970`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	/// - Returns: A document of type `T`, where `T` conforms to `CouchDBRepresentable`.
+	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`, a `noData` error if there is no response data, or a `getError` with the underlying `CouchDBError` if the decoding fails.
+	///
+	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL with the database name, URI, and query items, it executes the request and processes the response.
+	///
+	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. It collects the response body up to a specified byte limit or the `content-length` header's value. The function then uses a `JSONDecoder` with the specified date decoding strategy to decode the response data into the specified type `T`.
+	///
+	/// If the decoding process encounters an error, it attempts to decode a `CouchDBError` object and throws a `getError` with the decoded error. If this also fails, it throws the original parsing error.
+	///
+	/// Example usage:
 	///
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable {
+	/// struct MyDocumentType: CouchDBRepresentable {
 	///     var name: String
 	///     var _id: String?
 	///     var _rev: String?
@@ -534,15 +561,13 @@ public class CouchDBClient {
 	/// Get document by ID:
 	/// ```swift
 	/// // get data from the database by document ID
-	/// let doc: ExpectedDoc = try await couchDBClient.get(fromDB: "databaseName", uri: "documentId")
+	/// let doc: MyDocumentType = try await couchDBClient.get(
+	///     fromDB: "myDatabase",
+	///     uri: "documentID"
+	/// )
 	/// ```
 	///
-	/// - Parameters:
-	///   - dbName: Database name.
-	///   - uri: URI (view or document id).
-	///   - queryItems: Request query items.
-	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: An object or a struct (of generic type) parsed from JSON.
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and data decoding.
 	public func get <T: CouchDBRepresentable>(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		let response: HTTPClientResponse = try await get(fromDB: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
 
