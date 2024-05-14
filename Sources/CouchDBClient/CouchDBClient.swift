@@ -105,7 +105,7 @@ public class CouchDBClient {
 
 	/// Initializes a new instance of a CouchDB client.
 	///
-	/// This initializer sets up the client with default values for connecting to a CouchDB server. It allows for optional customization of the connection parameters such as protocol, host, port, and user credentials.
+	/// This initializer sets up the client with default values for connecting to a CouchDB server. It allows for optional customization of the connection parameters such as protocol, host and port.
 	///
 	/// - Parameters:
 	///   - couchProtocol: The protocol used for connecting to the CouchDB server. Defaults to `.http`.
