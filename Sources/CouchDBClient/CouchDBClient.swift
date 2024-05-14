@@ -171,7 +171,7 @@ public class CouchDBClient {
 	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. It collects the response body up to a specified byte limit or the `content-length` header's value. Finally, it decodes the response data into an array of strings representing the database names.
 	///
 	/// Example usage:
-	/// ```
+	/// ```swift
 	/// let dbNames = try await couchDBClient.getAllDBs()
 	/// ```
 	///
@@ -227,7 +227,7 @@ public class CouchDBClient {
 	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL and request for the database, it executes the request and checks the response status.
 	///
 	/// Example usage:
-	/// ```
+	/// ```swift
 	/// let doesExist = try await couchDBClient.dbExists("myDatabase")
 	/// ```
 	///
@@ -279,7 +279,7 @@ public class CouchDBClient {
 	/// If the decoding fails, it attempts to decode a `CouchDBError` object and throws an `insertError` with the decoded error. If this also fails, it throws the original parsing error.
 	///
 	/// Example usage:
-	/// ```
+	/// ```swift
 	/// let creationResult = try await couchDBClient.createDB("newDatabase")
 	/// ```
 	///
@@ -351,7 +351,7 @@ public class CouchDBClient {
 	/// If the decoding fails, it attempts to decode a `CouchDBError` object and throws an `insertError` with the decoded error. If this also fails, it throws the original parsing error.
 	///
 	/// Example usage:
-	/// ```
+	/// ```swift
 	/// let deletionResult = try await couchDBClient.deleteDB("obsoleteDatabase")
 	/// ```
 	///
@@ -517,16 +517,6 @@ public class CouchDBClient {
 		return response
 	}
 
-	///
-	///
-	/// - Parameters:
-	///   - dbName: Database name.
-	///   - uri: URI (view or document id).
-	///   - queryItems: Request query items.
-	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: An object or a struct (of generic type) parsed from JSON.
-
-
 	/// Retrieves a document of a specified type from a database on the CouchDB server.
 	///
 	/// This asynchronous generic function sends a GET request to the CouchDB server to retrieve a document from a specific database and URI. It decodes the document into the specified `CouchDBRepresentable` type. The function can optionally use a custom `EventLoopGroup` for the network request, include query items, and specify a date decoding strategy.
@@ -596,16 +586,6 @@ public class CouchDBClient {
 			throw parsingError
 		}
 	}
-
-    /// Find data in a database by selector.
-    ///
-    /// Example:
-    ///
-    /// ```swift
-    /// // find documents in the database by selector
-	/// let selector = ["selector": ["name": "Sam"]]
-    /// let docs: [ExpectedDoc] = try await couchDBClient.find(inDB: testsDB, selector: selector)
-    /// ```
 
 	/// Performs a query to find documents in a database on the CouchDB server that match the given selector.
 	///
@@ -1139,19 +1119,28 @@ public class CouchDBClient {
 		return try JSONDecoder().decode(CouchUpdateResponse.self, from: data)
 	}
 
-	/// Delete a document from a database.
+	/// Deletes a document conforming to `CouchDBRepresentable` from a specified database on the CouchDB server.
 	///
-	/// Examples:
-	///
-	/// ```swift
-	/// let response = try await couchDBClient.delete(fromDb: "databaseName", doc: doc)
-	/// ```
+	/// This asynchronous function deletes a document from the specified database. The document must conform to the `CouchDBRepresentable` protocol, which includes `_id` and `_rev` properties. It can optionally use a custom `EventLoopGroup` for the network request.
 	///
 	/// - Parameters:
-	///   - dbName: Database name.
-	///   - doc: Document object/struct. Should conform to the ``CouchDBRepresentable`` protocol.
-	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Delete request response.
+	///   - dbName: The name of the database from which the document will be deleted.
+	///   - doc: The document that will be deleted. The document type must conform to `CouchDBRepresentable`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	/// - Returns: A `CouchUpdateResponse` object containing the result of the delete operation.
+	/// - Throws: An error of type `CouchDBClientError` if the document's `_id` or `_rev` is missing.
+	///
+	/// The function checks for the presence of the document's `_id` and `_rev`. It then calls the `delete(fromDb:uri:rev:eventLoopGroup:)` function with the document's `_id` and `_rev` to perform the deletion.
+	///
+	/// Example usage:
+	/// ```swift
+	/// let deleteResult = try await couchDBClient.delete(
+	///     fromDb: "myDatabase",
+	///     doc: myDocument
+	/// )
+	/// ```
+	///
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with document deletion.
 	public func delete(fromDb dbName: String, doc: CouchDBRepresentable, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard let rev = doc._rev else { throw CouchDBClientError.revMissing }
