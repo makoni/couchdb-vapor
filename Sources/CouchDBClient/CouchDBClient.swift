@@ -737,9 +737,25 @@ public class CouchDBClient {
 		return response
 	}
 
-	/// Update data in a database.
+	/// Updates a document in a specified database on the CouchDB server.
 	///
-	/// Examples:
+	/// This asynchronous function sends a PUT request to the CouchDB server to update a document at the specified URI within the given database. It can optionally use a custom `EventLoopGroup` for the network request.
+	///
+	/// - Parameters:
+	///   - dbName: The name of the database containing the document to be updated.
+	///   - uri: The URI path to the specific document within the database.
+	///   - body: The `HTTPClientRequest.Body` containing the updated content for the document.
+	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	/// - Returns: A `CouchUpdateResponse` object containing the result of the update operation.
+	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`, a `noData` error if there is no response data, or an `updateError` with the underlying `CouchDBError` if the decoding fails.
+	///
+	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL for the document, it sets the request body and executes the request.
+	///
+	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. The function collects the response body up to a specified byte limit or the `content-length` header's value. It then decodes the response data into a `CouchUpdateResponse` object.
+	///
+	/// If the decoding process encounters an error, it attempts to decode a `CouchDBError` object and throws an `updateError` with the decoded error. If this also fails, it throws the original parsing error.
+	///
+	/// Example usage:
 	///
 	/// Define your document model:
 	/// ```swift
@@ -753,7 +769,10 @@ public class CouchDBClient {
 	/// Get document by ID and update it:
 	/// ```swift
 	/// // get data from the database by document ID
-	/// var response = try await couchDBClient.get(fromDB: "databaseName", uri: "documentId")
+	/// var response = try await couchDBClient.get(
+	///     fromDB: "myDatabase",
+	///     uri: "documentID"
+	/// )
 	///
 	/// // parse JSON
 	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
@@ -767,7 +786,7 @@ public class CouchDBClient {
 	/// let body: HTTPClientRequest.Body = .bytes(ByteBuffer(data: data))
 	///
 	/// let response = try await couchDBClient.update(
-	///     dbName: testsDB,
+	///     dbName: "myDatabase",
 	///     uri: doc._id!,
 	///     body: body
 	/// )
@@ -775,13 +794,7 @@ public class CouchDBClient {
 	/// print(response)
 	/// ```
 	///
-	///
-	/// - Parameters:
-	///   - dbName: Database name.
-	///   - uri: URI (view or document id).
-	///   - body: Request body data.
-	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Update response.
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and document updates.
 	public func update(dbName: String, uri: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
