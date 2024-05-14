@@ -606,12 +606,34 @@ public class CouchDBClient {
 	/// let selector = ["selector": ["name": "Sam"]]
     /// let docs: [ExpectedDoc] = try await couchDBClient.find(inDB: testsDB, selector: selector)
     /// ```
-    ///
-    /// - Parameters:
-    ///   - in dbName: Database name.
-    ///   - selector: Codable representation of the JSON selector query.
-    ///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-    /// - Returns: Array of `[T]` documents.
+
+	/// Performs a query to find documents in a database on the CouchDB server that match the given selector.
+	///
+	/// This asynchronous generic function sends a query to the CouchDB server to find documents in a specific database that match the criteria defined by the selector. It decodes the resulting documents into an array of the specified `CouchDBRepresentable` type. The function can optionally use a custom `EventLoopGroup` for the network request and specify a date decoding strategy.
+	///
+	/// - Parameters:
+	///   - dbName: The name of the database in which to perform the query.
+	///   - selector: A `Codable` object that defines the criteria used to select documents.
+	///   - dateDecodingStrategy: The strategy to use for decoding dates within the documents. Defaults to `.secondsSince1970`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	/// - Returns: An array of documents of type `T`, where `T` conforms to `CouchDBRepresentable`.
+	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically a `noData` error if there is no response data, or a `findError` with the underlying `CouchDBError` if the decoding fails.
+	///
+	/// The function encodes the selector into JSON and sends it as the body of the request. It then processes the response from the server, collecting the response body up to a specified byte limit or the `content-length` header's value. The function uses a `JSONDecoder` with the specified date decoding strategy to decode the response data into a `CouchDBFindResponse<T>` object, from which it extracts and returns the documents.
+	///
+	/// If the decoding process encounters an error, it attempts to decode a `CouchDBError` object and throws a `findError` with the decoded error. If this also fails, it throws the original parsing error.
+	///
+	/// Example usage:
+	/// ```swift
+	/// // find documents in the database by selector
+	/// let selector = ["selector": ["name": "Sam"]]
+	/// let documents: [MyDocumentType] = try await couchDBClient.find(
+	///     inDB: "myDatabase",
+	///     selector: selector
+	/// )
+	/// ```
+	///
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with data decoding and query criteria.
 	public func find<T: CouchDBRepresentable>(inDB dbName: String, selector: Codable, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> [T] {
 		let encoder = JSONEncoder()
 		let selectorData = try encoder.encode(selector)
