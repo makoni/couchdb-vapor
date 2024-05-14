@@ -158,15 +158,24 @@ public class CouchDBClient {
 	
 	// MARK: - Public methods
 
-	/// Get a database list.
+	/// Retrieves a list of all database names from the CouchDB server.
 	///
-	/// Example:
-	/// ```swift
-	/// let dbs = try await couchDBClient.getAllDBs()
+	/// This asynchronous function sends a GET request to the CouchDB server to fetch the names of all databases. It can optionally use a NIO's `EventLoopGroup` for the network request.
+	///
+	/// - Parameter eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	/// - Returns: An array of `String` containing the names of all databases on the server.
+	/// - Throws: An error of type `CouchDBClientError` if the request fails or if there is no data returned.
+	///
+	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL and request, it executes the request and processes the response.
+	///
+	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. It collects the response body up to a specified byte limit or the `content-length` header's value. Finally, it decodes the response data into an array of strings representing the database names.
+	///
+	/// Example usage:
+	/// ```
+	/// let dbNames = try await couchDBClient.getAllDBs()
 	/// ```
 	///
-	/// - Parameter eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Array of strings containing database names.
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues.
 	public func getAllDBs(eventLoopGroup: EventLoopGroup? = nil) async throws -> [String] {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
