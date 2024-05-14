@@ -14,7 +14,6 @@ final class CouchDBClientTests: XCTestCase {
 	
 	let testsDB = "fortests"
 
-	let c1 = CouchDBClient()
 	let couchDBClient = CouchDBClient(
 		couchProtocol: .http,
 		couchHost: "127.0.0.1",
