@@ -406,9 +406,23 @@ public class CouchDBClient {
 		}
 	}
 
-	/// Get data from a database.
+	/// Fetches data from a specified database and URI on the CouchDB server.
 	///
-	/// Examples:
+	/// This asynchronous function sends a GET request to the CouchDB server to retrieve data from a specific database and URI. It can optionally use a custom `EventLoopGroup` for the network request and include query items.
+	///
+	/// - Parameters:
+	///   - dbName: The name of the database from which to fetch data.
+	///   - uri: The URI path to the specific resource or endpoint within the database (view or document id).
+	///   - queryItems: An optional array of `URLQueryItem` to specify query parameters for the request.
+	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	/// - Returns: An `HTTPClientResponse` object containing the server's response to the request.
+	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`.
+	///
+	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL with the database name, URI, and query items, it executes the request and processes the response.
+	///
+	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. It collects the response body up to a specified byte limit or the `content-length` header's value. The response body is then updated with the collected bytes before returning.
+	///
+	/// Example usage:
 	///
 	/// Define your document data model:
 	/// ```swift
@@ -419,13 +433,12 @@ public class CouchDBClient {
 	///     var _rev: String?
 	/// }
 	/// ```
-	///
 	/// Get document by ID:
 	/// ```swift
 	/// // get data from DB by document ID
 	/// var response = try await couchDBClient.get(
-	///     fromDB: "databaseName",
-	///     uri: "documentId"
+	///     fromDB: "myDatabase",
+	///     uri: "documentID"
 	/// )
 	///
 	/// // parse JSON
@@ -446,7 +459,7 @@ public class CouchDBClient {
 	/// Get data and parse `RowsResponse`:
 	/// ```swift
 	/// let response = try await couchDBClient.get(
-	///     fromDB: "databaseName",
+	///     fromDB: "myDatabase",
 	///     uri: "_design/all/_view/by_url",
 	///     query: ["key": "\"\(url)\""]
 	/// )
@@ -466,12 +479,7 @@ public class CouchDBClient {
 	/// print(decodedResponse.rows.first?.value)
 	/// ```
 	///
-	/// - Parameters:
-	///   - dbName: Database name.
-	///   - uri: URI (view or document id).
-	///   - query: Request query items.
-	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Response.
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues.
 	public func get(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
