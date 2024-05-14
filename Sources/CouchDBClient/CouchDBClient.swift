@@ -160,7 +160,7 @@ public class CouchDBClient {
 
 	/// Retrieves a list of all database names from the CouchDB server.
 	///
-	/// This asynchronous function sends a GET request to the CouchDB server to fetch the names of all databases. It can optionally use a NIO's `EventLoopGroup` for the network request.
+	/// This asynchronous function sends a GET request to the CouchDB server to fetch the names of all databases. It can optionally use a custom NIO's `EventLoopGroup` for the network request.
 	///
 	/// - Parameter eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
 	/// - Returns: An array of `String` containing the names of all databases on the server.
@@ -214,18 +214,24 @@ public class CouchDBClient {
 		return try JSONDecoder().decode([String].self, from: data)
 	}
 
-	/// Check if database exists.
+	/// Checks if a database exists on the CouchDB server.
 	///
-	/// Example:
-	///
-	/// ```swift
-	/// let exists = try await couchDBClient.dbExists("myDBName")
-	/// ```
+	/// This asynchronous function sends a HEAD request to the CouchDB server to determine the existence of a specified database. It can optionally use a custom NIO's `EventLoopGroup` for the network request.
 	///
 	/// - Parameters:
-	///   - dbName: Database name.
-	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: True or false.
+	///   - dbName: The name of the database to check for existence.
+	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	/// - Returns: A `Bool` indicating whether the database exists (`true`) or not (`false`).
+	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`.
+	///
+	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL and request for the database, it executes the request and checks the response status.
+	///
+	/// Example usage:
+	/// ```
+	/// let doesExist = try await couchDBClient.dbExists("myDatabase")
+	/// ```
+	///
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues.
 	public func dbExists(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> Bool {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
