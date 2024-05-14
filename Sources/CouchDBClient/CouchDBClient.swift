@@ -1072,20 +1072,34 @@ public class CouchDBClient {
 		doc._id = insertResponse.id
 	}
 
-	/// Delete a document from a database by URI.
+	/// Deletes a document from a specified database on the CouchDB server.
 	///
-	/// Examples:
-	///
-	/// ```swift
-	/// let response = try await couchDBClient.delete(fromDb: "databaseName", uri: doc._id, rev: doc._rev)
-	/// ```
+	/// This asynchronous function sends a DELETE request to the CouchDB server to remove a document identified by its URI and revision number from the given database. It can optionally use a custom `EventLoopGroup` for the network request.
 	///
 	/// - Parameters:
-	///   - dbName: Database name.
-	///   - uri: document uri (usually _id).
-	///   - rev: document revision.
-	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Delete request response.
+	///   - dbName: The name of the database from which the document will be deleted.
+	///   - uri: The URI path to the specific document within the database.
+	///   - rev: The revision number of the document to be deleted.
+	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	/// - Returns: A `CouchUpdateResponse` object containing the result of the delete operation.
+	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`.
+	///
+	/// The function creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL with the database name, document URI, and revision query parameter, it executes the DELETE request.
+	///
+	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. The function collects the response body up to a specified byte limit or the `content-length` header's value. It then decodes the response data into a `CouchUpdateResponse` object.
+	///
+	/// If there is no response data, the function returns a `CouchUpdateResponse` with `ok` set to `false`, indicating the delete operation was not successful.
+	///
+	/// Example usage:
+	/// ```swift
+	/// let response = try await couchDBClient.delete(
+	///     fromDb: "myDatabase",
+	///     uri: doc._id,
+	///     rev: doc._rev
+	/// )
+	/// ```
+	///
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and document deletion.
 	public func delete(fromDb dbName: String, uri: String, rev: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		let httpClient: HTTPClient
 		if let eventLoopGroup = eventLoopGroup {
