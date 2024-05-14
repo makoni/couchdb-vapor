@@ -845,14 +845,26 @@ public class CouchDBClient {
 		}
 	}
 
-	/// Update document in a database. That method will mutate `doc` to update its `_rev` with the value from CouchDB response.
+	/// Updates a document conforming to `CouchDBRepresentable` in a specified database on the CouchDB server.
 	///
-	/// Examples:
+	/// This asynchronous generic function updates a document in the specified database. The document must conform to the `CouchDBRepresentable` protocol, which requires `_id` and `_rev` properties. It can optionally use a custom `EventLoopGroup` for the network request and specify a date encoding strategy.
 	///
+	/// - Parameters:
+	///   - dbName: The name of the database containing the document to be updated.
+	///   - doc: A reference to the document of type `T` that will be updated. The document must have valid `_id` and `_rev` properties.
+	///   - dateEncodingStrategy: The strategy to use for encoding dates within the document. Defaults to `.secondsSince1970`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	/// - Throws: An error of type `CouchDBClientError` if the document's `_id` or `_rev` is missing, or if the server responds with an unknown response.
+	///
+	/// The function first checks for the presence of the document's `_id` and `_rev`. It then encodes the document using a `JSONEncoder` with the specified date encoding strategy. The encoded document is sent as the body of a PUT request to the server.
+	///
+	/// If the server's response indicates success, the function updates the document's `_rev` (and `_id` if necessary) with the new revision information from the server. If the server's response is not successful, it throws an `unknownResponse` error.
+	///
+	/// Example usage:
 	/// Define your document model:
 	/// ```swift
 	/// // Example struct
-	/// struct ExpectedDoc: CouchDBRepresentable {
+	/// struct MyCouchDBDocument: CouchDBRepresentable {
 	///     var name: String
 	///     var _id: String?
 	///     var _rev: String?
@@ -861,25 +873,24 @@ public class CouchDBClient {
 	/// Get a document by ID and update it:
 	/// ```swift
 	/// // get data from the database by document ID
-	/// var doc: ExpectedDoc = try await couchDBClient.get(fromDB: "databaseName", uri: "documentId")
+	/// var doc: MyCouchDBDocument = try await couchDBClient.get(
+	///     fromDB: "myDatabase",
+	///     uri: "documentID"
+	/// )
 	/// print(doc)
 	///
 	/// // Update value
 	/// doc.name = "Updated name"
 	///
 	/// try await couchDBClient.update(
-	///     dbName: testsDB,
+	///     dbName: "myDatabase",
 	///     doc: &doc
 	/// )
 	///
 	/// print(doc) // doc will have updated name and _rev values now
 	/// ```
 	///
-	/// - Parameters:
-	///   - dbName: Database name. That method will mutate `doc` to update its `_id` and `_rev` properties from insert request.
-	///   - doc: Document object/struct. Should conform to the ``CouchDBRepresentable`` protocol.
-	///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-	/// - Returns: Update response.
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with document updates and server responses.
 	public func update <T: CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard doc._rev?.isEmpty == false else { throw CouchDBClientError.revMissing }
