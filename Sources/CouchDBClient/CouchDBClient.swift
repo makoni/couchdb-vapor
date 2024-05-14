@@ -262,17 +262,28 @@ public class CouchDBClient {
 		return response.status == .ok
 	}
 
-    /// Create a database.
-    ///
-    ///  Example:
-    /// ```swift
-    /// try await couchDBClient.deleteDB("myDBName")
-    /// ```
-    ///
-    /// - Parameters:
-    ///   - dbName: Database name.
-    ///   - eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
-    /// - Returns: Creation response.
+	/// Creates a new database on the CouchDB server.
+	///
+	/// This asynchronous function sends a PUT request to the CouchDB server to create a new database with the specified name. It can optionally use a custom `EventLoopGroup` for the network request.
+	///
+	/// - Parameters:
+	///   - dbName: The name of the database to be created.
+	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	/// - Returns: An `UpdateDBResponse` object containing the result of the database creation operation.
+	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`, or a `noData` error if there is no response data.
+	///
+	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL and request for the database, it executes the request and processes the response.
+	///
+	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. It collects the response body up to a specified byte limit or the `content-length` header's value. It then decodes the response data into an `UpdateDBResponse` object.
+	///
+	/// If the decoding fails, it attempts to decode a `CouchDBError` object and throws an `insertError` with the decoded error. If this also fails, it throws the original parsing error.
+	///
+	/// Example usage:
+	/// ```
+	/// let creationResult = try await couchDBClient.createDB("newDatabase")
+	/// ```
+	///
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and potential conflicts if the database already exists.
     @discardableResult public func createDB(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> UpdateDBResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
