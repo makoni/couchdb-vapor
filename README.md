@@ -35,7 +35,7 @@ Add to the `dependencies` value of your `Package.swift`.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/makoni/couchdb-vapor.git", from: "1.2.0"),
+    .package(url: "https://github.com/makoni/couchdb-vapor.git", from: "1.6.0"),
 ]
 ```
 
