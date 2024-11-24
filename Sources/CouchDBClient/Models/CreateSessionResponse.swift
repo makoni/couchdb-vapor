@@ -8,10 +8,10 @@
 import Foundation
 
 /// Resonse model for create session request
-struct CreateSessionResponse: Codable {
-	var ok: Bool
-	var name: String?
-	var roles: [String]?
+struct CreateSessionResponse: Codable, Sendable {
+	let ok: Bool
+	let name: String?
+	let roles: [String]?
 	
 	enum CodingKeys: String, CodingKey {
 		case ok
