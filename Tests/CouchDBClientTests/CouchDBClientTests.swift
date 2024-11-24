@@ -3,7 +3,6 @@ import NIO
 import AsyncHTTPClient
 @testable import CouchDBClient
 
-
 final class CouchDBClientTests: XCTestCase {
 
 	struct ExpectedDoc: CouchDBRepresentable {
@@ -11,7 +10,7 @@ final class CouchDBClientTests: XCTestCase {
 		var _id: String?
 		var _rev: String?
 	}
-	
+
 	let testsDB = "fortests"
 
 	let couchDBClient = CouchDBClient(
@@ -21,33 +20,33 @@ final class CouchDBClientTests: XCTestCase {
 		userName: "admin",
 		userPassword: ProcessInfo.processInfo.environment["COUCHDB_PASS"] ?? ""
 	)
-	
+
 	override func setUp() async throws {
-        try await super.setUp()
+		try await super.setUp()
 	}
 
-    func test00_CreateDB() async throws {
-        do {
-            let exists = try await couchDBClient.dbExists(testsDB)
-            if exists {
-                try await couchDBClient.deleteDB(testsDB)
-            }
+	func test00_CreateDB() async throws {
+		do {
+			let exists = try await couchDBClient.dbExists(testsDB)
+			if exists {
+				try await couchDBClient.deleteDB(testsDB)
+			}
 
-            try await couchDBClient.createDB(testsDB)
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-    }
+			try await couchDBClient.createDB(testsDB)
+		} catch {
+			XCTFail(error.localizedDescription)
+		}
+	}
 
-    func test01_DBExists() async throws {
-        do {
-            let exists = try await couchDBClient.dbExists(testsDB)
-            XCTAssertTrue(exists)
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-    }
-	
+	func test01_DBExists() async throws {
+		do {
+			let exists = try await couchDBClient.dbExists(testsDB)
+			XCTAssertTrue(exists)
+		} catch {
+			XCTFail(error.localizedDescription)
+		}
+	}
+
 	func test03_GetAllDbs() async throws {
 		do {
 			let dbs = try await couchDBClient.getAllDBs()
@@ -145,7 +144,7 @@ final class CouchDBClientTests: XCTestCase {
 			XCTFail(error.localizedDescription)
 		}
 	}
-	
+
 	func test05_InsertGetUpdateDelete() async throws {
 		var testDoc = ExpectedDoc(name: "test name")
 		var expectedInsertId: String = ""
@@ -246,12 +245,14 @@ final class CouchDBClientTests: XCTestCase {
 			XCTFail(error.localizedDescription)
 		}
 	}
-	
+
 	func test06_BuildUrl() {
 		let expectedUrl = "http://127.0.0.1:5984?key=testKey"
-		let url = couchDBClient.buildUrl(path: "", query: [
-			URLQueryItem(name: "key", value: "testKey")
-		])
+		let url = couchDBClient.buildUrl(
+			path: "",
+			query: [
+				URLQueryItem(name: "key", value: "testKey")
+			])
 		XCTAssertEqual(url, expectedUrl)
 	}
 
@@ -270,7 +271,6 @@ final class CouchDBClientTests: XCTestCase {
 				dbName: testsDB,
 				body: .bytes(ByteBuffer(data: insertEncodedData))
 			)
-
 
 			let selector = ["selector": ["name": "Greg"]]
 			let bodyData = try JSONEncoder().encode(selector)
@@ -329,11 +329,11 @@ final class CouchDBClientTests: XCTestCase {
 		}
 	}
 
-    func test99_deleteDB() async throws {
-        do {
-            try await couchDBClient.deleteDB(testsDB)
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-    }
+	func test99_deleteDB() async throws {
+		do {
+			try await couchDBClient.deleteDB(testsDB)
+		} catch {
+			XCTFail(error.localizedDescription)
+		}
+	}
 }
