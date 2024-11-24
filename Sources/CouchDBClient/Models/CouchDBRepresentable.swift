@@ -18,7 +18,7 @@ import Foundation
 ///   var _rev: String?
 /// }
 /// ```
-public protocol CouchDBRepresentable: Codable, Sendable {
+public protocol CouchDBRepresentable: Codable {
 	/// Document ID.
 	var _id: String? { get set }
 	/// Revision MVCC token.

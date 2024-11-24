@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct CouchDBFindResponse<T: CouchDBRepresentable>: Codable, Sendable {
+public struct CouchDBFindResponse<T: CouchDBRepresentable>: Codable {
 	var docs: [T]
 	var bookmark: String?
 }

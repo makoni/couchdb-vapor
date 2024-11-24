@@ -8,7 +8,7 @@
 import Foundation
 
 /// Resonse model for create session request
-struct CreateSessionResponse: Codable, Sendable {
+struct CreateSessionResponse: Codable {
 	let ok: Bool
 	let name: String?
 	let roles: [String]?
