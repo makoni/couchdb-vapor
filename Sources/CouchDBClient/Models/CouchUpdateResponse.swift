@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 /// Model for insert/update/delete request response.
 public struct CouchUpdateResponse: Codable {
 	/// Operation status.
