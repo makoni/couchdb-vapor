@@ -1,6 +1,6 @@
 //
 //  RowsResponse.swift
-//  
+//
 //
 //  Created by Sergei Armodin on 07.04.2024.
 //
@@ -13,7 +13,7 @@ public struct RowsResponse<T: CouchDBRepresentable>: Codable {
 		/// A CouchDB document.
 		public let value: T
 	}
-	
+
 	/// Total documents in a response.
 	public let total_rows: Int
 	/// Results offset.

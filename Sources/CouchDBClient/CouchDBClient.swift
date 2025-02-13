@@ -71,15 +71,15 @@ public class CouchDBClient {
 		case http
 		case https
 	}
-	
+
 	// MARK: - Public properties
-	
+
 	/// Flag if authorized in CouchDB.
 	public var isAuthorized: Bool { authData?.ok ?? false }
 
 	/// You can set a timeout for requests in seconds. Default value is 30.
 	public var requestsTimeout: Int64 = 30
-	
+
 	// MARK: - Private properties
 	/// Requests protocol.
 	private var couchProtocol: CouchDBProtocol = .http
@@ -99,7 +99,6 @@ public class CouchDBClient {
 	private var userPassword: String = ""
 	/// Authorization response from CouchDB.
 	private var authData: CreateSessionResponse?
-
 
 	// MARK: - Initializer
 
@@ -150,12 +149,12 @@ public class CouchDBClient {
 		self.couchPort = couchPort
 		self.userName = userName
 
-		self.userPassword = userPassword.isEmpty
-		? ProcessInfo.processInfo.environment["COUCHDB_PASS"] ?? userPassword
-		: userPassword
+		self.userPassword =
+			userPassword.isEmpty
+			? ProcessInfo.processInfo.environment["COUCHDB_PASS"] ?? userPassword
+			: userPassword
 	}
-	
-	
+
 	// MARK: - Public methods
 
 	/// Retrieves a list of all database names from the CouchDB server.
@@ -197,7 +196,8 @@ public class CouchDBClient {
 		let url = buildUrl(path: "/_all_dbs")
 
 		let request = try buildRequest(fromUrl: url, withMethod: .GET)
-		let response = try await httpClient
+		let response =
+			try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
@@ -252,7 +252,8 @@ public class CouchDBClient {
 
 		let url = buildUrl(path: "/" + dbName)
 		let request = try buildRequest(fromUrl: url, withMethod: .HEAD)
-		let response = try await httpClient
+		let response =
+			try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
@@ -284,7 +285,7 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and potential conflicts if the database already exists.
-    @discardableResult public func createDB(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> UpdateDBResponse {
+	@discardableResult public func createDB(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> UpdateDBResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
 		let httpClient: HTTPClient
@@ -306,7 +307,8 @@ public class CouchDBClient {
 
 		let request = try self.buildRequest(fromUrl: url, withMethod: .PUT)
 
-		let response = try await httpClient
+		let response =
+			try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
@@ -378,7 +380,8 @@ public class CouchDBClient {
 
 		let request = try self.buildRequest(fromUrl: url, withMethod: .DELETE)
 
-		let response = try await httpClient
+		let response =
+			try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
@@ -500,7 +503,8 @@ public class CouchDBClient {
 
 		let url = buildUrl(path: "/" + dbName + "/" + uri, query: queryItems ?? [])
 		let request = try buildRequest(fromUrl: url, withMethod: .GET)
-		var response = try await httpClient
+		var response =
+			try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
@@ -558,7 +562,7 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and data decoding.
-	public func get <T: CouchDBRepresentable>(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
+	public func get<T: CouchDBRepresentable>(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		let response: HTTPClientResponse = try await get(fromDB: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
 
 		if response.status == .unauthorized {
@@ -667,7 +671,7 @@ public class CouchDBClient {
 	/// let selector = ["selector": ["name": "Greg"]]
 	/// let bodyData = try JSONEncoder().encode(selector)
 	/// var findResponse = try await couchDBClient.find(
-	///     inDB: testsDB, 
+	///     inDB: testsDB,
 	///     body: .data(bodyData)
 	/// )
 	///
@@ -700,7 +704,8 @@ public class CouchDBClient {
 		let url = buildUrl(path: "/" + dbName + "/_find", query: [])
 		var request = try buildRequest(fromUrl: url, withMethod: .POST)
 		request.body = body
-		var response = try await httpClient
+		var response =
+			try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
@@ -784,7 +789,7 @@ public class CouchDBClient {
 		} else {
 			httpClient = HTTPClient.shared
 		}
-		
+
 		defer {
 			if eventLoopGroup != nil {
 				DispatchQueue.main.async {
@@ -797,7 +802,8 @@ public class CouchDBClient {
 		var request = try buildRequest(fromUrl: url, withMethod: .PUT)
 		request.body = body
 
-		let response = try await httpClient
+		let response =
+			try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
@@ -871,7 +877,7 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with document updates and server responses.
-	public func update <T: CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
+	public func update<T: CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws {
 		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard doc._rev?.isEmpty == false else { throw CouchDBClientError.revMissing }
 
@@ -964,7 +970,8 @@ public class CouchDBClient {
 		var request = try self.buildRequest(fromUrl: url, withMethod: .POST)
 		request.body = body
 
-		let response = try await httpClient
+		let response =
+			try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
@@ -1031,7 +1038,7 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with document insertion and server responses.
-	public func insert <T: CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil ) async throws {
+	public func insert<T: CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws {
 		let encoder = JSONEncoder()
 		encoder.dateEncodingStrategy = dateEncodingStrategy
 		let insertEncodeData = try encoder.encode(doc)
@@ -1096,12 +1103,16 @@ public class CouchDBClient {
 			}
 		}
 
-		let url = buildUrl(path: "/" + dbName + "/" + uri, query: [
-			URLQueryItem(name: "rev", value: rev)
-		])
+		let url = buildUrl(
+			path: "/" + dbName + "/" + uri,
+			query: [
+				URLQueryItem(name: "rev", value: rev)
+			]
+		)
 		let request = try self.buildRequest(fromUrl: url, withMethod: .DELETE)
 
-		let response = try await httpClient
+		let response =
+			try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
@@ -1148,7 +1159,6 @@ public class CouchDBClient {
 		return try await delete(fromDb: dbName, uri: id, rev: rev, eventLoopGroup: eventLoopGroup)
 	}
 }
-
 
 // MARK: - Private methods
 internal extension CouchDBClient {
@@ -1206,7 +1216,8 @@ internal extension CouchDBClient {
 		let dataString = "name=\(userName)&password=\(userPassword)"
 		request.body = .bytes(ByteBuffer(string: dataString))
 
-		let response = try await httpClient
+		let response =
+			try await httpClient
 			.execute(request, timeout: .seconds(requestsTimeout))
 
 		if response.status == .unauthorized {
@@ -1253,7 +1264,7 @@ internal extension CouchDBClient {
 		return authData
 	}
 
-	func buildRequest(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClientRequest  {
+	func buildRequest(fromUrl url: String, withMethod method: HTTPMethod) throws -> HTTPClientRequest {
 		var headers = HTTPHeaders()
 		headers.add(name: "Content-Type", value: "application/json")
 		if let cookie = sessionCookie {
