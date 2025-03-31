@@ -7,19 +7,25 @@ final class CouchDBClientTests: XCTestCase {
 
 	struct ExpectedDoc: CouchDBRepresentable {
 		var name: String
-		var _id: String?
+		var _id: String = NSUUID().uuidString
 		var _rev: String?
+
+		func updateRevision(_ newRevision: String) -> Self {
+			return ExpectedDoc(name: name, _id: _id, _rev: newRevision)
+		}
 	}
 
 	let testsDB = "fortests"
 
-	let couchDBClient = CouchDBClient(
+	let config = CouchDBClient.Config(
 		couchProtocol: .http,
 		couchHost: "127.0.0.1",
 		couchPort: 5984,
 		userName: "admin",
 		userPassword: ProcessInfo.processInfo.environment["COUCHDB_PASS"] ?? ""
 	)
+
+	lazy var couchDBClient = CouchDBClient(config: config)
 
 	override func setUp() async throws {
 		try await super.setUp()
@@ -66,9 +72,9 @@ final class CouchDBClientTests: XCTestCase {
 
 		// insert
 		do {
-			try await couchDBClient.insert(
+			testDoc = try await couchDBClient.insert(
 				dbName: testsDB,
-				doc: &testDoc
+				doc: testDoc
 			)
 		} catch CouchDBClientError.insertError(let error) {
 			XCTFail(error.reason)
@@ -78,7 +84,7 @@ final class CouchDBClientTests: XCTestCase {
 			return
 		}
 
-		expectedInsertId = testDoc._id!
+		expectedInsertId = testDoc._id
 		expectedInsertRev = testDoc._rev!
 
 		// get inserted doc
@@ -97,9 +103,9 @@ final class CouchDBClientTests: XCTestCase {
 		let expectedName = testDoc.name
 
 		do {
-			try await couchDBClient.update(
+			testDoc = try await couchDBClient.update(
 				dbName: testsDB,
-				doc: &testDoc
+				doc: testDoc
 			)
 		} catch CouchDBClientError.updateError(let error) {
 			XCTFail(error.reason)
@@ -233,7 +239,7 @@ final class CouchDBClientTests: XCTestCase {
 		do {
 			let response = try await couchDBClient.delete(
 				fromDb: testsDB,
-				uri: testDoc._id!,
+				uri: testDoc._id,
 				rev: testDoc._rev!
 			)
 
@@ -246,9 +252,9 @@ final class CouchDBClientTests: XCTestCase {
 		}
 	}
 
-	func test06_BuildUrl() {
+	func test06_BuildUrl() async {
 		let expectedUrl = "http://127.0.0.1:5984?key=testKey"
-		let url = couchDBClient.buildUrl(
+		let url = await couchDBClient.buildUrl(
 			path: "",
 			query: [
 				URLQueryItem(name: "key", value: "testKey")
@@ -260,7 +266,8 @@ final class CouchDBClientTests: XCTestCase {
 		let session: CreateSessionResponse? = try await couchDBClient.authIfNeed()
 		XCTAssertNotNil(session)
 		XCTAssertEqual(true, session?.ok)
-		XCTAssertNotNil(couchDBClient.sessionCookieExpires)
+		let sessionCookieExpires = await couchDBClient.sessionCookieExpires
+		XCTAssertNotNil(sessionCookieExpires)
 	}
 
 	func test08_find_with_body() async throws {
@@ -321,7 +328,7 @@ final class CouchDBClientTests: XCTestCase {
 
 			_ = try await couchDBClient.delete(
 				fromDb: testsDB,
-				uri: docs.first!._id!,
+				uri: docs.first!._id,
 				rev: docs.first!._rev!
 			)
 		} catch {

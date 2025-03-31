@@ -59,7 +59,25 @@ extension CouchDBClientError: LocalizedError {
 }
 
 /// A CouchDB client class with methods using Swift Concurrency.
-public class CouchDBClient {
+public actor CouchDBClient {
+	public struct Config: Sendable {
+		let couchProtocol: CouchDBProtocol
+		let couchHost: String
+		let couchPort: Int
+		let userName: String
+		let userPassword: String
+		let requestsTimeout: Int64
+
+		public init(couchProtocol: CouchDBClient.CouchDBProtocol = .http, couchHost: String = "127.0.0.1", couchPort: Int = 5984, userName: String, userPassword: String, requestsTimeout: Int64 = 30) {
+			self.couchProtocol = couchProtocol
+			self.couchHost = couchHost
+			self.couchPort = couchPort
+			self.userName = userName
+			self.userPassword = userPassword
+			self.requestsTimeout = requestsTimeout
+		}
+	}
+
 	/// An enumeration that defines the protocol types supported for connecting to a CouchDB server.
 	///
 	/// - Cases:
@@ -67,7 +85,7 @@ public class CouchDBClient {
 	///   - https: Represents the HTTPS protocol for secure, encrypted network communication.
 	///
 	/// - Note: Always prefer using `https` for secure communication, especially when transmitting sensitive data.
-	public enum CouchDBProtocol: String {
+	public enum CouchDBProtocol: String, Sendable {
 		case http
 		case https
 	}
@@ -77,26 +95,23 @@ public class CouchDBClient {
 	/// Flag if authorized in CouchDB.
 	public var isAuthorized: Bool { authData?.ok ?? false }
 
-	/// You can set a timeout for requests in seconds. Default value is 30.
-	public var requestsTimeout: Int64 = 30
-
 	// MARK: - Private properties
 	/// Requests protocol.
-	private var couchProtocol: CouchDBProtocol = .http
+	private let couchProtocol: CouchDBProtocol
 	/// Host.
-	private var couchHost: String = "127.0.0.1"
+	private let couchHost: String
 	/// Port.
-	private var couchPort: Int = 5984
-	/// Base URL.
-	private var couchBaseURL: String = ""
+	private let couchPort: Int
 	/// Session cookie for requests that need authorization.
 	internal var sessionCookie: String?
 	/// Session cookie as Cookie struct.
 	internal var sessionCookieExpires: Date?
 	/// CouchDB user name.
-	private var userName: String = ""
+	private let userName: String
+	/// You can set a timeout for requests in seconds. Default value is 30.
+    private var requestsTimeout: Int64 = 30
 	/// CouchDB user password.
-	private var userPassword: String = ""
+	private let userPassword: String
 	/// Authorization response from CouchDB.
 	private var authData: CreateSessionResponse?
 
@@ -143,16 +158,17 @@ public class CouchDBClient {
 	///  ```
 	///
 	/// - Note: It's important to ensure that the CouchDB server is running and accessible at the specified `couchHost` and `couchPort` before attempting to connect.
-	public init(couchProtocol: CouchDBProtocol = .http, couchHost: String = "127.0.0.1", couchPort: Int = 5984, userName: String, userPassword: String = "") {
-		self.couchProtocol = couchProtocol
-		self.couchHost = couchHost
-		self.couchPort = couchPort
-		self.userName = userName
+	public init(config: CouchDBClient.Config) {
+		self.couchProtocol = config.couchProtocol
+		self.couchHost = config.couchHost
+		self.couchPort = config.couchPort
+		self.userName = config.userName
+		self.requestsTimeout = config.requestsTimeout
 
 		self.userPassword =
-			userPassword.isEmpty
-			? ProcessInfo.processInfo.environment["COUCHDB_PASS"] ?? userPassword
-			: userPassword
+			config.userPassword.isEmpty
+			? ProcessInfo.processInfo.environment["COUCHDB_PASS"] ?? config.userPassword
+			: config.userPassword
 	}
 
 	// MARK: - Public methods
@@ -483,7 +499,7 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues.
-	public func get(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
+    public func get(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
 		let httpClient: HTTPClient
@@ -877,8 +893,7 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with document updates and server responses.
-	public func update<T: CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws {
-		guard let id = doc._id else { throw CouchDBClientError.idMissing }
+	public func update<T: CouchDBRepresentable>(dbName: String, doc: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		guard doc._rev?.isEmpty == false else { throw CouchDBClientError.revMissing }
 
 		let encoder = JSONEncoder()
@@ -889,7 +904,7 @@ public class CouchDBClient {
 
 		let updateResponse = try await update(
 			dbName: dbName,
-			uri: id,
+			uri: doc._id,
 			body: body,
 			eventLoopGroup: eventLoopGroup
 		)
@@ -898,8 +913,7 @@ public class CouchDBClient {
 			throw CouchDBClientError.unknownResponse
 		}
 
-		doc._rev = updateResponse.rev
-		doc._id = updateResponse.id
+		return doc.updateRevision(updateResponse.rev)
 	}
 
 	/// Inserts a new document into a specified database on the CouchDB server.
@@ -1038,7 +1052,7 @@ public class CouchDBClient {
 	/// ```
 	///
 	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with document insertion and server responses.
-	public func insert<T: CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws {
+	public func insert<T: CouchDBRepresentable>(dbName: String, doc: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		let encoder = JSONEncoder()
 		encoder.dateEncodingStrategy = dateEncodingStrategy
 		let insertEncodeData = try encoder.encode(doc)
@@ -1055,8 +1069,7 @@ public class CouchDBClient {
 			throw CouchDBClientError.unknownResponse
 		}
 
-		doc._rev = insertResponse.rev
-		doc._id = insertResponse.id
+		return doc.updateRevision(insertResponse.rev)
 	}
 
 	/// Deletes a document from a specified database on the CouchDB server.
@@ -1153,10 +1166,9 @@ public class CouchDBClient {
 	///
 	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with document deletion.
 	public func delete(fromDb dbName: String, doc: CouchDBRepresentable, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
-		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard let rev = doc._rev else { throw CouchDBClientError.revMissing }
 
-		return try await delete(fromDb: dbName, uri: id, rev: rev, eventLoopGroup: eventLoopGroup)
+		return try await delete(fromDb: dbName, uri: doc._id, rev: rev, eventLoopGroup: eventLoopGroup)
 	}
 }
 
