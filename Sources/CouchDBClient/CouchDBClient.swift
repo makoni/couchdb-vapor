@@ -299,9 +299,7 @@ public actor CouchDBClient {
 	///   - eventLoopGroup: An optional `EventLoopGroup` used for executing network requests.
 	///     If not provided, the function defaults to using a shared instance of `HTTPClient`.
 	/// - Returns: A `Bool` indicating whether the database exists (`true`) or not (`false`).
-	/// - Throws: A `CouchDBClientError` if the operation fails, including:
-	///   - `.unauthorized`: If authentication fails.
-	///   - `.noData`: If the response lacks required data.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unauthorized` if authentication fails, `.noData` if the response lacks required data.
 	///
 	/// ### Function Workflow:
 	/// 1. Authenticates with the CouchDB server if authentication is required.
@@ -361,10 +359,7 @@ public actor CouchDBClient {
 	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network requests.
 	///     If not provided, the function defaults to using a shared instance of `HTTPClient`.
 	/// - Returns: An `UpdateDBResponse` object that contains the result of the database creation operation.
-	/// - Throws: A `CouchDBClientError` if the operation fails, including:
-	///   - `.unauthorized`: If authentication fails.
-	///   - `.noData`: If the response lacks required data.
-	///   - `.insertError`: If the database creation fails and CouchDB returns an error.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unauthorized` if authentication fails, `.noData` if the response lacks required data, `.insertError` if the database creation fails and CouchDB returns an error.
 	///
 	/// ### Function Workflow:
 	/// 1. Authenticates with the CouchDB server if required.
@@ -444,10 +439,7 @@ public actor CouchDBClient {
 	///   - eventLoopGroup: An optional `EventLoopGroup` used for executing network operations.
 	///     If not provided, the function defaults to using a shared instance of `HTTPClient`.
 	/// - Returns: An `UpdateDBResponse` object that contains the result of the database deletion operation.
-	/// - Throws: A `CouchDBClientError` if the operation fails, including:
-	///   - `.unauthorized`: If authentication fails.
-	///   - `.noData`: If the response lacks required data.
-	///   - `.insertError`: If the deletion fails and CouchDB returns an error.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unauthorized` if authentication fails, `.noData` if the response lacks required data, `.insertError` if the deletion fails and CouchDB returns an error.
 	///
 	/// ### Function Workflow:
 	/// 1. Authenticates with the CouchDB server if required.
