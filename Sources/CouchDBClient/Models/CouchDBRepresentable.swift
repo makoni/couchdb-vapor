@@ -32,7 +32,7 @@ public protocol CouchDBRepresentable: Codable, Sendable {
 	/// The MVCC (Multi-Version Concurrency Control) revision token for the document.
 	/// Used for tracking changes to the document and resolving conflicts in CouchDB.
 	/// - Note: This property is optional and can be set to `nil` for new documents.
-	var _rev: String? { get set }
+	var _rev: String? { get }
 
 	/// Creates a new instance of the conforming type with the updated revision token.
 	/// - Parameter newRevision: The new MVCC revision token to associate with the document.
