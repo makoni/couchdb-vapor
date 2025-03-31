@@ -11,64 +11,138 @@ import NIOHTTP1
 import NIOFoundationCompat
 import AsyncHTTPClient
 
-/// CouchDB client errors.
-public enum CouchDBClientError: Error {
-	/// **id** property is empty or missing in the provided document.
+/// An enumeration representing the various errors that can occur when interacting with CouchDB through a client.
+/// This enum conforms to both `Error` and `Sendable`, making it suitable for error handling and thread-safe operations.
+public enum CouchDBClientError: Error, Sendable {
+	/// The `id` property is empty or missing in the provided document.
+	/// This error indicates that the document does not have a valid identifier.
 	case idMissing
-	/// **\_rev** property is empty or missing in the provided document.
+
+	/// The `_rev` property is empty or missing in the provided document.
+	/// This error indicates that the document does not have a valid revision token for concurrency control.
 	case revMissing
-	/// The Get request wasn't successful.
+
+	/// The `GET` request was unsuccessful.
+	/// - Parameter error: The `CouchDBError` returned by the server, providing details about the issue.
 	case getError(error: CouchDBError)
-	/// The Insert request wasn't successful.
+
+	/// The `INSERT` request was unsuccessful.
+	/// - Parameter error: The `CouchDBError` returned by the server, providing details about the issue.
 	case insertError(error: CouchDBError)
-	/// The Update request wasn't successful.
+
+	/// The `DELETE` request was unsuccessful.
+	/// - Parameter error: The `CouchDBError` returned by the server, providing details about the issue.
+	case deleteError(error: CouchDBError)
+
+	/// The `UPDATE` request was unsuccessful.
+	/// - Parameter error: The `CouchDBError` returned by the server, providing details about the issue.
 	case updateError(error: CouchDBError)
-	/// The Find request wasn't successful.
+
+	/// The `FIND` request was unsuccessful.
+	/// - Parameter error: The `CouchDBError` returned by the server, providing details about the issue.
 	case findError(error: CouchDBError)
-	/// Unknown response from CouchDB.
+
+	/// The response from CouchDB was unrecognized or could not be processed.
+	/// This error indicates that the response was not in the expected format.
 	case unknownResponse
-	/// Wrong username or password.
+
+	/// Authentication failed due to incorrect username or password.
+	/// This error suggests that the provided credentials were invalid.
 	case unauthorized
-	/// Missing data in the response body.
+
+	/// The response body is missing required data.
+	/// This error indicates that the server response lacked the expected content.
 	case noData
 }
 
+/// Extends the `CouchDBClientError` enumeration to provide localized error descriptions.
+/// This extension conforms to the `LocalizedError` protocol, offering user-friendly messages
+/// that describe the nature of each error in detail.
 extension CouchDBClientError: LocalizedError {
+	/// A textual description of the error, tailored for user-facing contexts.
+	/// The message provides specific details about the error type and underlying cause.
 	public var errorDescription: String? {
 		switch self {
 		case .idMissing:
-			return "id property is empty or missing in the provided document."
+			return "The 'id' property is empty or missing in the provided document."
 		case .revMissing:
-			return "_rev property is empty or missing in the provided document."
+			return "The '_rev' property is empty or missing in the provided document."
 		case .getError(let error):
-			return "The Get request wasn't successful: \(error.localizedDescription)"
+			return "The GET request wasn't successful: \(error.localizedDescription)"
 		case .insertError(let error):
-			return "The Insert request wasn't successful: \(error.localizedDescription)"
+			return "The INSERT request wasn't successful: \(error.localizedDescription)"
 		case .updateError(let error):
-			return "The Update request wasn't successful: \(error.localizedDescription)"
+			return "The UPDATE request wasn't successful: \(error.localizedDescription)"
+		case .deleteError(let error):
+			return "The DELETE request wasn't successful: \(error.localizedDescription)"
 		case .findError(let error):
-			return "The Find request wasn't successful: \(error.localizedDescription)"
+			return "The FIND request wasn't successful: \(error.localizedDescription)"
 		case .unknownResponse:
-			return "Unknown response from CouchDB."
+			return "The response from CouchDB was unrecognized or invalid."
 		case .unauthorized:
-			return "Wrong username or password."
+			return "Authentication failed due to an incorrect username or password."
 		case .noData:
-			return "Missing data in the response body."
+			return "The response body is missing the expected data."
 		}
 	}
 }
 
-/// A CouchDB client class with methods using Swift Concurrency.
-public class CouchDBClient {
-	/// An enumeration that defines the protocol types supported for connecting to a CouchDB server.
-	///
-	/// - Cases:
-	///   - http: Represents the HTTP protocol for unencrypted network communication.
-	///   - https: Represents the HTTPS protocol for secure, encrypted network communication.
-	///
-	/// - Note: Always prefer using `https` for secure communication, especially when transmitting sensitive data.
-	public enum CouchDBProtocol: String {
+/// A CouchDB client actor with methods using Swift Concurrency.
+public actor CouchDBClient {
+	/// A configuration model for CouchDB client setup.
+	/// This structure is used to define the necessary parameters for connecting to a CouchDB database.
+	/// It conforms to the `Sendable` protocol for thread safety during concurrent operations.
+	public struct Config: Sendable {
+		/// The protocol used for CouchDB communication (e.g., HTTP or HTTPS).
+		let couchProtocol: CouchDBProtocol
+
+		/// The hostname or IP address of the CouchDB server.
+		let couchHost: String
+
+		/// The port number used for CouchDB communication.
+		let couchPort: Int
+
+		/// The username for CouchDB authentication.
+		let userName: String
+
+		/// The password for CouchDB authentication.
+		let userPassword: String
+
+		/// The timeout duration for CouchDB requests, specified in seconds.
+		let requestsTimeout: Int64
+
+		/// Initializes a new `Config` instance with default values for certain parameters.
+		/// - Parameters:
+		///   - couchProtocol: The communication protocol, defaulting to `.http`.
+		///   - couchHost: The hostname or IP address, defaulting to `"127.0.0.1"`.
+		///   - couchPort: The port number, defaulting to `5984`.
+		///   - userName: The username for authentication (required).
+		///   - userPassword: The password for authentication (required).
+		///   - requestsTimeout: The timeout duration in seconds, defaulting to `30`.
+		public init(
+			couchProtocol: CouchDBClient.CouchDBProtocol = .http,
+			couchHost: String = "127.0.0.1",
+			couchPort: Int = 5984,
+			userName: String,
+			userPassword: String = ProcessInfo.processInfo.environment["COUCHDB_PASS"] ?? "",
+			requestsTimeout: Int64 = 30
+		) {
+			self.couchProtocol = couchProtocol
+			self.couchHost = couchHost
+			self.couchPort = couchPort
+			self.userName = userName
+			self.userPassword = userPassword
+			self.requestsTimeout = requestsTimeout
+		}
+	}
+
+	/// An enumeration representing the available communication protocols for CouchDB.
+	/// This enum conforms to `String` for raw value representation and `Sendable` for thread safety.
+	public enum CouchDBProtocol: String, Sendable {
+		/// HTTP protocol for CouchDB communication.
 		case http
+
+		/// HTTPS protocol for CouchDB communication, providing secure communication.
 		case https
 	}
 
@@ -77,104 +151,105 @@ public class CouchDBClient {
 	/// Flag if authorized in CouchDB.
 	public var isAuthorized: Bool { authData?.ok ?? false }
 
-	/// You can set a timeout for requests in seconds. Default value is 30.
-	public var requestsTimeout: Int64 = 30
-
 	// MARK: - Private properties
 	/// Requests protocol.
-	private var couchProtocol: CouchDBProtocol = .http
+	private let couchProtocol: CouchDBProtocol
 	/// Host.
-	private var couchHost: String = "127.0.0.1"
+	private let couchHost: String
 	/// Port.
-	private var couchPort: Int = 5984
-	/// Base URL.
-	private var couchBaseURL: String = ""
+	private let couchPort: Int
 	/// Session cookie for requests that need authorization.
 	internal var sessionCookie: String?
 	/// Session cookie as Cookie struct.
 	internal var sessionCookieExpires: Date?
 	/// CouchDB user name.
-	private var userName: String = ""
+	private let userName: String
+	/// You can set a timeout for requests in seconds. Default value is 30.
+	private var requestsTimeout: Int64 = 30
 	/// CouchDB user password.
-	private var userPassword: String = ""
+	private let userPassword: String
 	/// Authorization response from CouchDB.
 	private var authData: CreateSessionResponse?
 
 	// MARK: - Initializer
 
-	/// Initializes a new instance of a CouchDB client.
+	/// Initializes a new instance of the CouchDB client using the provided configuration.
+	/// This initializer sets up the client with connection parameters and handles the user password securely,
+	/// supporting environment variable fallback for sensitive data.
 	///
 	/// This initializer sets up the client with default values for connecting to a CouchDB server. It allows for optional customization of the connection parameters such as protocol, host and port.
 	///
 	/// - Parameters:
-	///   - couchProtocol: The protocol used for connecting to the CouchDB server. Defaults to `.http`.
-	///   - couchHost: The hostname or IP address of the CouchDB server. Defaults to `"127.0.0.1"`.
-	///   - couchPort: The port number on which the CouchDB server is listening. Defaults to `5984`.
-	///   - userName: The username for authentication with the CouchDB server.
-	///   - userPassword: The password for authentication with the CouchDB server. If left empty, the initializer attempts to read the password from the `COUCHDB_PASS` environment variable. If the environment variable is also not set, it defaults to an empty string.
+	///   - config: A `CouchDBClient.Config` instance containing the configuration details.
 	///
 	///	Example usage:
 	///  ```swift
-	///  // use default params
-	///  let myClient = CouchDBClient()
-	///
-	///  // provide your own params
-	///  let couchDBClient = CouchDBClient(
-	///      couchProtocol: .http,
-	///      couchHost: "127.0.0.1",
-	///      couchPort: 5984,
-	///      userName: "admin",
-	///      userPassword: "myPassword"
+	///  // Create a cofig:
+	///  let config = CouchDBClient.Config(
+	///     couchProtocol: .http,
+	///     couchHost: "127.0.0.1",
+	///     couchPort: 5984,
+	///     userName: "user",
+	///     userPassword: "myPassword",
+	///     requestsTimeout: 30
 	///  )
+	///
+	///  // Create a client istance:
+	///  let couchDBClient = CouchDBClient(config: config)
 	///  ```
 	///  If you don't want to have your password in the code you can pass `COUCHDB_PASS` param in your command line.
 	///  For example you can run your Server Side Swift project:
 	///  ```bash
 	///  COUCHDB_PASS=myPassword /path/.build/x86_64-unknown-linux-gnu/release/Run
 	///  ```
-	///  Just use initializer without `userPassword` param:
+	///  Just use config without `userPassword` param:
 	///  ```swift
-	///  CouchDBClient(
-	///      couchProtocol: .http,
-	///      couchHost: "127.0.0.1",
-	///      couchPort: 5984,
-	///      userName: "admin"
+	///  let config = CouchDBClient.Config(
+	///     userName: "user"
 	///  )
+	///  let couchDBClient = CouchDBClient(config: config)
 	///  ```
 	///
 	/// - Note: It's important to ensure that the CouchDB server is running and accessible at the specified `couchHost` and `couchPort` before attempting to connect.
-	public init(couchProtocol: CouchDBProtocol = .http, couchHost: String = "127.0.0.1", couchPort: Int = 5984, userName: String, userPassword: String = "") {
-		self.couchProtocol = couchProtocol
-		self.couchHost = couchHost
-		self.couchPort = couchPort
-		self.userName = userName
-
-		self.userPassword =
-			userPassword.isEmpty
-			? ProcessInfo.processInfo.environment["COUCHDB_PASS"] ?? userPassword
-			: userPassword
+	public init(config: CouchDBClient.Config) {
+		self.couchProtocol = config.couchProtocol
+		self.couchHost = config.couchHost
+		self.couchPort = config.couchPort
+		self.userName = config.userName
+		self.userPassword = config.userPassword
+		self.requestsTimeout = config.requestsTimeout
 	}
 
 	// MARK: - Public methods
 
 	/// Retrieves a list of all database names from the CouchDB server.
 	///
-	/// This asynchronous function sends a GET request to the CouchDB server to fetch the names of all databases. It can optionally use a custom NIO's `EventLoopGroup` for the network request.
+	/// This asynchronous function sends a `GET` request to the CouchDB server to fetch the names of all databases.
+	/// It supports using a custom NIO's `EventLoopGroup` for network operations, providing flexibility for managing event loops.
 	///
-	/// - Parameter eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
-	/// - Returns: An array of `String` containing the names of all databases on the server.
-	/// - Throws: An error of type `CouchDBClientError` if the request fails or if there is no data returned.
+	/// - Parameter eventLoopGroup: An optional `EventLoopGroup` for executing network operations.
+	///   If not provided, the function uses a shared instance of `HTTPClient`.
+	/// - Returns: An array of `String` containing the names of all databases available on the server.
+	/// - Throws: A `CouchDBClientError` if the request fails or if the response lacks required data.
 	///
-	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL and request, it executes the request and processes the response.
+	/// ### Function Workflow:
+	/// 1. The function authenticates with the CouchDB server if authentication is required.
+	/// 2. An `HTTPClient` instance is created—either shared or scoped to the provided `EventLoopGroup`.
+	/// 3. The request URL is built using the server's `/all_dbs` endpoint.
+	/// 4. The function sends the `GET` request to CouchDB and processes the response.
+	/// 5. If the response status is `.unauthorized`, a `CouchDBClientError.unauthorized` is thrown.
+	/// 6. The response body is collected, with size limits based on `content-length` or a default maximum.
+	/// 7. The collected data is decoded into an array of database names.
 	///
-	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. It collects the response body up to a specified byte limit or the `content-length` header's value. Finally, it decodes the response data into an array of strings representing the database names.
-	///
-	/// Example usage:
+	/// ### Example Usage:
 	/// ```swift
 	/// let dbNames = try await couchDBClient.getAllDBs()
+	/// print("Available databases: \(dbNames)")
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues.
+	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
+	///   Handle any thrown errors appropriately, particularly authentication-related issues.
+
 	public func getAllDBs(eventLoopGroup: EventLoopGroup? = nil) async throws -> [String] {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -216,22 +291,33 @@ public class CouchDBClient {
 
 	/// Checks if a database exists on the CouchDB server.
 	///
-	/// This asynchronous function sends a HEAD request to the CouchDB server to determine the existence of a specified database. It can optionally use a custom NIO's `EventLoopGroup` for the network request.
+	/// This asynchronous function sends a `HEAD` request to the CouchDB server to verify the existence of a specified database.
+	/// It supports using a custom NIO's `EventLoopGroup` for managing network operations.
 	///
 	/// - Parameters:
 	///   - dbName: The name of the database to check for existence.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` used for executing network requests.
+	///     If not provided, the function defaults to using a shared instance of `HTTPClient`.
 	/// - Returns: A `Bool` indicating whether the database exists (`true`) or not (`false`).
-	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unauthorized` if authentication fails, `.noData` if the response lacks required data.
 	///
-	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL and request for the database, it executes the request and checks the response status.
+	/// ### Function Workflow:
+	/// 1. Authenticates with the CouchDB server if authentication is required.
+	/// 2. Creates an `HTTPClient` instance—either scoped to the provided `EventLoopGroup` or using the shared instance.
+	/// 3. Constructs the request URL using the provided database name.
+	/// 4. Sends a `HEAD` request to the CouchDB server to check the database existence.
+	/// 5. Processes the server's response and checks its HTTP status code.
+	/// 6. Returns `true` for a `.ok` response status and `false` otherwise.
 	///
-	/// Example usage:
+	/// ### Example Usage:
 	/// ```swift
 	/// let doesExist = try await couchDBClient.dbExists("myDatabase")
+	/// print("Database exists: \(doesExist)")
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues.
+	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
+	///   Handle thrown errors appropriately, especially authentication-related issues.
+
 	public func dbExists(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> Bool {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -265,26 +351,33 @@ public class CouchDBClient {
 
 	/// Creates a new database on the CouchDB server.
 	///
-	/// This asynchronous function sends a PUT request to the CouchDB server to create a new database with the specified name. It can optionally use a custom `EventLoopGroup` for the network request.
+	/// This asynchronous function sends a `PUT` request to the CouchDB server to create a new database with the specified name.
+	/// It supports using a custom `EventLoopGroup` for network operations, providing flexibility for managing event loops.
 	///
 	/// - Parameters:
 	///   - dbName: The name of the database to be created.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
-	/// - Returns: An `UpdateDBResponse` object containing the result of the database creation operation.
-	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`, or a `noData` error if there is no response data.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network requests.
+	///     If not provided, the function defaults to using a shared instance of `HTTPClient`.
+	/// - Returns: An `UpdateDBResponse` object that contains the result of the database creation operation.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unauthorized` if authentication fails, `.noData` if the response lacks required data, `.insertError` if the database creation fails and CouchDB returns an error.
 	///
-	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL and request for the database, it executes the request and processes the response.
+	/// ### Function Workflow:
+	/// 1. Authenticates with the CouchDB server if required.
+	/// 2. Creates an `HTTPClient` instance—either scoped to the provided `EventLoopGroup` or using the shared instance.
+	/// 3. Constructs the request URL using the specified database name.
+	/// 4. Sends a `PUT` request to the CouchDB server to create the database.
+	/// 5. Processes the server's response, throwing errors for unauthorized access or missing data.
+	/// 6. Decodes the response body into an `UpdateDBResponse` object if successful.
+	/// 7. If decoding fails, attempts to decode the response into a `CouchDBError` object and throws it as an `.insertError`.
 	///
-	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. It collects the response body up to a specified byte limit or the `content-length` header's value. It then decodes the response data into an `UpdateDBResponse` object.
-	///
-	/// If the decoding fails, it attempts to decode a `CouchDBError` object and throws an `insertError` with the decoded error. If this also fails, it throws the original parsing error.
-	///
-	/// Example usage:
+	/// ### Example Usage:
 	/// ```swift
 	/// let creationResult = try await couchDBClient.createDB("newDatabase")
+	/// print("Database creation successful: \(creationResult.ok)")
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and potential conflicts if the database already exists.
+	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
+	///   Handle any thrown errors appropriately, including authentication issues and potential conflicts if the database already exists.
 	@discardableResult public func createDB(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> UpdateDBResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -338,26 +431,33 @@ public class CouchDBClient {
 
 	/// Deletes a database from the CouchDB server.
 	///
-	/// This asynchronous function sends a DELETE request to the CouchDB server to remove a database with the specified name. It can optionally use a custom `EventLoopGroup` for the network request.
+	/// This asynchronous function sends a `DELETE` request to the CouchDB server to remove a database with the specified name.
+	/// It supports using a custom `EventLoopGroup` for managing network operations.
 	///
 	/// - Parameters:
-	///   - dbName: The name of the database to be deleted.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
-	/// - Returns: An `UpdateDBResponse` object containing the result of the database deletion operation.
-	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`, or a `noData` error if there is no response data.
+	///   - dbName: The name of the database to delete.
+	///   - eventLoopGroup: An optional `EventLoopGroup` used for executing network operations.
+	///     If not provided, the function defaults to using a shared instance of `HTTPClient`.
+	/// - Returns: An `UpdateDBResponse` object that contains the result of the database deletion operation.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unauthorized` if authentication fails, `.noData` if the response lacks required data, `.insertError` if the deletion fails and CouchDB returns an error.
 	///
-	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL and request for the database, it executes the request and processes the response.
+	/// ### Function Workflow:
+	/// 1. Authenticates with the CouchDB server if required.
+	/// 2. Creates an `HTTPClient` instance—either scoped to the provided `EventLoopGroup` or using the shared instance.
+	/// 3. Constructs the request URL using the specified database name.
+	/// 4. Sends a `DELETE` request to the CouchDB server to delete the database.
+	/// 5. Processes the server's response, throwing errors for unauthorized access or missing data.
+	/// 6. Decodes the response body into an `UpdateDBResponse` object if successful.
+	/// 7. If decoding fails, attempts to decode the response into a `CouchDBError` object and throws it as an `.deleteError`.
 	///
-	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. It collects the response body up to a specified byte limit or the `content-length` header's value. It then decodes the response data into an `UpdateDBResponse` object.
-	///
-	/// If the decoding fails, it attempts to decode a `CouchDBError` object and throws an `insertError` with the decoded error. If this also fails, it throws the original parsing error.
-	///
-	/// Example usage:
+	/// ### Example Usage:
 	/// ```swift
 	/// let deletionResult = try await couchDBClient.deleteDB("obsoleteDatabase")
+	/// print("Database deletion successful: \(deletionResult.ok)")
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and potential conflicts if the database does not exist.
+	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
+	///   Handle thrown errors appropriately, especially authentication issues and conflicts if the database does not exist.
 	@discardableResult public func deleteDB(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> UpdateDBResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -403,7 +503,7 @@ public class CouchDBClient {
 			return decodedResponse
 		} catch let parsingError {
 			if let couchdbError = try? decoder.decode(CouchDBError.self, from: data) {
-				throw CouchDBClientError.insertError(error: couchdbError)
+				throw CouchDBClientError.deleteError(error: couchdbError)
 			}
 			throw parsingError
 		}
@@ -411,40 +511,47 @@ public class CouchDBClient {
 
 	/// Fetches data from a specified database and URI on the CouchDB server.
 	///
-	/// This asynchronous function sends a GET request to the CouchDB server to retrieve data from a specific database and URI. It can optionally use a custom `EventLoopGroup` for the network request and include query items.
+	/// This asynchronous function sends a `GET` request to the CouchDB server to retrieve data from a specific database and resource URI.
+	/// It supports using a custom `EventLoopGroup` for network operations and allows the inclusion of query parameters.
 	///
 	/// - Parameters:
 	///   - dbName: The name of the database from which to fetch data.
-	///   - uri: The URI path to the specific resource or endpoint within the database (view or document id).
+	///   - uri: The URI path of the specific resource or endpoint within the database (e.g., document ID or view path).
 	///   - queryItems: An optional array of `URLQueryItem` to specify query parameters for the request.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network operations.
+	///     If not provided, the function defaults to using a shared instance of `HTTPClient`.
 	/// - Returns: An `HTTPClientResponse` object containing the server's response to the request.
-	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unauthorized` if authentication fails, `.noData` if the response lacks required data.
 	///
-	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL with the database name, URI, and query items, it executes the request and processes the response.
+	/// ### Function Workflow:
+	/// 1. Authenticates with the CouchDB server if required.
+	/// 2. Creates an `HTTPClient` instance, either scoped to the provided `EventLoopGroup` or using the shared instance.
+	/// 3. Builds the request URL using the database name, resource URI, and optional query items.
+	/// 4. Sends a `GET` request to the CouchDB server and processes the server's response.
+	/// 5. If the response status is `.unauthorized`, throws a `CouchDBClientError.unauthorized` error.
+	/// 6. Updates the response body with the collected data bytes before returning.
 	///
-	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. It collects the response body up to a specified byte limit or the `content-length` header's value. The response body is then updated with the collected bytes before returning.
-	///
-	/// Example usage:
-	///
-	/// Define your document data model:
+	/// ### Example Usage:
+	/// #### Define Your Document Data Model
 	/// ```swift
-	/// // Example struct
 	/// struct ExpectedDoc: CouchDBRepresentable {
 	///     var name: String
-	///     var _id: String?
+	///     var _id: String = NSUUID().uuidString
 	///     var _rev: String?
+	///
+	///     func updateRevision(_ newRevision: String) -> Self {
+	///         return ExpectedDoc(name: name, _id: _id, _rev: newRevision)
+	///     }
 	/// }
 	/// ```
-	/// Get document by ID:
+	///
+	/// #### Fetch Document by ID:
 	/// ```swift
-	/// // get data from DB by document ID
-	/// var response = try await couchDBClient.get(
+	/// let response = try await couchDBClient.get(
 	///     fromDB: "myDatabase",
 	///     uri: "documentID"
 	/// )
 	///
-	/// // parse JSON
 	/// let expectedBytes = response.headers
 	///     .first(name: "content-length")
 	///     .flatMap(Int.init) ?? 1024 * 1024 * 10
@@ -455,16 +562,17 @@ public class CouchDBClient {
 	///     ExpectedDoc.self,
 	///     from: data!
 	/// )
+	/// print(doc)
 	/// ```
 	///
-	/// You can also provide a CouchDB view document as uri and key in the query.
-	///
-	/// Get data and parse `RowsResponse`:
+	/// #### Fetch Data from a CouchDB View:
 	/// ```swift
 	/// let response = try await couchDBClient.get(
 	///     fromDB: "myDatabase",
 	///     uri: "_design/all/_view/by_url",
-	///     query: ["key": "\"\(url)\""]
+	///     queryItems: [
+	///         URLQueryItem(name: "key", value: "\"\(url)\"")
+	///     ]
 	/// )
 	///
 	/// let expectedBytes = response.headers
@@ -477,12 +585,10 @@ public class CouchDBClient {
 	///     RowsResponse<ExpectedDoc>.self,
 	///     from: data!
 	/// )
-	///
 	/// print(decodedResponse.rows)
-	/// print(decodedResponse.rows.first?.value)
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues.
+	/// - Note: Ensure that the CouchDB server is running and accessible. Handle thrown errors appropriately, especially for authentication issues.
 	public func get(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -523,45 +629,52 @@ public class CouchDBClient {
 
 	/// Retrieves a document of a specified type from a database on the CouchDB server.
 	///
-	/// This asynchronous generic function sends a GET request to the CouchDB server to retrieve a document from a specific database and URI. It decodes the document into the specified `CouchDBRepresentable` type. The function can optionally use a custom `EventLoopGroup` for the network request, include query items, and specify a date decoding strategy.
+	/// This asynchronous generic function sends a `GET` request to the CouchDB server to retrieve a document
+	/// from a specific database and resource URI. The retrieved data is decoded into the specified `CouchDBRepresentable` type.
+	/// It supports using a custom `EventLoopGroup`, query parameters, and a configurable date decoding strategy.
 	///
 	/// - Parameters:
 	///   - dbName: The name of the database from which to fetch the document.
-	///   - uri: The URI path to the specific document within the database.
+	///   - uri: The URI path of the specific document within the database (e.g., a document ID).
 	///   - queryItems: An optional array of `URLQueryItem` to specify query parameters for the request.
-	///   - dateDecodingStrategy: The strategy to use for decoding dates. Defaults to `.secondsSince1970`.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	///   - dateDecodingStrategy: The date decoding strategy to use when decoding dates. Defaults to `.secondsSince1970`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network operations.
+	///     If not provided, the function uses a shared `HTTPClient`.
 	/// - Returns: A document of type `T`, where `T` conforms to `CouchDBRepresentable`.
-	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`, a `noData` error if there is no response data, or a `getError` with the underlying `CouchDBError` if the decoding fails.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unauthorized` if authentication fails, `.noData` if the response lacks required data, `.getError` if the document decoding fails, with the underlying `CouchDBError`.
 	///
-	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL with the database name, URI, and query items, it executes the request and processes the response.
+	/// ### Function Workflow:
+	/// 1. Authenticates with the CouchDB server if required.
+	/// 2. Sends a `GET` request to the specified database and URI, optionally including query parameters.
+	/// 3. Processes the server's response, throwing errors for unauthorized access or missing data.
+	/// 4. Decodes the response body into the specified type `T` using a `JSONDecoder` configured with the provided date decoding strategy.
+	/// 5. If decoding fails, attempts to decode the response as a `CouchDBError` and throws it as a `.getError`.
 	///
-	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. It collects the response body up to a specified byte limit or the `content-length` header's value. The function then uses a `JSONDecoder` with the specified date decoding strategy to decode the response data into the specified type `T`.
-	///
-	/// If the decoding process encounters an error, it attempts to decode a `CouchDBError` object and throws a `getError` with the decoded error. If this also fails, it throws the original parsing error.
-	///
-	/// Example usage:
-	///
-	/// Define your document model:
+	/// ### Example Usage:
+	/// #### Define Your Document Model:
 	/// ```swift
-	/// // Example struct
 	/// struct MyDocumentType: CouchDBRepresentable {
 	///     var name: String
-	///     var _id: String?
+	///     var _id: String = UUID().uuidString
 	///     var _rev: String?
+	///
+	///     func updateRevision(_ newRevision: String) -> Self {
+	///         return MyDocumentType(name: name, _id: _id, _rev: newRevision)
+	///     }
 	/// }
 	/// ```
 	///
-	/// Get document by ID:
+	/// #### Retrieve a Document by ID:
 	/// ```swift
-	/// // get data from the database by document ID
 	/// let doc: MyDocumentType = try await couchDBClient.get(
 	///     fromDB: "myDatabase",
 	///     uri: "documentID"
 	/// )
+	/// print(doc)
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and data decoding.
+	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
+	///   Handle thrown errors appropriately, especially for authentication failures and data decoding issues.
 	public func get<T: CouchDBRepresentable>(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		let response: HTTPClientResponse = try await get(fromDB: dbName, uri: uri, queryItems: queryItems, eventLoopGroup: eventLoopGroup)
 
@@ -593,31 +706,41 @@ public class CouchDBClient {
 
 	/// Performs a query to find documents in a database on the CouchDB server that match the given selector.
 	///
-	/// This asynchronous generic function sends a query to the CouchDB server to find documents in a specific database that match the criteria defined by the selector. It decodes the resulting documents into an array of the specified `CouchDBRepresentable` type. The function can optionally use a custom `EventLoopGroup` for the network request and specify a date decoding strategy.
+	/// This asynchronous generic function sends a query to the CouchDB server to search for documents in a specific database
+	/// based on the criteria defined by the selector. The resulting documents are decoded into an array of the specified
+	/// `CouchDBRepresentable` type. It supports using a custom `EventLoopGroup` for network operations and allows the specification
+	/// of a custom date decoding strategy.
 	///
 	/// - Parameters:
 	///   - dbName: The name of the database in which to perform the query.
-	///   - selector: A `Codable` object that defines the criteria used to select documents.
-	///   - dateDecodingStrategy: The strategy to use for decoding dates within the documents. Defaults to `.secondsSince1970`.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	///   - selector: A `Codable` object that defines the criteria for selecting documents.
+	///   - dateDecodingStrategy: The date decoding strategy to use for decoding dates within the documents. Defaults to `.secondsSince1970`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network operations.
+	///     If not provided, the function defaults to using a shared instance of `HTTPClient`.
 	/// - Returns: An array of documents of type `T`, where `T` conforms to `CouchDBRepresentable`.
-	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically a `noData` error if there is no response data, or a `findError` with the underlying `CouchDBError` if the decoding fails.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.noData` if the response lacks required data, `.findError` if decoding fails, with the underlying `CouchDBError`.
 	///
-	/// The function encodes the selector into JSON and sends it as the body of the request. It then processes the response from the server, collecting the response body up to a specified byte limit or the `content-length` header's value. The function uses a `JSONDecoder` with the specified date decoding strategy to decode the response data into a `CouchDBFindResponse<T>` object, from which it extracts and returns the documents.
+	/// ### Function Workflow:
+	/// 1. Encodes the selector criteria into JSON format and includes it as the request body.
+	/// 2. Sends the query request to the specified database on the CouchDB server.
+	/// 3. Collects the response body up to a size limit defined by `content-length` or a default maximum.
+	/// 4. Uses a `JSONDecoder` configured with the specified date decoding strategy to decode the response data
+	///    into a `CouchDBFindResponse<T>` object.
+	/// 5. Extracts and returns the documents from the `CouchDBFindResponse` object.
+	/// 6. Handles decoding errors by attempting to decode a `CouchDBError` object and throwing it as `.findError`.
 	///
-	/// If the decoding process encounters an error, it attempts to decode a `CouchDBError` object and throws a `findError` with the decoded error. If this also fails, it throws the original parsing error.
-	///
-	/// Example usage:
+	/// ### Example Usage:
 	/// ```swift
-	/// // find documents in the database by selector
 	/// let selector = ["selector": ["name": "Sam"]]
 	/// let documents: [MyDocumentType] = try await couchDBClient.find(
 	///     inDB: "myDatabase",
 	///     selector: selector
 	/// )
+	/// print(documents)
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with data decoding and query criteria.
+	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
+	///   Handle thrown errors appropriately, especially for data decoding issues or query mismatches.
 	public func find<T: CouchDBRepresentable>(inDB dbName: String, selector: Codable, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> [T] {
 		let encoder = JSONEncoder()
 		let selectorData = try encoder.encode(selector)
@@ -653,25 +776,32 @@ public class CouchDBClient {
 
 	/// Executes a find query on a specified database on the CouchDB server.
 	///
-	/// This asynchronous function sends a POST request with a custom body to the CouchDB server's `_find` endpoint to execute a query in the specified database. It can optionally use a custom `EventLoopGroup` for the network request.
+	/// This asynchronous function sends a `POST` request with a custom body to the CouchDB server's `_find` endpoint to perform a query
+	/// in the specified database. It allows the use of a custom `EventLoopGroup` for network operations.
 	///
 	/// - Parameters:
-	///   - dbName: The name of the database in which to perform the find query.
+	///   - dbName: The name of the database in which to execute the query.
 	///   - body: The `HTTPClientRequest.Body` containing the encoded query to be sent to the server.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network requests.
+	///     If not provided, the function uses a shared instance of `HTTPClient`.
 	/// - Returns: An `HTTPClientResponse` object containing the server's response to the find query.
-	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unauthorized`: If authentication fails.
 	///
-	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL for the `_find` endpoint, it sets the request body and executes the request.
+	/// ### Function Workflow:
+	/// 1. Authenticates with the CouchDB server if required.
+	/// 2. Creates an `HTTPClient` instance—either scoped to the provided `EventLoopGroup` or using the shared instance.
+	/// 3. Constructs the request URL for the `_find` endpoint using the database name.
+	/// 4. Sets the request body with the encoded query and sends a `POST` request to the CouchDB server.
+	/// 5. Processes the server's response, throwing errors for unauthorized access.
+	/// 6. Updates the response body with the collected bytes before returning the response object.
 	///
-	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. The function collects the response body up to a specified byte limit or the `content-length` header's value. The response body is then updated with the collected bytes before returning.
-	///
-	/// Example usage:
+	/// ### Example Usage:
+	/// #### Perform a Find Query:
 	/// ```swift
 	/// let selector = ["selector": ["name": "Greg"]]
 	/// let bodyData = try JSONEncoder().encode(selector)
-	/// var findResponse = try await couchDBClient.find(
-	///     inDB: testsDB,
+	/// let findResponse = try await couchDBClient.find(
+	///     inDB: "myDatabase",
 	///     body: .data(bodyData)
 	/// )
 	///
@@ -680,9 +810,12 @@ public class CouchDBClient {
 	///     CouchDBFindResponse<ExpectedDoc>.self,
 	///     from: Data(bytes)
 	/// ).docs
+	/// print(docs)
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues.
+	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
+	///   Handle thrown errors appropriately, especially authentication-related issues.
+
 	public func find(inDB dbName: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -724,62 +857,75 @@ public class CouchDBClient {
 
 	/// Updates a document in a specified database on the CouchDB server.
 	///
-	/// This asynchronous function sends a PUT request to the CouchDB server to update a document at the specified URI within the given database. It can optionally use a custom `EventLoopGroup` for the network request.
+	/// This asynchronous function sends a `PUT` request to the CouchDB server to update a document at a given URI within a specified database.
+	/// It allows the use of a custom `EventLoopGroup` for network operations.
 	///
 	/// - Parameters:
 	///   - dbName: The name of the database containing the document to be updated.
-	///   - uri: The URI path to the specific document within the database.
-	///   - body: The `HTTPClientRequest.Body` containing the updated content for the document.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	///   - uri: The URI path of the specific document within the database.
+	///   - body: The `HTTPClientRequest.Body` containing the updated content of the document.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network operations.
+	///     If not provided, the function uses a shared instance of `HTTPClient`.
 	/// - Returns: A `CouchUpdateResponse` object containing the result of the update operation.
-	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`, a `noData` error if there is no response data, or an `updateError` with the underlying `CouchDBError` if the decoding fails.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unauthorized` if authentication fails, `.noData` if the response lacks required data, `.updateError` if decoding the response fails, with the underlying `CouchDBError`.
 	///
-	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL for the document, it sets the request body and executes the request.
+	/// ### Function Workflow:
+	/// 1. Authenticates with the CouchDB server if required.
+	/// 2. Creates an `HTTPClient` instance—either scoped to the provided `EventLoopGroup` or using the shared instance.
+	/// 3. Constructs the request URL for the document using the database name and URI.
+	/// 4. Sets the request body with the updated document content and sends a `PUT` request to the server.
+	/// 5. Processes the server's response, throwing errors for unauthorized access or missing data.
+	/// 6. Decodes the response body into a `CouchUpdateResponse` object and returns it.
+	/// 7. If decoding fails, attempts to decode the response as a `CouchDBError` and throws it as `.updateError`.
 	///
-	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. The function collects the response body up to a specified byte limit or the `content-length` header's value. It then decodes the response data into a `CouchUpdateResponse` object.
-	///
-	/// If the decoding process encounters an error, it attempts to decode a `CouchDBError` object and throws an `updateError` with the decoded error. If this also fails, it throws the original parsing error.
-	///
-	/// Example usage:
-	///
-	/// Define your document model:
+	/// ### Example Usage:
+	/// #### Define Your Document Model:
 	/// ```swift
-	/// // Example struct
 	/// struct ExpectedDoc: CouchDBRepresentable {
 	///     var name: String
-	///     var _id: String?
+	///     var _id: String = UUID().uuidString
 	///     var _rev: String?
+	///
+	///     func updateRevision(_ newRevision: String) -> Self {
+	///         return ExpectedDoc(name: name, _id: _id, _rev: newRevision)
+	///     }
 	/// }
 	/// ```
-	/// Get document by ID and update it:
+	///
+	/// #### Update a Document:
 	/// ```swift
-	/// // get data from the database by document ID
+	/// // Fetch the document by ID
 	/// var response = try await couchDBClient.get(
 	///     fromDB: "myDatabase",
 	///     uri: "documentID"
 	/// )
 	///
-	/// // parse JSON
+	/// // Parse the document
 	/// let bytes = response.body!.readBytes(length: response.body!.readableBytes)!
-	/// var doc = try JSONDecoder().decode(ExpectedDoc.self, from: Data(bytes))
+	/// var doc = try JSONDecoder().decode(
+	///     ExpectedDoc.self,
+	///     from: Data(bytes)
+	/// )
 	///
-	/// // update some value
+	/// // Modify the document
 	/// doc.name = "Updated name"
 	///
-	/// // encode document into a JSON string
-	/// let data = try encoder.encode(updatedData)
+	/// // Encode the updated document into JSON
+	/// let data = try JSONEncoder().encode(doc)
 	/// let body: HTTPClientRequest.Body = .bytes(ByteBuffer(data: data))
 	///
-	/// let response = try await couchDBClient.update(
+	/// // Send the update request
+	/// let updateResponse = try await couchDBClient.update(
 	///     dbName: "myDatabase",
-	///     uri: doc._id!,
+	///     uri: doc._id,
 	///     body: body
 	/// )
 	///
-	/// print(response)
+	/// print(updateResponse)
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and document updates.
+	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
+	///   Handle thrown errors appropriately, especially for authentication or data-related issues.
 	public func update(dbName: String, uri: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -833,52 +979,63 @@ public class CouchDBClient {
 
 	/// Updates a document conforming to `CouchDBRepresentable` in a specified database on the CouchDB server.
 	///
-	/// This asynchronous generic function updates a document in the specified database. The document must conform to the `CouchDBRepresentable` protocol, which requires `_id` and `_rev` properties. It can optionally use a custom `EventLoopGroup` for the network request and specify a date encoding strategy.
+	/// This asynchronous generic function updates a document in the specified database. The document must conform to the
+	/// `CouchDBRepresentable` protocol, which requires `_id` and `_rev` properties. The function supports using a custom
+	/// `EventLoopGroup` for network operations and allows a configurable date encoding strategy.
 	///
 	/// - Parameters:
 	///   - dbName: The name of the database containing the document to be updated.
 	///   - doc: A reference to the document of type `T` that will be updated. The document must have valid `_id` and `_rev` properties.
-	///   - dateEncodingStrategy: The strategy to use for encoding dates within the document. Defaults to `.secondsSince1970`.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
-	/// - Throws: An error of type `CouchDBClientError` if the document's `_id` or `_rev` is missing, or if the server responds with an unknown response.
+	///   - dateEncodingStrategy: The date encoding strategy to use when encoding dates in the document. Defaults to `.secondsSince1970`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network operations.
+	///     If not provided, the function uses a shared instance of `HTTPClient`.
+	/// - Returns: The updated document of type `T`, with its `_rev` property reflecting the new revision token.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.revMissing` if the document's `_rev` is missing or empty, `.unknownResponse` if the server's response is not successful or unexpected.
 	///
-	/// The function first checks for the presence of the document's `_id` and `_rev`. It then encodes the document using a `JSONEncoder` with the specified date encoding strategy. The encoded document is sent as the body of a PUT request to the server.
+	/// ### Function Workflow:
+	/// 1. Verifies that the document has a valid `_rev` property.
+	/// 2. Encodes the document using a `JSONEncoder` configured with the specified date encoding strategy.
+	/// 3. Constructs the request body using the encoded document data.
+	/// 4. Sends a `PUT` request to update the document in the specified database.
+	/// 5. Processes the server's response and throws an error if the operation fails.
+	/// 6. Updates the document's `_rev` (and `_id` if necessary) based on the server's response.
 	///
-	/// If the server's response indicates success, the function updates the document's `_rev` (and `_id` if necessary) with the new revision information from the server. If the server's response is not successful, it throws an `unknownResponse` error.
-	///
-	/// Example usage:
-	/// Define your document model:
+	/// ### Example Usage:
+	/// #### Define Your Document Model:
 	/// ```swift
-	/// // Example struct
-	/// struct MyCouchDBDocument: CouchDBRepresentable {
+	/// struct ExpectedDoc: CouchDBRepresentable {
 	///     var name: String
-	///     var _id: String?
+	///     var _id: String = UUID().uuidString
 	///     var _rev: String?
+	///
+	///     func updateRevision(_ newRevision: String) -> Self {
+	///         return ExpectedDoc(name: name, _id: _id, _rev: newRevision)
+	///     }
 	/// }
 	/// ```
-	/// Get a document by ID and update it:
+	///
+	/// #### Retrieve and Update a Document:
 	/// ```swift
-	/// // get data from the database by document ID
-	/// var doc: MyCouchDBDocument = try await couchDBClient.get(
+	/// var doc: ExpectedDoc = try await couchDBClient.get(
 	///     fromDB: "myDatabase",
 	///     uri: "documentID"
 	/// )
-	/// print(doc)
 	///
-	/// // Update value
+	/// // Modify the document
 	/// doc.name = "Updated name"
 	///
-	/// try await couchDBClient.update(
+	/// // Update the document in the database
+	/// doc = try await couchDBClient.update(
 	///     dbName: "myDatabase",
-	///     doc: &doc
+	///     doc: doc
 	/// )
 	///
-	/// print(doc) // doc will have updated name and _rev values now
+	/// print(doc) // Document now includes the updated name and a new `_rev` value
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with document updates and server responses.
-	public func update<T: CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws {
-		guard let id = doc._id else { throw CouchDBClientError.idMissing }
+	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
+	///   Handle thrown errors appropriately, especially for document updates and server responses.
+	public func update<T: CouchDBRepresentable>(dbName: String, doc: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		guard doc._rev?.isEmpty == false else { throw CouchDBClientError.revMissing }
 
 		let encoder = JSONEncoder()
@@ -889,7 +1046,7 @@ public class CouchDBClient {
 
 		let updateResponse = try await update(
 			dbName: dbName,
-			uri: id,
+			uri: doc._id,
 			body: body,
 			eventLoopGroup: eventLoopGroup
 		)
@@ -898,55 +1055,62 @@ public class CouchDBClient {
 			throw CouchDBClientError.unknownResponse
 		}
 
-		doc._rev = updateResponse.rev
-		doc._id = updateResponse.id
+		return doc.updateRevision(updateResponse.rev)
 	}
 
 	/// Inserts a new document into a specified database on the CouchDB server.
 	///
-	/// This asynchronous function sends a POST request to the CouchDB server to insert a new document into the given database. It can optionally use a custom `EventLoopGroup` for the network request.
+	/// This asynchronous function sends a `POST` request to the CouchDB server to insert a new document into the given database.
+	/// It allows the use of a custom `EventLoopGroup` for managing network operations.
 	///
 	/// - Parameters:
 	///   - dbName: The name of the database into which the new document will be inserted.
-	///   - body: The `HTTPClientRequest.Body` containing the content of the new document.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
-	/// - Returns: A `CouchUpdateResponse` object containing the result of the insert operation.
-	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`, a `noData` error if there is no response data, or an `insertError` with the underlying `CouchDBError` if the decoding fails.
+	///   - body: The `HTTPClientRequest.Body` containing the JSON-encoded content of the new document.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network requests.
+	///     If not provided, the function uses a shared instance of `HTTPClient`.
+	/// - Returns: A `CouchUpdateResponse` object containing the result of the insertion operation.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unauthorized` if authentication fails, `.noData` if the response lacks required data, `.insertError` if decoding the response fails, with the underlying `CouchDBError`.
 	///
-	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL for the database, it sets the request body and executes the request.
+	/// ### Function Workflow:
+	/// 1. Authenticates with the CouchDB server if required.
+	/// 2. Creates an `HTTPClient` instance—either scoped to the provided `EventLoopGroup` or using the shared instance.
+	/// 3. Constructs the request URL using the database name.
+	/// 4. Sets the request body with the JSON-encoded content of the new document and sends a `POST` request to the server.
+	/// 5. Processes the server's response, throwing errors for unauthorized access or missing data.
+	/// 6. Decodes the response body into a `CouchUpdateResponse` object and returns it.
+	/// 7. Handles decoding errors by attempting to decode the response as a `CouchDBError` and throws it as `.insertError`.
 	///
-	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. The function collects the response body up to a specified byte limit or the `content-length` header's value. It then decodes the response data into a `CouchUpdateResponse` object.
-	///
-	/// If the decoding process encounters an error, it attempts to decode a `CouchDBError` object and throws an `insertError` with the decoded error. If this also fails, it throws the original parsing error.
-	///
-	/// Example usage:
-	///
-	/// Define your document model:
+	/// ### Example Usage:
+	/// #### Define Your Document Model:
 	/// ```swift
-	/// // Example struct
-	/// struct MyCouchDBDocument: CouchDBRepresentable {
+	/// struct ExpectedDoc: CouchDBRepresentable {
 	///     var name: String
-	///     var _id: String?
+	///     var _id: String = UUID().uuidString
 	///     var _rev: String?
+	///
+	///     func updateRevision(_ newRevision: String) -> Self {
+	///         return ExpectedDoc(name: name, _id: _id, _rev: newRevision)
+	///     }
 	/// }
 	/// ```
 	///
-	///	Create a new document and insert:
+	/// #### Create and Insert a Document:
 	/// ```swift
-	/// let testDoc = MyCouchDBDocument(name: "My name")
-	/// let data = try JSONEncoder().encode(testData)
+	/// let testDoc = ExpectedDoc(name: "My name")
+	/// let encodedData = try JSONEncoder().encode(testDoc)
 	///
-	/// let body: HTTPClientRequest.Body = .bytes(ByteBuffer(data: insertEncodeData))
+	/// let body: HTTPClientRequest.Body = .bytes(ByteBuffer(data: encodedData))
 	///
 	/// let response = try await couchDBClient.insert(
 	///     dbName: "myDatabase",
 	///     body: body
 	/// )
 	///
-	/// print(response)
+	/// print(response) // Response includes operation status and revision token
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and document insertion.
+	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
+	///   Handle thrown errors appropriately, especially for authentication issues or unexpected server responses.
 	public func insert(dbName: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
@@ -1001,44 +1165,54 @@ public class CouchDBClient {
 
 	/// Inserts a new document conforming to `CouchDBRepresentable` into a specified database on the CouchDB server.
 	///
-	/// This asynchronous generic function inserts a new document into the specified database. The document must conform to the `CouchDBRepresentable` protocol, which includes `_id` and `_rev` properties. It can optionally use a custom `EventLoopGroup` for the network request and specify a date encoding strategy.
+	/// This asynchronous generic function inserts a new document into the specified database. The document must conform to the
+	/// `CouchDBRepresentable` protocol, which requires `_id` and `_rev` properties. It supports using a custom `EventLoopGroup` for
+	/// network operations and allows a configurable date encoding strategy.
 	///
 	/// - Parameters:
-	///   - dbName: The name of the database into which the new document will be inserted.
-	///   - doc: A reference to the document of type `T` that will be inserted. The document type `T` must conform to `CouchDBRepresentable`.
-	///   - dateEncodingStrategy: The strategy to use for encoding dates within the document. Defaults to `.secondsSince1970`.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
-	/// - Throws: An error of type `CouchDBClientError` if the server responds with an unknown response.
+	///   - dbName: The name of the database where the new document will be inserted.
+	///   - doc: The document of type `T` to be inserted. The type `T` must conform to `CouchDBRepresentable`.
+	///   - dateEncodingStrategy: The strategy used for encoding dates within the document. Defaults to `.secondsSince1970`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for managing network operations. If not provided, a shared instance of `HTTPClient` is used.
+	/// - Returns: The newly inserted document of type `T`, updated with its `_id` and `_rev` properties.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unknownResponse` if the server's response is unexpected or unsuccessful.
 	///
-	/// The function encodes the document using a `JSONEncoder` with the specified date encoding strategy. The encoded document is sent as the body of a POST request to the server.
+	/// ### Function Workflow:
+	/// 1. Encodes the document using a `JSONEncoder` configured with the specified date encoding strategy.
+	/// 2. Prepares a `POST` request with the encoded document as the request body.
+	/// 3. Sends the request to the CouchDB server and processes the response.
+	/// 4. Updates the document's `_id` and `_rev` based on the server's response.
+	/// 5. Throws an error if the server's response is unexpected or unsuccessful.
 	///
-	/// If the server's response indicates success, the function updates the document's `_rev` (and `_id` if necessary) with the new revision information from the server. If the server's response is not successful, it throws an `unknownResponse` error.
-	///
-	/// Example usage:
-	/// Define your document model:
+	/// ### Example Usage:
+	/// #### Define Your Document Model:
 	/// ```swift
-	/// // Example struct
-	/// struct MyCouchDBDocument: CouchDBRepresentable {
+	/// struct ExpectedDoc: CouchDBRepresentable {
 	///     var name: String
-	///     var _id: String?
+	///     var _id: String = UUID().uuidString
 	///     var _rev: String?
+	///
+	///     func updateRevision(_ newRevision: String) -> Self {
+	///         return ExpectedDoc(name: name, _id: _id, _rev: newRevision)
+	///     }
 	/// }
 	/// ```
 	///
-	///	Create a new document and insert:
+	/// #### Insert a New Document:
 	/// ```swift
-	/// var testDoc = MyCouchDBDocument(name: "My name")
+	/// var testDoc = ExpectedDoc(name: "My name")
 	///
-	/// try await couchDBClient.insert(
+	/// testDoc = try await couchDBClient.insert(
 	///     dbName: "myDatabase",
-	///     doc: &testDoc
+	///     doc: testDoc
 	/// )
 	///
-	/// print(testDoc) // testDoc has _id and _rev values now
+	/// print(testDoc) // Document now contains its assigned `_id` and `_rev`.
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with document insertion and server responses.
-	public func insert<T: CouchDBRepresentable>(dbName: String, doc: inout T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws {
+	/// - Note: Ensure that the CouchDB server is operational and accessible before using this function.
+	///   Handle thrown errors appropriately, especially for unexpected server responses.
+	public func insert<T: CouchDBRepresentable>(dbName: String, doc: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		let encoder = JSONEncoder()
 		encoder.dateEncodingStrategy = dateEncodingStrategy
 		let insertEncodeData = try encoder.encode(doc)
@@ -1055,38 +1229,43 @@ public class CouchDBClient {
 			throw CouchDBClientError.unknownResponse
 		}
 
-		doc._rev = insertResponse.rev
-		doc._id = insertResponse.id
+		return doc.updateRevision(insertResponse.rev)
 	}
 
 	/// Deletes a document from a specified database on the CouchDB server.
 	///
-	/// This asynchronous function sends a DELETE request to the CouchDB server to remove a document identified by its URI and revision number from the given database. It can optionally use a custom `EventLoopGroup` for the network request.
+	/// This asynchronous function sends a `DELETE` request to the CouchDB server to remove a document identified by its URI and revision number.
+	/// It supports using a custom `EventLoopGroup` for managing network operations.
 	///
 	/// - Parameters:
 	///   - dbName: The name of the database from which the document will be deleted.
-	///   - uri: The URI path to the specific document within the database.
+	///   - uri: The URI path of the specific document within the database.
 	///   - rev: The revision number of the document to be deleted.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network requests.
+	///     If not provided, the function uses a shared instance of `HTTPClient`.
 	/// - Returns: A `CouchUpdateResponse` object containing the result of the delete operation.
-	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unauthorized` if authentication fails, `.noData`: if the response lacks required data.
 	///
-	/// The function creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL with the database name, document URI, and revision query parameter, it executes the DELETE request.
+	/// ### Function Workflow:
+	/// 1. Creates an `HTTPClient` instance—either scoped to the provided `EventLoopGroup` or using the shared instance.
+	/// 2. Constructs the request URL using the database name, document URI, and revision query parameter.
+	/// 3. Sends a `DELETE` request to remove the document from the CouchDB server.
+	/// 4. Processes the server's response, throwing errors for unauthorized access or missing data.
+	/// 5. Decodes the response body into a `CouchUpdateResponse` object if the deletion is successful.
+	/// 6. Returns a `CouchUpdateResponse` with `ok` set to `false` if there is no response data.
 	///
-	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. The function collects the response body up to a specified byte limit or the `content-length` header's value. It then decodes the response data into a `CouchUpdateResponse` object.
-	///
-	/// If there is no response data, the function returns a `CouchUpdateResponse` with `ok` set to `false`, indicating the delete operation was not successful.
-	///
-	/// Example usage:
+	/// ### Example Usage:
 	/// ```swift
 	/// let response = try await couchDBClient.delete(
 	///     fromDb: "myDatabase",
-	///     uri: doc._id,
-	///     rev: doc._rev
+	///     uri: "documentID",
+	///     rev: "documentRevision"
 	/// )
+	/// print(response) // Response includes operation status and revision token
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and document deletion.
+	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
+	///   Handle thrown errors appropriately, especially for authentication issues or unexpected server responses.
 	public func delete(fromDb dbName: String, uri: String, rev: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		let httpClient: HTTPClient
 		if let eventLoopGroup = eventLoopGroup {
@@ -1132,31 +1311,39 @@ public class CouchDBClient {
 
 	/// Deletes a document conforming to `CouchDBRepresentable` from a specified database on the CouchDB server.
 	///
-	/// This asynchronous function deletes a document from the specified database. The document must conform to the `CouchDBRepresentable` protocol, which includes `_id` and `_rev` properties. It can optionally use a custom `EventLoopGroup` for the network request.
+	/// This asynchronous function removes a document from the specified database. The document must conform to the
+	/// `CouchDBRepresentable` protocol, which includes the `_id` and `_rev` properties required for the deletion process.
+	/// It supports using a custom `EventLoopGroup` for network operations.
 	///
 	/// - Parameters:
 	///   - dbName: The name of the database from which the document will be deleted.
-	///   - doc: The document that will be deleted. The document type must conform to `CouchDBRepresentable`.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	///   - doc: The document of type `CouchDBRepresentable` to be deleted.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network requests.
+	///     If not provided, a shared instance of `HTTPClient` is used.
 	/// - Returns: A `CouchUpdateResponse` object containing the result of the delete operation.
-	/// - Throws: An error of type `CouchDBClientError` if the document's `_id` or `_rev` is missing.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.revMissing` if the document's `_rev` property is missing.
 	///
-	/// The function checks for the presence of the document's `_id` and `_rev`. It then calls the `delete(fromDb:uri:rev:eventLoopGroup:)` function with the document's `_id` and `_rev` to perform the deletion.
+	/// ### Function Workflow:
+	/// 1. Validates the presence of the document's `_rev` property.
+	/// 2. Calls `delete(fromDb:uri:rev:eventLoopGroup:)` with the document's `_id` and `_rev` to execute the deletion.
+	/// 3. Processes and returns the server's response as a `CouchUpdateResponse` object.
 	///
-	/// Example usage:
+	/// ### Example Usage:
 	/// ```swift
 	/// let deleteResult = try await couchDBClient.delete(
 	///     fromDb: "myDatabase",
 	///     doc: myDocument
 	/// )
+	/// print(deleteResult) // Response includes operation status and revision token
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with document deletion.
+	/// - Note: Ensure that the CouchDB server is operational and accessible before using this function.
+	///   Handle thrown errors appropriately, especially for missing document properties or unexpected server responses.
+
 	public func delete(fromDb dbName: String, doc: CouchDBRepresentable, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
-		guard let id = doc._id else { throw CouchDBClientError.idMissing }
 		guard let rev = doc._rev else { throw CouchDBClientError.revMissing }
 
-		return try await delete(fromDb: dbName, uri: id, rev: rev, eventLoopGroup: eventLoopGroup)
+		return try await delete(fromDb: dbName, uri: doc._id, rev: rev, eventLoopGroup: eventLoopGroup)
 	}
 }
 

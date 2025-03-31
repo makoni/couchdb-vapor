@@ -8,9 +8,14 @@
 import Foundation
 
 /// A model that represents errors that CouchDB might return.
-public struct CouchDBError: Error, Codable {
-	/// Error message.
+/// This structure conforms to `Error`, `Codable`, and `Sendable` protocols for flexibility,
+/// serialization, and thread safety.
+public struct CouchDBError: Error, Codable, Sendable {
+	/// A short description of the error returned by CouchDB.
+	/// This property contains a general error type or category, such as `"not_found"`.
 	public let error: String
-	/// Error reason.
+
+	/// A detailed explanation or reason for the error returned by CouchDB.
+	/// This property provides more context about why the error occurred.
 	public let reason: String
 }
