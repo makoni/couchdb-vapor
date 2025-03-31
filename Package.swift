@@ -8,7 +8,7 @@ let package = Package(
 	platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6)],
 	products: [
 		// Products define the executables and libraries a package produces, and make them visible to other packages.
-		.library(name: "CouchDBClient", targets: ["CouchDBClient"]),
+		.library(name: "CouchDBClient", targets: ["CouchDBClient"])
 	],
 	dependencies: [
 		.package(url: "https://github.com/swift-server/async-http-client.git", from: "1.21.0"),
@@ -24,6 +24,6 @@ let package = Package(
 			]),
 		.testTarget(
 			name: "CouchDBClientTests",
-			dependencies: ["CouchDBClient"]),
+			dependencies: ["CouchDBClient"])
 	]
 )

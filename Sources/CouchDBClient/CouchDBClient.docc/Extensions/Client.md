@@ -9,7 +9,7 @@ A CouchDB client class with methods using Swift Concurrency.
 ## Topics
 
 ### Initializer
-- ``init(couchProtocol:couchHost:couchPort:userName:userPassword:)``
+- ``init(config:)``
 
 ### Methods for databases
 - ``getAllDBs(eventLoopGroup:)``
@@ -31,9 +31,3 @@ A CouchDB client class with methods using Swift Concurrency.
 - ``find(inDB:selector:dateDecodingStrategy:eventLoopGroup:)``
 - ``delete(fromDb:doc:eventLoopGroup:)``
 - ``delete(fromDb:uri:rev:eventLoopGroup:)``
-
-### Deprecated methods
-- ``get(dbName:uri:queryItems:eventLoopGroup:)``
-- ``get(dbName:uri:queryItems:dateDecodingStrategy:eventLoopGroup:)``
-- ``find(in:body:eventLoopGroup:)``
-- ``find(in:selector:dateDecodingStrategy:eventLoopGroup:)``

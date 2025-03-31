@@ -23,7 +23,7 @@ final class CouchDBClientTests: XCTestCase {
 		couchPort: 5984,
 		userName: "admin",
 		userPassword: ProcessInfo.processInfo.environment["COUCHDB_PASS"] ?? "",
-        requestsTimeout: 30
+		requestsTimeout: 30
 	)
 
 	lazy var couchDBClient = CouchDBClient(config: config)
