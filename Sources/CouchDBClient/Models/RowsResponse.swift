@@ -8,8 +8,8 @@
 import Foundation
 
 /// Rows response model.
-public struct RowsResponse<T: CouchDBRepresentable>: Codable {
-	public struct Row: Codable {
+public struct RowsResponse<T: CouchDBRepresentable>: Codable, Sendable {
+	public struct Row: Codable, Sendable {
 		/// A CouchDB document.
 		public let value: T
 	}
