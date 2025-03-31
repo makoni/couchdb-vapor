@@ -8,7 +8,7 @@
 
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmakoni%2Fcouchdb-vapor%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/makoni/couchdb-vapor)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmakoni%2Fcouchdb-vapor%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/makoni/couchdb-vapor)
-[![Vapor 4](https://img.shields.io/badge/vapor-4.50.0-blue.svg?style=flat)](https://vapor.codes)
+[![Vapor 4](https://img.shields.io/badge/vapor-4-blue.svg?style=flat)](https://vapor.codes)
 
 [![Build on macOS](https://github.com/makoni/couchdb-vapor/actions/workflows/build-macos.yml/badge.svg?branch=master)](https://github.com/makoni/couchdb-vapor/actions/workflows/build-macos.yml)
 [![Build on Ubuntu](https://github.com/makoni/couchdb-vapor/actions/workflows/build-ubuntu.yml/badge.svg?branch=master)](https://github.com/makoni/couchdb-vapor/actions/workflows/build-ubuntu.yml)
@@ -17,9 +17,10 @@
 
 
 This is a simple lib to work with CouchDB in Swift.
-- Latest version is based on async/await and requires Swift 5.8 or newer. Works with Vapor 4.50 and newer.
+- Latest version supports Strict Concurrency, CouchDBClient is an actor and requires Swift 5.10 or newer. Compatible with Swift 6.
+- Works with Vapor 4.
 - Version 1.0.0 can be used with Vapor 4 without async/await. Swift 5.3 is required
-- You can use the old version for Vapor 3 from vapor3 branch or using version < 1.0.0.  
+- You can use the old version for Vapor 3 from vapor3 branch or using version < 1.0.0.
 
 The only dependency for this lib is <a href="https://github.com/swift-server/async-http-client">async-http-client</a>
 
