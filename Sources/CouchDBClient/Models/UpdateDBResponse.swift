@@ -8,7 +8,7 @@
 import Foundation
 
 /// DB creation response.
-public struct UpdateDBResponse: Codable {
+public struct UpdateDBResponse: Codable, Sendable {
 	/// Operation status.
 	public let ok: Bool
 }

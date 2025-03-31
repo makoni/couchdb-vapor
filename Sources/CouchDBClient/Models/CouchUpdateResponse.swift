@@ -8,11 +8,11 @@
 import Foundation
 
 /// Model for insert/update/delete request response.
-public struct CouchUpdateResponse: Codable {
+public struct CouchUpdateResponse: Codable, Sendable {
 	/// Operation status.
-	public var ok: Bool
+	public let ok: Bool
 	/// Document ID.
-	public var id: String
+	public let id: String
 	/// Revision MVCC token.
-	public var rev: String
+	public let rev: String
 }
