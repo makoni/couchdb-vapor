@@ -81,17 +81,46 @@ extension CouchDBClientError: LocalizedError {
 	}
 }
 
-/// A CouchDB client class with methods using Swift Concurrency.
+/// A CouchDB client actor with methods using Swift Concurrency.
 public actor CouchDBClient {
+	/// A configuration model for CouchDB client setup.
+	/// This structure is used to define the necessary parameters for connecting to a CouchDB database.
+	/// It conforms to the `Sendable` protocol for thread safety during concurrent operations.
 	public struct Config: Sendable {
+		/// The protocol used for CouchDB communication (e.g., HTTP or HTTPS).
 		let couchProtocol: CouchDBProtocol
+
+		/// The hostname or IP address of the CouchDB server.
 		let couchHost: String
+
+		/// The port number used for CouchDB communication.
 		let couchPort: Int
+
+		/// The username for CouchDB authentication.
 		let userName: String
+
+		/// The password for CouchDB authentication.
 		let userPassword: String
+
+		/// The timeout duration for CouchDB requests, specified in seconds.
 		let requestsTimeout: Int64
 
-		public init(couchProtocol: CouchDBClient.CouchDBProtocol = .http, couchHost: String = "127.0.0.1", couchPort: Int = 5984, userName: String, userPassword: String, requestsTimeout: Int64 = 30) {
+		/// Initializes a new `Config` instance with default values for certain parameters.
+		/// - Parameters:
+		///   - couchProtocol: The communication protocol, defaulting to `.http`.
+		///   - couchHost: The hostname or IP address, defaulting to `"127.0.0.1"`.
+		///   - couchPort: The port number, defaulting to `5984`.
+		///   - userName: The username for authentication (required).
+		///   - userPassword: The password for authentication (required).
+		///   - requestsTimeout: The timeout duration in seconds, defaulting to `30`.
+		public init(
+			couchProtocol: CouchDBClient.CouchDBProtocol = .http,
+			couchHost: String = "127.0.0.1",
+			couchPort: Int = 5984,
+			userName: String,
+			userPassword: String,
+			requestsTimeout: Int64 = 30
+		) {
 			self.couchProtocol = couchProtocol
 			self.couchHost = couchHost
 			self.couchPort = couchPort
