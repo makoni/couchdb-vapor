@@ -7,8 +7,10 @@
 
 import Foundation
 
-/// DB creation response.
+/// A response model for database creation and deletion requests in CouchDB.
+/// This structure conforms to `Codable` and `Sendable` for serialization and thread safety.
 public struct UpdateDBResponse: Codable, Sendable {
-	/// Operation status.
+	/// Indicates whether the database creation or deletion operation was successful.
+	/// This property is `true` if the operation succeeded; otherwise, `false`.
 	public let ok: Bool
 }

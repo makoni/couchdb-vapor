@@ -25,17 +25,17 @@ import Foundation
 /// }
 /// ```
 public protocol CouchDBRepresentable: Codable, Sendable {
-    /// The unique identifier for the CouchDB document.
-    /// This property is required and must contain a valid document ID.
-    var _id: String { get }
+	/// The unique identifier for the CouchDB document.
+	/// This property is required and must contain a valid document ID.
+	var _id: String { get }
 
-    /// The MVCC (Multi-Version Concurrency Control) revision token for the document.
-    /// Used for tracking changes to the document and resolving conflicts in CouchDB.
-    /// - Note: This property is optional and can be set to `nil` for new documents.
-    var _rev: String? { get set }
-    
-    /// Creates a new instance of the conforming type with the updated revision token.
-    /// - Parameter newRevision: The new MVCC revision token to associate with the document.
-    /// - Returns: A new instance of the conforming type with the updated `_rev` property.
-    func updateRevision(_ newRevision: String) -> Self
+	/// The MVCC (Multi-Version Concurrency Control) revision token for the document.
+	/// Used for tracking changes to the document and resolving conflicts in CouchDB.
+	/// - Note: This property is optional and can be set to `nil` for new documents.
+	var _rev: String? { get set }
+
+	/// Creates a new instance of the conforming type with the updated revision token.
+	/// - Parameter newRevision: The new MVCC revision token to associate with the document.
+	/// - Returns: A new instance of the conforming type with the updated `_rev` property.
+	func updateRevision(_ newRevision: String) -> Self
 }

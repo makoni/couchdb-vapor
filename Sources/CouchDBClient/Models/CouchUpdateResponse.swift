@@ -7,12 +7,18 @@
 
 import Foundation
 
-/// Model for insert/update/delete request response.
+/// A model for the response returned by CouchDB after performing insert, update, or delete operations.
+/// This structure conforms to `Codable` and `Sendable` for serialization and thread safety.
 public struct CouchUpdateResponse: Codable, Sendable {
-	/// Operation status.
+	/// Indicates whether the operation was successful.
+	/// This property is `true` if the operation was successful; otherwise, `false`.
 	public let ok: Bool
-	/// Document ID.
+
+	/// The unique identifier of the CouchDB document affected by the operation.
+	/// This property contains the document's ID.
 	public let id: String
-	/// Revision MVCC token.
+
+	/// The MVCC (Multi-Version Concurrency Control) revision token for the document.
+	/// This token is updated after each successful operation and is used to track document versions.
 	public let rev: String
 }
