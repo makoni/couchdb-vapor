@@ -776,25 +776,33 @@ public actor CouchDBClient {
 
 	/// Executes a find query on a specified database on the CouchDB server.
 	///
-	/// This asynchronous function sends a POST request with a custom body to the CouchDB server's `_find` endpoint to execute a query in the specified database. It can optionally use a custom `EventLoopGroup` for the network request.
+	/// This asynchronous function sends a `POST` request with a custom body to the CouchDB server's `_find` endpoint to perform a query
+	/// in the specified database. It allows the use of a custom `EventLoopGroup` for network operations.
 	///
 	/// - Parameters:
-	///   - dbName: The name of the database in which to perform the find query.
+	///   - dbName: The name of the database in which to execute the query.
 	///   - body: The `HTTPClientRequest.Body` containing the encoded query to be sent to the server.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network requests.
+	///     If not provided, the function uses a shared instance of `HTTPClient`.
 	/// - Returns: An `HTTPClientResponse` object containing the server's response to the find query.
-	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including:
+	///   - `.unauthorized`: If authentication fails.
 	///
-	/// The function first authenticates with the server if needed. It then creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL for the `_find` endpoint, it sets the request body and executes the request.
+	/// ### Function Workflow:
+	/// 1. Authenticates with the CouchDB server if required.
+	/// 2. Creates an `HTTPClient` instance—either scoped to the provided `EventLoopGroup` or using the shared instance.
+	/// 3. Constructs the request URL for the `_find` endpoint using the database name.
+	/// 4. Sets the request body with the encoded query and sends a `POST` request to the CouchDB server.
+	/// 5. Processes the server's response, throwing errors for unauthorized access.
+	/// 6. Updates the response body with the collected bytes before returning the response object.
 	///
-	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. The function collects the response body up to a specified byte limit or the `content-length` header's value. The response body is then updated with the collected bytes before returning.
-	///
-	/// Example usage:
+	/// ### Example Usage:
+	/// #### Perform a Find Query:
 	/// ```swift
 	/// let selector = ["selector": ["name": "Greg"]]
 	/// let bodyData = try JSONEncoder().encode(selector)
-	/// var findResponse = try await couchDBClient.find(
-	///     inDB: testsDB,
+	/// let findResponse = try await couchDBClient.find(
+	///     inDB: "myDatabase",
 	///     body: .data(bodyData)
 	/// )
 	///
@@ -803,9 +811,12 @@ public actor CouchDBClient {
 	///     CouchDBFindResponse<ExpectedDoc>.self,
 	///     from: Data(bytes)
 	/// ).docs
+	/// print(docs)
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues.
+	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
+	///   Handle thrown errors appropriately, especially authentication-related issues.
+
 	public func find(inDB dbName: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
