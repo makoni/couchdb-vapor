@@ -917,7 +917,7 @@ public actor CouchDBClient {
 	/// // Send the update request
 	/// let updateResponse = try await couchDBClient.update(
 	///     dbName: "myDatabase",
-	///     uri: doc._id!,
+	///     uri: doc._id,
 	///     body: body
 	/// )
 	///

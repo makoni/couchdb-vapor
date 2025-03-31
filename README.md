@@ -42,17 +42,15 @@ dependencies: [
 ## Initialization
 
 ```swift
-// use default params
-let myClient = CouchDBClient()
-
-// provide your own params
-let couchDBClient = CouchDBClient(
+let config = CouchDBClient.Config(
     couchProtocol: .http,
     couchHost: "127.0.0.1",
     couchPort: 5984,
     userName: "admin",
-    userPassword: "myPassword"
+    userPassword: "",
+    requestsTimeout: 30
 )
+let couchDBClient = CouchDBClient(config: config)
 ```
 
 If you don’t want to have your password in the code you can pass `COUCHDB_PASS` param in your command line. For example you can run your Server Side Swift project:
@@ -62,12 +60,14 @@ COUCHDB_PASS=myPassword /path/.build/x86_64-unknown-linux-gnu/release/Run
 Just use initializer without userPassword param:
 
 ```swift
-let couchDBClient = CouchDBClient(
+let config = CouchDBClient.Config(
     couchProtocol: .http,
     couchHost: "127.0.0.1",
     couchPort: 5984,
-    userName: "admin"
+    userName: "admin",
+    requestsTimeout: 30
 )
+let couchDBClient = CouchDBClient(config: config)
 ```
 
 ## Usage examples
@@ -78,8 +78,12 @@ Define your document model:
 // Example struct
 struct ExpectedDoc: CouchDBRepresentable {
     var name: String
-    var _id: String?
+    var _id: String = NSUUID().uuidString
     var _rev: String?
+
+    func updateRevision(_ newRevision: String) -> Self {
+        return ExpectedDoc(name: name, _id: _id, _rev: newRevision)
+    }
 }
 ```
 
@@ -87,9 +91,9 @@ struct ExpectedDoc: CouchDBRepresentable {
 ```swift
 var testDoc = ExpectedDoc(name: "My name")
 
-try await couchDBClient.insert(
+testDoc = try await couchDBClient.insert(
     dbName: "databaseName",
-    doc: &testDoc
+    doc: testDoc
 )
 
 print(testDoc) // testDoc has _id and _rev values now
@@ -105,9 +109,9 @@ print(doc)
 // Update value
 doc.name = "Updated name"
 
-try await couchDBClient.update(
+doc = try await couchDBClient.update(
     dbName: testsDB,
-    doc: &doc
+    doc: doc
 )
 
 print(doc) // doc will have updated name and _rev values now
