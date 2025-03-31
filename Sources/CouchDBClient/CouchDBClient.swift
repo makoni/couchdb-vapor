@@ -1165,43 +1165,53 @@ public actor CouchDBClient {
 
 	/// Inserts a new document conforming to `CouchDBRepresentable` into a specified database on the CouchDB server.
 	///
-	/// This asynchronous generic function inserts a new document into the specified database. The document must conform to the `CouchDBRepresentable` protocol, which includes `_id` and `_rev` properties. It can optionally use a custom `EventLoopGroup` for the network request and specify a date encoding strategy.
+	/// This asynchronous generic function inserts a new document into the specified database. The document must conform to the
+	/// `CouchDBRepresentable` protocol, which requires `_id` and `_rev` properties. It supports using a custom `EventLoopGroup` for
+	/// network operations and allows a configurable date encoding strategy.
 	///
 	/// - Parameters:
-	///   - dbName: The name of the database into which the new document will be inserted.
-	///   - doc: A reference to the document of type `T` that will be inserted. The document type `T` must conform to `CouchDBRepresentable`.
-	///   - dateEncodingStrategy: The strategy to use for encoding dates within the document. Defaults to `.secondsSince1970`.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
-	/// - Throws: An error of type `CouchDBClientError` if the server responds with an unknown response.
+	///   - dbName: The name of the database where the new document will be inserted.
+	///   - doc: The document of type `T` to be inserted. The type `T` must conform to `CouchDBRepresentable`.
+	///   - dateEncodingStrategy: The strategy used for encoding dates within the document. Defaults to `.secondsSince1970`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for managing network operations. If not provided, a shared instance of `HTTPClient` is used.
+	/// - Returns: The newly inserted document of type `T`, updated with its `_id` and `_rev` properties.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unknownResponse` if the server's response is unexpected or unsuccessful.
 	///
-	/// The function encodes the document using a `JSONEncoder` with the specified date encoding strategy. The encoded document is sent as the body of a POST request to the server.
+	/// ### Function Workflow:
+	/// 1. Encodes the document using a `JSONEncoder` configured with the specified date encoding strategy.
+	/// 2. Prepares a `POST` request with the encoded document as the request body.
+	/// 3. Sends the request to the CouchDB server and processes the response.
+	/// 4. Updates the document's `_id` and `_rev` based on the server's response.
+	/// 5. Throws an error if the server's response is unexpected or unsuccessful.
 	///
-	/// If the server's response indicates success, the function updates the document's `_rev` (and `_id` if necessary) with the new revision information from the server. If the server's response is not successful, it throws an `unknownResponse` error.
-	///
-	/// Example usage:
-	/// Define your document model:
+	/// ### Example Usage:
+	/// #### Define Your Document Model:
 	/// ```swift
-	/// // Example struct
-	/// struct MyCouchDBDocument: CouchDBRepresentable {
+	/// struct ExpectedDoc: CouchDBRepresentable {
 	///     var name: String
-	///     var _id: String?
+	///     var _id: String = UUID().uuidString
 	///     var _rev: String?
+	///
+	///     func updateRevision(_ newRevision: String) -> Self {
+	///         return ExpectedDoc(name: name, _id: _id, _rev: newRevision)
+	///     }
 	/// }
 	/// ```
 	///
-	///	Create a new document and insert:
+	/// #### Insert a New Document:
 	/// ```swift
-	/// var testDoc = MyCouchDBDocument(name: "My name")
+	/// var testDoc = ExpectedDoc(name: "My name")
 	///
-	/// try await couchDBClient.insert(
+	/// testDoc = try await couchDBClient.insert(
 	///     dbName: "myDatabase",
-	///     doc: &testDoc
+	///     doc: testDoc
 	/// )
 	///
-	/// print(testDoc) // testDoc has _id and _rev values now
+	/// print(testDoc) // Document now contains its assigned `_id` and `_rev`.
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with document insertion and server responses.
+	/// - Note: Ensure that the CouchDB server is operational and accessible before using this function.
+	///   Handle thrown errors appropriately, especially for unexpected server responses.
 	public func insert<T: CouchDBRepresentable>(dbName: String, doc: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .secondsSince1970, eventLoopGroup: EventLoopGroup? = nil) async throws -> T {
 		let encoder = JSONEncoder()
 		encoder.dateEncodingStrategy = dateEncodingStrategy
@@ -1224,32 +1234,38 @@ public actor CouchDBClient {
 
 	/// Deletes a document from a specified database on the CouchDB server.
 	///
-	/// This asynchronous function sends a DELETE request to the CouchDB server to remove a document identified by its URI and revision number from the given database. It can optionally use a custom `EventLoopGroup` for the network request.
+	/// This asynchronous function sends a `DELETE` request to the CouchDB server to remove a document identified by its URI and revision number.
+	/// It supports using a custom `EventLoopGroup` for managing network operations.
 	///
 	/// - Parameters:
 	///   - dbName: The name of the database from which the document will be deleted.
-	///   - uri: The URI path to the specific document within the database.
+	///   - uri: The URI path of the specific document within the database.
 	///   - rev: The revision number of the document to be deleted.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network requests.
+	///     If not provided, the function uses a shared instance of `HTTPClient`.
 	/// - Returns: A `CouchUpdateResponse` object containing the result of the delete operation.
-	/// - Throws: An error of type `CouchDBClientError` if the request fails, specifically an `unauthorized` error if the response status is `.unauthorized`.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.unauthorized` if authentication fails, `.noData`: if the response lacks required data.
 	///
-	/// The function creates an `HTTPClient` instance, either shared or using the provided `EventLoopGroup`. After building the URL with the database name, document URI, and revision query parameter, it executes the DELETE request.
+	/// ### Function Workflow:
+	/// 1. Creates an `HTTPClient` instance—either scoped to the provided `EventLoopGroup` or using the shared instance.
+	/// 2. Constructs the request URL using the database name, document URI, and revision query parameter.
+	/// 3. Sends a `DELETE` request to remove the document from the CouchDB server.
+	/// 4. Processes the server's response, throwing errors for unauthorized access or missing data.
+	/// 5. Decodes the response body into a `CouchUpdateResponse` object if the deletion is successful.
+	/// 6. Returns a `CouchUpdateResponse` with `ok` set to `false` if there is no response data.
 	///
-	/// If the response status is `.unauthorized`, it throws an `unauthorized` error. The function collects the response body up to a specified byte limit or the `content-length` header's value. It then decodes the response data into a `CouchUpdateResponse` object.
-	///
-	/// If there is no response data, the function returns a `CouchUpdateResponse` with `ok` set to `false`, indicating the delete operation was not successful.
-	///
-	/// Example usage:
+	/// ### Example Usage:
 	/// ```swift
 	/// let response = try await couchDBClient.delete(
 	///     fromDb: "myDatabase",
-	///     uri: doc._id,
-	///     rev: doc._rev
+	///     uri: "documentID",
+	///     rev: "documentRevision"
 	/// )
+	/// print(response) // Response includes operation status and revision token
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues and document deletion.
+	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
+	///   Handle thrown errors appropriately, especially for authentication issues or unexpected server responses.
 	public func delete(fromDb dbName: String, uri: String, rev: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		let httpClient: HTTPClient
 		if let eventLoopGroup = eventLoopGroup {
@@ -1295,26 +1311,35 @@ public actor CouchDBClient {
 
 	/// Deletes a document conforming to `CouchDBRepresentable` from a specified database on the CouchDB server.
 	///
-	/// This asynchronous function deletes a document from the specified database. The document must conform to the `CouchDBRepresentable` protocol, which includes `_id` and `_rev` properties. It can optionally use a custom `EventLoopGroup` for the network request.
+	/// This asynchronous function removes a document from the specified database. The document must conform to the
+	/// `CouchDBRepresentable` protocol, which includes the `_id` and `_rev` properties required for the deletion process.
+	/// It supports using a custom `EventLoopGroup` for network operations.
 	///
 	/// - Parameters:
 	///   - dbName: The name of the database from which the document will be deleted.
-	///   - doc: The document that will be deleted. The document type must conform to `CouchDBRepresentable`.
-	///   - eventLoopGroup: An optional `EventLoopGroup` that the function will use for its network operations. If not provided, the function uses a shared `HTTPClient`.
+	///   - doc: The document of type `CouchDBRepresentable` to be deleted.
+	///   - eventLoopGroup: An optional `EventLoopGroup` for executing network requests.
+	///     If not provided, a shared instance of `HTTPClient` is used.
 	/// - Returns: A `CouchUpdateResponse` object containing the result of the delete operation.
-	/// - Throws: An error of type `CouchDBClientError` if the document's `_id` or `_rev` is missing.
+	/// - Throws: A `CouchDBClientError` if the operation fails, including: `.revMissing` if the document's `_rev` property is missing.
 	///
-	/// The function checks for the presence of the document's `_id` and `_rev`. It then calls the `delete(fromDb:uri:rev:eventLoopGroup:)` function with the document's `_id` and `_rev` to perform the deletion.
+	/// ### Function Workflow:
+	/// 1. Validates the presence of the document's `_rev` property.
+	/// 2. Calls `delete(fromDb:uri:rev:eventLoopGroup:)` with the document's `_id` and `_rev` to execute the deletion.
+	/// 3. Processes and returns the server's response as a `CouchUpdateResponse` object.
 	///
-	/// Example usage:
+	/// ### Example Usage:
 	/// ```swift
 	/// let deleteResult = try await couchDBClient.delete(
 	///     fromDb: "myDatabase",
 	///     doc: myDocument
 	/// )
+	/// print(deleteResult) // Response includes operation status and revision token
 	/// ```
 	///
-	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with document deletion.
+	/// - Note: Ensure that the CouchDB server is operational and accessible before using this function.
+	///   Handle thrown errors appropriately, especially for missing document properties or unexpected server responses.
+
 	public func delete(fromDb dbName: String, doc: CouchDBRepresentable, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		guard let rev = doc._rev else { throw CouchDBClientError.revMissing }
 
