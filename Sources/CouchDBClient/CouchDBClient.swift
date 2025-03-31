@@ -11,49 +11,72 @@ import NIOHTTP1
 import NIOFoundationCompat
 import AsyncHTTPClient
 
-/// CouchDB client errors.
-public enum CouchDBClientError: Error {
-	/// **id** property is empty or missing in the provided document.
+/// An enumeration representing the various errors that can occur when interacting with CouchDB through a client.
+/// This enum conforms to both `Error` and `Sendable`, making it suitable for error handling and thread-safe operations.
+public enum CouchDBClientError: Error, Sendable {
+	/// The `id` property is empty or missing in the provided document.
+	/// This error indicates that the document does not have a valid identifier.
 	case idMissing
-	/// **\_rev** property is empty or missing in the provided document.
+
+	/// The `_rev` property is empty or missing in the provided document.
+	/// This error indicates that the document does not have a valid revision token for concurrency control.
 	case revMissing
-	/// The Get request wasn't successful.
+
+	/// The `GET` request was unsuccessful.
+	/// - Parameter error: The `CouchDBError` returned by the server, providing details about the issue.
 	case getError(error: CouchDBError)
-	/// The Insert request wasn't successful.
+
+	/// The `INSERT` request was unsuccessful.
+	/// - Parameter error: The `CouchDBError` returned by the server, providing details about the issue.
 	case insertError(error: CouchDBError)
-	/// The Update request wasn't successful.
+
+	/// The `UPDATE` request was unsuccessful.
+	/// - Parameter error: The `CouchDBError` returned by the server, providing details about the issue.
 	case updateError(error: CouchDBError)
-	/// The Find request wasn't successful.
+
+	/// The `FIND` request was unsuccessful.
+	/// - Parameter error: The `CouchDBError` returned by the server, providing details about the issue.
 	case findError(error: CouchDBError)
-	/// Unknown response from CouchDB.
+
+	/// The response from CouchDB was unrecognized or could not be processed.
+	/// This error indicates that the response was not in the expected format.
 	case unknownResponse
-	/// Wrong username or password.
+
+	/// Authentication failed due to incorrect username or password.
+	/// This error suggests that the provided credentials were invalid.
 	case unauthorized
-	/// Missing data in the response body.
+
+	/// The response body is missing required data.
+	/// This error indicates that the server response lacked the expected content.
 	case noData
 }
 
+/// Extends the `CouchDBClientError` enumeration to provide localized error descriptions.
+/// This extension conforms to the `LocalizedError` protocol, offering user-friendly messages
+/// that describe the nature of each error in detail.
 extension CouchDBClientError: LocalizedError {
+	/// A textual description of the error, tailored for user-facing contexts.
+	/// The message provides specific details about the error type and underlying cause.
 	public var errorDescription: String? {
 		switch self {
 		case .idMissing:
-			return "id property is empty or missing in the provided document."
+			return "The 'id' property is empty or missing in the provided document."
 		case .revMissing:
-			return "_rev property is empty or missing in the provided document."
+			return "The '_rev' property is empty or missing in the provided document."
 		case .getError(let error):
-			return "The Get request wasn't successful: \(error.localizedDescription)"
+			return "The GET request wasn't successful: \(error.localizedDescription)"
 		case .insertError(let error):
-			return "The Insert request wasn't successful: \(error.localizedDescription)"
+			return "The INSERT request wasn't successful: \(error.localizedDescription)"
 		case .updateError(let error):
-			return "The Update request wasn't successful: \(error.localizedDescription)"
+			return "The UPDATE request wasn't successful: \(error.localizedDescription)"
 		case .findError(let error):
-			return "The Find request wasn't successful: \(error.localizedDescription)"
+			return "The FIND request wasn't successful: \(error.localizedDescription)"
 		case .unknownResponse:
-			return "Unknown response from CouchDB."
+			return "The response from CouchDB was unrecognized or invalid."
 		case .unauthorized:
-			return "Wrong username or password."
+			return "Authentication failed due to an incorrect username or password."
 		case .noData:
-			return "Missing data in the response body."
+			return "The response body is missing the expected data."
 		}
 	}
 }
@@ -109,7 +132,7 @@ public actor CouchDBClient {
 	/// CouchDB user name.
 	private let userName: String
 	/// You can set a timeout for requests in seconds. Default value is 30.
-    private var requestsTimeout: Int64 = 30
+	private var requestsTimeout: Int64 = 30
 	/// CouchDB user password.
 	private let userPassword: String
 	/// Authorization response from CouchDB.
@@ -499,7 +522,7 @@ public actor CouchDBClient {
 	/// ```
 	///
 	/// - Note: Ensure that the CouchDB server is running and accessible. Handle any thrown errors appropriately, especially when dealing with authentication issues.
-    public func get(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
+	public func get(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
 		let httpClient: HTTPClient
