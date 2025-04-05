@@ -1,0 +1,126 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "DELETE_ERROR" : {
+      "comment" : "DELETE request failure message",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The DELETE request wasn't successful: %@"
+          }
+        }
+      }
+    },
+    "FIND_ERROR" : {
+      "comment" : "FIND request failure message",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The FIND request wasn't successful: %@"
+          }
+        }
+      }
+    },
+    "GET_ERROR" : {
+      "comment" : "GET request failure message",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The GET request wasn't successful: %@"
+          }
+        }
+      }
+    },
+    "ID_MISSING_ERROR" : {
+      "comment" : "Error description for missing document ID",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The 'id' property is empty or missing in the provided document."
+          }
+        }
+      }
+    },
+    "INSERT_ERROR" : {
+      "comment" : "INSERT request failure message",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The INSERT request wasn't successful: %@"
+          }
+        }
+      }
+    },
+    "NO_DATA_ERROR" : {
+      "comment" : "No data error message",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The response body is missing the expected data."
+          }
+        }
+      }
+    },
+    "REV_MISSING_ERROR" : {
+      "comment" : "Error description for missing revision field",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The '_rev' property is empty or missing in the provided document."
+          }
+        }
+      }
+    },
+    "UNAUTHORIZED_ERROR" : {
+      "comment" : "Unauthorized access message",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Authentication failed due to an incorrect username or password."
+          }
+        }
+      }
+    },
+    "UNKNOWN_RESPONSE_ERROR" : {
+      "comment" : "Unknown response message",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The response from CouchDB was unrecognized or invalid."
+          }
+        }
+      }
+    },
+    "UPDATE_ERROR" : {
+      "comment" : "UPDATE request failure message",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The UPDATE request wasn't successful: %@"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
