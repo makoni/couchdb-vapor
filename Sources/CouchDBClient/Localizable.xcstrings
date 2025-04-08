@@ -1,2466 +1,2456 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "DELETE_ERROR": {
-      "comment": "DELETE request failure message",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The DELETE request wasn't successful: %@"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "DELETE_ERROR" : {
+      "comment" : "DELETE request failure message",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فشل طلب DELETE: %@"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE-запрос не был выполнен успешно: %@"
+        "ba" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE һорауы уңышһыҙ булды: %@"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La requête DELETE n'a pas abouti : %@"
+        "be" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запыт DELETE не быў паспяховым: %@"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La richiesta DELETE non è riuscita: %@"
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE заявката не бе успешна: %@"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Die DELETE-Anfrage war nicht erfolgreich: %@"
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Požadavek DELETE nebyl úspěšný: %@"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La solicitud DELETE no fue exitosa: %@"
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE-anmodningen var ikke succesfuld: %@"
           }
         },
-        "zh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE 请求未成功：%@"
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die DELETE-Anfrage war nicht erfolgreich: %@"
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "فشل طلب DELETE: %@"
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το αίτημα DELETE δεν ήταν επιτυχές: %@"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETEリクエストが失敗しました：%@"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The DELETE request wasn't successful: %@"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE isteği başarısız oldu: %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La solicitud DELETE no fue exitosa: %@"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE 요청이 성공하지 못했습니다: %@"
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE-pyyntö epäonnistui: %@"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A requisição DELETE não foi bem-sucedida: %@"
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang DELETE request ay hindi matagumpay: %@"
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Požadavek DELETE nebyl úspěšný: %@"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La requête DELETE n'a pas abouti : %@"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Het DELETE-verzoek was niet succesvol: %@"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE अनुरोध सफल नहीं था: %@"
           }
         },
-        "be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Запыт DELETE не быў паспяховым: %@"
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE zahtjev nije uspio: %@"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Запит DELETE не був успішним: %@"
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permintaan DELETE tidak berhasil: %@"
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE сұрауы сәтсіз аяқталды: %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La richiesta DELETE non è riuscita: %@"
           }
         },
-        "tt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE үтенече уңышсыз булды: %@"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETEリクエストが失敗しました：%@"
           }
         },
-        "ba": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE һорауы уңышһыҙ булды: %@"
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE сұрауы сәтсіз аяқталды: %@"
           }
         },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE захтев није успео: %@"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE 요청이 성공하지 못했습니다: %@"
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE-begäran lyckades inte: %@"
+        "ky" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE сурамы ийгиликсиз болду: %@"
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "คำขอ DELETE ไม่สำเร็จ: %@"
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE-forespørselen var ikke vellykket: %@"
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE-pyyntö epäonnistui: %@"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het DELETE-verzoek was niet succesvol: %@"
           }
         },
-        "no": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE-forespørselen var ikke vellykket: %@"
+        "nl-BE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het DELETE-verzoek was niet succesvol: %@"
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE-anmodningen var ikke succesfuld: %@"
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Żądanie DELETE nie powiodło się: %@"
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Żądanie DELETE nie powiodło się: %@"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A requisição DELETE não foi bem-sucedida: %@"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yêu cầu DELETE không thành công: %@"
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cererea DELETE nu a reușit: %@"
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE अनुरोध सफल नहीं था: %@"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE-запрос не был выполнен успешно: %@"
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE درخواست کامیاب نہیں ہوئی: %@"
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Požiadavka DELETE nebola úspešná: %@"
           }
         },
-        "nl-be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Het DELETE-verzoek was niet succesvol: %@"
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zahteva DELETE ni uspela: %@"
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE заявката не бе успешна: %@"
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE захтев није успео: %@"
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Το αίτημα DELETE δεν ήταν επιτυχές: %@"
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE-begäran lyckades inte: %@"
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cererea DELETE nu a reușit: %@"
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำขอ DELETE ไม่สำเร็จ: %@"
           }
         },
-        "ky": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE сурамы ийгиликсиз болду: %@"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE isteği başarısız oldu: %@"
           }
         },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE so'rovi muvaffaqiyatsiz yakunlandi: %@"
+        "tt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE үтенече уңышсыз булды: %@"
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DELETE zahtjev nije uspio: %@"
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запит DELETE не був успішним: %@"
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Požiadavka DELETE nebola úspešná: %@"
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE درخواست کامیاب نہیں ہوئی: %@"
           }
         },
-        "sl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zahteva DELETE ni uspela: %@"
+        "uz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE so'rovi muvaffaqiyatsiz yakunlandi: %@"
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permintaan DELETE tidak berhasil: %@"
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yêu cầu DELETE không thành công: %@"
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ang DELETE request ay hindi matagumpay: %@"
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DELETE 请求未成功：%@"
           }
         }
       }
     },
-    "FIND_ERROR": {
-      "comment": "FIND request failure message",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The FIND request wasn't successful: %@"
+    "FIND_ERROR" : {
+      "comment" : "FIND request failure message",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فشل طلب FIND: %@"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND-запрос не был выполнен успешно: %@"
+        "ba" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND һорауы уңышһыҙ булды: %@"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La requête FIND n'a pas abouti : %@"
+        "be" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запыт FIND не быў паспяховым: %@"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La richiesta FIND non è riuscita: %@"
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND заявката не бе успешна: %@"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Die FIND-Anfrage war nicht erfolgreich: %@"
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Požadavek FIND nebyl úspěšný: %@"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La solicitud FIND no fue exitosa: %@"
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND-anmodningen var ikke succesfuld: %@"
           }
         },
-        "zh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND 请求未成功：%@"
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die FIND-Anfrage war nicht erfolgreich: %@"
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "فشل طلب FIND: %@"
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το αίτημα FIND δεν ήταν επιτυχές: %@"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FINDリクエストが失敗しました：%@"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The FIND request wasn't successful: %@"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND isteği başarısız oldu: %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La solicitud FIND no fue exitosa: %@"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND 요청이 성공하지 못했습니다: %@"
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND-pyyntö epäonnistui: %@"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A requisição FIND não foi bem-sucedida: %@"
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang FIND request ay hindi matagumpay: %@"
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Požadavek FIND nebyl úspěšný: %@"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La requête FIND n'a pas abouti : %@"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Het FIND-verzoek was niet succesvol: %@"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND अनुरोध सफल नहीं था: %@"
           }
         },
-        "be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Запыт FIND не быў паспяховым: %@"
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND zahtjev nije uspio: %@"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Запит FIND не був успішним: %@"
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permintaan FIND tidak berhasil: %@"
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND сұрауы сәтсіз аяқталды: %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La richiesta FIND non è riuscita: %@"
           }
         },
-        "tt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND үтенече уңышсыз булды: %@"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FINDリクエストが失敗しました：%@"
           }
         },
-        "ba": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND һорауы уңышһыҙ булды: %@"
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND сұрауы сәтсіз аяқталды: %@"
           }
         },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND захтев није успео: %@"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND 요청이 성공하지 못했습니다: %@"
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND-begäran lyckades inte: %@"
+        "ky" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND сурамы ийгиликсиз болду: %@"
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "คำขอ FIND ไม่สำเร็จ: %@"
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND-forespørselen var ikke vellykket: %@"
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND-pyyntö epäonnistui: %@"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het FIND-verzoek was niet succesvol: %@"
           }
         },
-        "no": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND-forespørselen var ikke vellykket: %@"
+        "nl-BE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het FIND-verzoek was niet succesvol: %@"
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND-anmodningen var ikke succesfuld: %@"
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Żądanie FIND nie powiodło się: %@"
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Żądanie FIND nie powiodło się: %@"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A requisição FIND não foi bem-sucedida: %@"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yêu cầu FIND không thành công: %@"
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cererea FIND nu a reușit: %@"
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND अनुरोध सफल नहीं था: %@"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND-запрос не был выполнен успешно: %@"
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND درخواست کامیاب نہیں ہوئی: %@"
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Požiadavka FIND nebola úspešná: %@"
           }
         },
-        "nl-be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Het FIND-verzoek was niet succesvol: %@"
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zahteva FIND ni uspela: %@"
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND заявката не бе успешна: %@"
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND захтев није успео: %@"
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Το αίτημα FIND δεν ήταν επιτυχές: %@"
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND-begäran lyckades inte: %@"
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cererea FIND nu a reușit: %@"
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำขอ FIND ไม่สำเร็จ: %@"
           }
         },
-        "ky": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND сурамы ийгиликсиз болду: %@"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND isteği başarısız oldu: %@"
           }
         },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND so'rovi muvaffaqiyatsiz yakunlandi: %@"
+        "tt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND үтенече уңышсыз булды: %@"
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FIND zahtjev nije uspio: %@"
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запит FIND не був успішним: %@"
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Požiadavka FIND nebola úspešná: %@"
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND درخواست کامیاب نہیں ہوئی: %@"
           }
         },
-        "sl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zahteva FIND ni uspela: %@"
+        "uz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND so'rovi muvaffaqiyatsiz yakunlandi: %@"
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permintaan FIND tidak berhasil: %@"
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yêu cầu FIND không thành công: %@"
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ang FIND request ay hindi matagumpay: %@"
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIND 请求未成功：%@"
           }
         }
       }
     },
-    "GET_ERROR": {
-      "comment": "GET request failure message",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The GET request wasn't successful: %@"
+    "GET_ERROR" : {
+      "comment" : "GET request failure message",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فشل طلب GET: %@"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET-запрос не был выполнен успешно: %@"
+        "ba" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET һорауы уңышһыҙ булды: %@"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La requête GET n'a pas abouti : %@"
+        "be" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запыт GET не быў паспяховым: %@"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La richiesta GET non è riuscita: %@"
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET заявката не бе успешна: %@"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Die GET-Anfrage war nicht erfolgreich: %@"
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Požadavek GET nebyl úspěšný: %@"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La solicitud GET no fue exitosa: %@"
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET-anmodningen var ikke succesfuld: %@"
           }
         },
-        "zh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET 请求未成功：%@"
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die GET-Anfrage war nicht erfolgreich: %@"
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "فشل طلب GET: %@"
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το αίτημα GET δεν ήταν επιτυχές: %@"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GETリクエストが失敗しました：%@"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The GET request wasn't successful: %@"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET isteği başarısız oldu: %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La solicitud GET no fue exitosa: %@"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET 요청이 성공하지 못했습니다: %@"
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET-pyyntö epäonnistui: %@"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A requisição GET não foi bem-sucedida: %@"
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang GET request ay hindi matagumpay: %@"
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Požadavek GET nebyl úspěšný: %@"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La requête GET n'a pas abouti : %@"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Het GET-verzoek was niet succesvol: %@"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET अनुरोध सफल नहीं था: %@"
           }
         },
-        "be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Запыт GET не быў паспяховым: %@"
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET zahtjev nije uspio: %@"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Запит GET не був успішним: %@"
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permintaan GET tidak berhasil: %@"
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET сұрауы сәтсіз аяқталды: %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La richiesta GET non è riuscita: %@"
           }
         },
-        "tt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET үтенече уңышсыз булды: %@"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GETリクエストが失敗しました：%@"
           }
         },
-        "ba": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET һорауы уңышһыҙ булды: %@"
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET сұрауы сәтсіз аяқталды: %@"
           }
         },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET захтев није успео: %@"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET 요청이 성공하지 못했습니다: %@"
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET-begäran lyckades inte: %@"
+        "ky" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET сурамы ийгиликсиз болду: %@"
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "คำขอ GET ไม่สำเร็จ: %@"
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET-forespørselen var ikke vellykket: %@"
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET-pyyntö epäonnistui: %@"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het GET-verzoek was niet succesvol: %@"
           }
         },
-        "no": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET-forespørselen var ikke vellykket: %@"
+        "nl-BE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het GET-verzoek was niet succesvol: %@"
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET-anmodningen var ikke succesfuld: %@"
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Żądanie GET nie powiodło się: %@"
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Żądanie GET nie powiodło się: %@"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A requisição GET não foi bem-sucedida: %@"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yêu cầu GET không thành công: %@"
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cererea GET nu a reușit: %@"
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET अनुरोध सफल नहीं था: %@"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET-запрос не был выполнен успешно: %@"
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET درخواست کامیاب نہیں ہوئی: %@"
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Požiadavka GET nebola úspešná: %@"
           }
         },
-        "nl-be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Het GET-verzoek was niet succesvol: %@"
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zahteva GET ni uspela: %@"
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET заявката не бе успешна: %@"
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET захтев није успео: %@"
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Το αίτημα GET δεν ήταν επιτυχές: %@"
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET-begäran lyckades inte: %@"
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cererea GET nu a reușit: %@"
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำขอ GET ไม่สำเร็จ: %@"
           }
         },
-        "ky": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET сурамы ийгиликсиз болду: %@"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET isteği başarısız oldu: %@"
           }
         },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET so'rovi muvaffaqiyatsiz yakunlandi: %@"
+        "tt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET үтенече уңышсыз булды: %@"
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GET zahtjev nije uspio: %@"
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запит GET не був успішним: %@"
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Požiadavka GET nebola úspešná: %@"
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET درخواست کامیاب نہیں ہوئی: %@"
           }
         },
-        "sl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zahteva GET ni uspela: %@"
+        "uz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET so'rovi muvaffaqiyatsiz yakunlandi: %@"
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permintaan GET tidak berhasil: %@"
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yêu cầu GET không thành công: %@"
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ang GET request ay hindi matagumpay: %@"
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET 请求未成功：%@"
           }
         }
       }
     },
-    "ID_MISSING_ERROR": {
-      "comment": "Error description for missing document ID",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The 'id' property is empty or missing in the provided document."
+    "ID_MISSING_ERROR" : {
+      "comment" : "Error description for missing document ID",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خاصية 'id' فارغة أو مفقودة في المستند المقدم."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Свойство 'id' отсутствует или пусто в предоставленном документе."
+        "ba" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тәҡдим ителгән документта 'id' ҡасиәте буш йәки юҡ."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La propriété 'id' est vide ou manquante dans le document fourni."
+        "be" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уласцівасць 'id' пустая або адсутнічае ў прадастаўленым дакуменце."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La proprietà 'id' è vuota o mancante nel documento fornito."
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Свойството 'id' е празно или липсва в предоставения документ."
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Die 'id'-Eigenschaft ist leer oder fehlt im bereitgestellten Dokument."
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vlastnost 'id' je prázdná nebo chybí v poskytnutém dokumentu."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La propiedad 'id' está vacía o falta en el documento proporcionado."
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'id'-egenskaben er tom eller mangler i det leverede dokument."
           }
         },
-        "zh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "提供的文档中 'id' 属性为空或缺失。"
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die 'id'-Eigenschaft ist leer oder fehlt im bereitgestellten Dokument."
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "خاصية 'id' فارغة أو مفقودة في المستند المقدم."
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Η ιδιότητα 'id' είναι κενή ή λείπει στο παρεχόμενο έγγραφο."
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "提供されたドキュメントに 'id' プロパティが空またはありません。"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The 'id' property is empty or missing in the provided document."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sağlanan belgede 'id' özelliği boş veya eksik."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La propiedad 'id' está vacía o falta en el documento proporcionado."
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "제공된 문서에서 'id' 속성이 비어 있거나 없습니다."
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'id'-ominaisuus on tyhjä tai puuttuu annetussa asiakirjassa."
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A propriedade 'id' está vazia ou ausente no documento fornecido."
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang 'id' property ay walang laman o nawawala sa ibinigay na dokumento."
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vlastnost 'id' je prázdná nebo chybí v poskytnutém dokumentu."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La propriété 'id' est vide ou manquante dans le document fourni."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "De 'id'-eigenschap is leeg of ontbreekt in het opgegeven document."
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'id' गुण प्रदान किए गए दस्तावेज़ में खाली या गायब है।"
           }
         },
-        "be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Уласцівасць 'id' пустая або адсутнічае ў прадастаўленым дакуменце."
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svojstvo 'id' je prazno ili nedostaje u dostavljenom dokumentu."
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Властивість 'id' порожня або відсутня в наданому документі."
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Properti 'id' kosong atau tidak ada dalam dokumen yang diberikan."
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ұсынылған құжатта 'id' қасиеті бос немесе жоқ."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La proprietà 'id' è vuota o mancante nel documento fornito."
           }
         },
-        "tt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Тәкъдим ителгән документта 'id' үзенчәлеге буш яки юк."
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提供されたドキュメントに 'id' プロパティが空またはありません。"
           }
         },
-        "ba": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Тәҡдим ителгән документта 'id' ҡасиәте буш йәки юҡ."
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ұсынылған құжатта 'id' қасиеті бос немесе жоқ."
           }
         },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Својство 'id' је празно или недостаје у датом документу."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제공된 문서에서 'id' 속성이 비어 있거나 없습니다."
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Egenskapen 'id' är tom eller saknas i det angivna dokumentet."
+        "ky" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Берилген документте 'id' касиети бош же жок."
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "คุณสมบัติ 'id' ว่างหรือหายไปในเอกสารที่ให้มา"
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'id'-egenskapen er tom eller mangler i det oppgitte dokumentet."
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "'id'-ominaisuus on tyhjä tai puuttuu annetussa asiakirjassa."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De 'id'-eigenschap is leeg of ontbreekt in het opgegeven document."
           }
         },
-        "no": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "'id'-egenskapen er tom eller mangler i det oppgitte dokumentet."
+        "nl-BE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De 'id'-eigenschap is leeg of ontbreekt in het opgegeven document."
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "'id'-egenskaben er tom eller mangler i det leverede dokument."
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Właściwość 'id' jest pusta lub brakuje jej w dostarczonym dokumencie."
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Właściwość 'id' jest pusta lub brakuje jej w dostarczonym dokumencie."
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A propriedade 'id' está vazia ou ausente no documento fornecido."
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Thuộc tính 'id' trống hoặc thiếu trong tài liệu được cung cấp."
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proprietatea 'id' este goală sau lipsă din documentul furnizat."
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "'id' गुण प्रदान किए गए दस्तावेज़ में खाली या गायब है।"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Свойство 'id' отсутствует или пусто в предоставленном документе."
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "'id' پراپرٹی فراہم کردہ دستاویز میں خالی یا غائب ہے۔"
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vlastnosť 'id' je prázdna alebo chýba v poskytnutom dokumente."
           }
         },
-        "nl-be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "De 'id'-eigenschap is leeg of ontbreekt in het opgegeven document."
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lastnost 'id' je prazna ali manjka v predloženem dokumentu."
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Свойството 'id' е празно или липсва в предоставения документ."
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Својство 'id' је празно или недостаје у датом документу."
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Η ιδιότητα 'id' είναι κενή ή λείπει στο παρεχόμενο έγγραφο."
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Egenskapen 'id' är tom eller saknas i det angivna dokumentet."
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Proprietatea 'id' este goală sau lipsă din documentul furnizat."
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คุณสมบัติ 'id' ว่างหรือหายไปในเอกสารที่ให้มา"
           }
         },
-        "ky": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Берилген документте 'id' касиети бош же жок."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sağlanan belgede 'id' özelliği boş veya eksik."
           }
         },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ta'minlangan hujjatda 'id' xususiyati bo'sh yoki yo'q."
+        "tt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тәкъдим ителгән документта 'id' үзенчәлеге буш яки юк."
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Svojstvo 'id' je prazno ili nedostaje u dostavljenom dokumentu."
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Властивість 'id' порожня або відсутня в наданому документі."
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vlastnosť 'id' je prázdna alebo chýba v poskytnutom dokumente."
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'id' پراپرٹی فراہم کردہ دستاویز میں خالی یا غائب ہے۔"
           }
         },
-        "sl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lastnost 'id' je prazna ali manjka v predloženem dokumentu."
+        "uz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta'minlangan hujjatda 'id' xususiyati bo'sh yoki yo'q."
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Properti 'id' kosong atau tidak ada dalam dokumen yang diberikan."
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thuộc tính 'id' trống hoặc thiếu trong tài liệu được cung cấp."
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ang 'id' property ay walang laman o nawawala sa ibinigay na dokumento."
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提供的文档中 'id' 属性为空或缺失。"
           }
         }
       }
     },
-    "INSERT_ERROR": {
-      "comment": "INSERT request failure message",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The INSERT request wasn't successful: %@"
+    "INSERT_ERROR" : {
+      "comment" : "INSERT request failure message",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فشل طلب INSERT: %@"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT-запрос не был выполнен успешно: %@"
+        "ba" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT һорауы уңышһыҙ булды: %@"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La requête INSERT n'a pas abouti : %@"
+        "be" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запыт INSERT не быў паспяховым: %@"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La richiesta INSERT non è riuscita: %@"
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT заявката не бе успешна: %@"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Die INSERT-Anfrage war nicht erfolgreich: %@"
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Požadavek INSERT nebyl úspěšný: %@"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La solicitud INSERT no fue exitosa: %@"
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT-anmodningen var ikke succesfuld: %@"
           }
         },
-        "zh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT 请求未成功：%@"
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die INSERT-Anfrage war nicht erfolgreich: %@"
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "فشل طلب INSERT: %@"
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το αίτημα INSERT δεν ήταν επιτυχές: %@"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERTリクエストが失敗しました：%@"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The INSERT request wasn't successful: %@"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT isteği başarısız oldu: %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La solicitud INSERT no fue exitosa: %@"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT 요청이 성공하지 못했습니다: %@"
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT-pyyntö epäonnistui: %@"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A requisição INSERT não foi bem-sucedida: %@"
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang INSERT request ay hindi matagumpay: %@"
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Požadavek INSERT nebyl úspěšný: %@"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La requête INSERT n'a pas abouti : %@"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Het INSERT-verzoek was niet succesvol: %@"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT अनुरोध सफल नहीं था: %@"
           }
         },
-        "be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Запыт INSERT не быў паспяховым: %@"
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT zahtjev nije uspio: %@"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Запит INSERT не був успішним: %@"
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permintaan INSERT tidak berhasil: %@"
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT сұрауы сәтсіз аяқталды: %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La richiesta INSERT non è riuscita: %@"
           }
         },
-        "tt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT үтенече уңышсыз булды: %@"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERTリクエストが失敗しました：%@"
           }
         },
-        "ba": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT һорауы уңышһыҙ булды: %@"
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT сұрауы сәтсіз аяқталды: %@"
           }
         },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT захтев није успео: %@"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT 요청이 성공하지 못했습니다: %@"
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT-begäran lyckades inte: %@"
+        "ky" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT сурамы ийгиликсиз болду: %@"
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "คำขอ INSERT ไม่สำเร็จ: %@"
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT-forespørselen var ikke vellykket: %@"
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT-pyyntö epäonnistui: %@"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het INSERT-verzoek was niet succesvol: %@"
           }
         },
-        "no": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT-forespørselen var ikke vellykket: %@"
+        "nl-BE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het INSERT-verzoek was niet succesvol: %@"
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT-anmodningen var ikke succesfuld: %@"
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Żądanie INSERT nie powiodło się: %@"
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Żądanie INSERT nie powiodło się: %@"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A requisição INSERT não foi bem-sucedida: %@"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yêu cầu INSERT không thành công: %@"
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cererea INSERT nu a reușit: %@"
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT अनुरोध सफल नहीं था: %@"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT-запрос не был выполнен успешно: %@"
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT درخواست کامیاب نہیں ہوئی: %@"
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Požiadavka INSERT nebola úspešná: %@"
           }
         },
-        "nl-be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Het INSERT-verzoek was niet succesvol: %@"
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zahteva INSERT ni uspela: %@"
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT заявката не бе успешна: %@"
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT захтев није успео: %@"
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Το αίτημα INSERT δεν ήταν επιτυχές: %@"
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT-begäran lyckades inte: %@"
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cererea INSERT nu a reușit: %@"
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำขอ INSERT ไม่สำเร็จ: %@"
           }
         },
-        "ky": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT сурамы ийгиликсиз болду: %@"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT isteği başarısız oldu: %@"
           }
         },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT so'rovi muvaffaqiyatsiz yakunlandi: %@"
+        "tt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT үтенече уңышсыз булды: %@"
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INSERT zahtjev nije uspio: %@"
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запит INSERT не був успішним: %@"
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Požiadavka INSERT nebola úspešná: %@"
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT درخواست کامیاب نہیں ہوئی: %@"
           }
         },
-        "sl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zahteva INSERT ni uspela: %@"
+        "uz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT so'rovi muvaffaqiyatsiz yakunlandi: %@"
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permintaan INSERT tidak berhasil: %@"
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yêu cầu INSERT không thành công: %@"
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ang INSERT request ay hindi matagumpay: %@"
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSERT 请求未成功：%@"
           }
         }
       }
     },
-    "NO_DATA_ERROR": {
-      "comment": "No data error message",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The response body is missing the expected data."
+    "NO_DATA_ERROR" : {
+      "comment" : "No data error message",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هيئة الاستجابة تفتقد البيانات المتوقعة."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "В теле ответа отсутствуют ожидаемые данные."
+        "ba" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Яуап һүлеһендә көтелгән мәғлүмәт юҡ."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Le corps de la réponse ne contient pas les données attendues."
+        "be" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У адказе адсутнічаюць чаканыя дадзеныя."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il corpo della risposta non contiene i dati previsti."
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В тялото на отговора липсват очакваните данни."
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Der Antwortkörper enthält nicht die erwarteten Daten."
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "V těle odpovědi chybí očekávaná data."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El cuerpo de la respuesta no contiene los datos esperados."
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responskroppen mangler de forventede data."
           }
         },
-        "zh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "响应正文中缺少预期的数据。"
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Antwortkörper enthält nicht die erwarteten Daten."
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هيئة الاستجابة تفتقد البيانات المتوقعة."
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το σώμα της απάντησης δεν περιέχει τα αναμενόμενα δεδομένα."
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "レスポンスボディに期待されるデータがありません。"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The response body is missing the expected data."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yanıt gövdesinde beklenen veri eksik."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El cuerpo de la respuesta no contiene los datos esperados."
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "응답 본문에 예상된 데이터가 없습니다."
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vastauksen runko ei sisällä odotettuja tietoja."
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "O corpo da resposta está sem os dados esperados."
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang response body ay kulang sa inaasahang data."
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "V těle odpovědi chybí očekávaná data."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le corps de la réponse ne contient pas les données attendues."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "De respons bevat niet de verwachte gegevens."
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्रतिक्रिया में अपेक्षित डेटा गायब है।"
           }
         },
-        "be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "У адказе адсутнічаюць чаканыя дадзеныя."
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tijelo odgovora ne sadrži očekivane podatke."
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "У відповіді відсутні очікувані дані."
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Badan respons tidak memiliki data yang diharapkan."
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Жауап денесінде күтілген деректер жоқ."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il corpo della risposta non contiene i dati previsti."
           }
         },
-        "tt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Җавап җисемендә көтелгән мәгълүматлар юк."
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "レスポンスボディに期待されるデータがありません。"
           }
         },
-        "ba": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Яуап һүлеһендә көтелгән мәғлүмәт юҡ."
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жауап денесінде күтілген деректер жоқ."
           }
         },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "У телу одговора недостају очекивани подаци."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "응답 본문에 예상된 데이터가 없습니다."
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Svarskroppen saknar den förväntade datan."
+        "ky" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жооптун денесинде күтүлгөн маалыматтар жок."
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "เนื้อหาการตอบกลับขาดข้อมูลที่คาดหวัง"
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responsen mangler de forventede dataene."
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vastauksen runko ei sisällä odotettuja tietoja."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De respons bevat niet de verwachte gegevens."
           }
         },
-        "no": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Responsen mangler de forventede dataene."
+        "nl-BE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De respons bevat niet de verwachte gegevens."
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Responskroppen mangler de forventede data."
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "W treści odpowiedzi brakuje oczekiwanych danych."
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "W treści odpowiedzi brakuje oczekiwanych danych."
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O corpo da resposta está sem os dados esperados."
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Phản hồi thiếu dữ liệu mong đợi."
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corpul răspunsului nu conține datele așteptate."
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "प्रतिक्रिया में अपेक्षित डेटा गायब है।"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В теле ответа отсутствуют ожидаемые данные."
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "جواب میں توقع کے مطابق ڈیٹا موجود نہیں ہے۔"
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "V tele odpovede chýbajú očakávané dáta."
           }
         },
-        "nl-be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "De respons bevat niet de verwachte gegevens."
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vsebina odgovora ne vsebuje pričakovanih podatkov."
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "В тялото на отговора липсват очакваните данни."
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У телу одговора недостају очекивани подаци."
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Το σώμα της απάντησης δεν περιέχει τα αναμενόμενα δεδομένα."
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svarskroppen saknar den förväntade datan."
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Corpul răspunsului nu conține datele așteptate."
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เนื้อหาการตอบกลับขาดข้อมูลที่คาดหวัง"
           }
         },
-        "ky": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Жооптун денесинде күтүлгөн маалыматтар жок."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yanıt gövdesinde beklenen veri eksik."
           }
         },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Javob tarkibida kutilgan ma'lumotlar yo'q."
+        "tt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Җавап җисемендә көтелгән мәгълүматлар юк."
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tijelo odgovora ne sadrži očekivane podatke."
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У відповіді відсутні очікувані дані."
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "V tele odpovede chýbajú očakávané dáta."
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جواب میں توقع کے مطابق ڈیٹا موجود نہیں ہے۔"
           }
         },
-        "sl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vsebina odgovora ne vsebuje pričakovanih podatkov."
+        "uz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javob tarkibida kutilgan ma'lumotlar yo'q."
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Badan respons tidak memiliki data yang diharapkan."
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phản hồi thiếu dữ liệu mong đợi."
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ang response body ay kulang sa inaasahang data."
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "响应正文中缺少预期的数据。"
           }
         }
       }
     },
-    "REV_MISSING_ERROR": {
-      "comment": "Error description for missing revision field",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The '_rev' property is empty or missing in the provided document."
+    "REV_MISSING_ERROR" : {
+      "comment" : "Error description for missing revision field",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خاصية '_rev' فارغة أو مفقودة في المستند المقدم."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Свойство '_rev' отсутствует или пусто в предоставленном документе."
+        "ba" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тәҡдим ителгән документта '_rev' ҡасиәте буш йәки юҡ."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La propriété '_rev' est vide ou manquante dans le document fourni."
+        "be" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уласцівасць '_rev' пустая або адсутнічае ў прадастаўленым дакуменце."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La proprietà '_rev' è vuota o mancante nel documento fornito."
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Свойството '_rev' е празно или липсва в предоставения документ."
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Die '_rev'-Eigenschaft ist leer oder fehlt im bereitgestellten Dokument."
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vlastnost '_rev' je prázdná nebo chybí v poskytnutém dokumentu."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La propiedad '_rev' está vacía o falta en el documento proporcionado."
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'_rev'-egenskaben er tom eller mangler i det leverede dokument."
           }
         },
-        "zh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "提供的文档中 '_rev' 属性为空或缺失。"
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die '_rev'-Eigenschaft ist leer oder fehlt im bereitgestellten Dokument."
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "خاصية '_rev' فارغة أو مفقودة في المستند المقدم."
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Η ιδιότητα '_rev' είναι κενή ή λείπει στο παρεχόμενο έγγραφο."
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "提供されたドキュメントに '_rev' プロパティが空またはありません。"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The '_rev' property is empty or missing in the provided document."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sağlanan belgede '_rev' özelliği boş veya eksik."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La propiedad '_rev' está vacía o falta en el documento proporcionado."
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "제공된 문서에서 '_rev' 속성이 비어 있거나 없습니다."
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'_rev'-ominaisuus on tyhjä tai puuttuu annetussa asiakirjassa."
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A propriedade '_rev' está vazia ou ausente no documento fornecido."
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang '_rev' property ay walang laman o nawawala sa ibinigay na dokumento."
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vlastnost '_rev' je prázdná nebo chybí v poskytnutém dokumentu."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La propriété '_rev' est vide ou manquante dans le document fourni."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "De '_rev'-eigenschap is leeg of ontbreekt in het opgegeven document."
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'_rev' गुण प्रदान किए गए दस्तावेज़ में खाली या गायब है।"
           }
         },
-        "be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Уласцівасць '_rev' пустая або адсутнічае ў прадастаўленым дакуменце."
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svojstvo '_rev' je prazno ili nedostaje u dostavljenom dokumentu."
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Властивість '_rev' порожня або відсутня в наданому документі."
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Properti '_rev' kosong atau tidak ada dalam dokumen yang diberikan."
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ұсынылған құжатта '_rev' қасиеті бос немесе жоқ."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La proprietà '_rev' è vuota o mancante nel documento fornito."
           }
         },
-        "tt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Тәкъдим ителгән документта '_rev' үзенчәлеге буш яки юк."
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提供されたドキュメントに '_rev' プロパティが空またはありません。"
           }
         },
-        "ba": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Тәҡдим ителгән документта '_rev' ҡасиәте буш йәки юҡ."
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ұсынылған құжатта '_rev' қасиеті бос немесе жоқ."
           }
         },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Својство '_rev' је празно или недостаје у датом документу."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제공된 문서에서 '_rev' 속성이 비어 있거나 없습니다."
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Egenskapen '_rev' är tom eller saknas i det angivna dokumentet."
+        "ky" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Берилген документте '_rev' касиети бош же жок."
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "คุณสมบัติ '_rev' ว่างหรือหายไปในเอกสารที่ให้มา"
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'_rev'-egenskapen er tom eller mangler i det oppgitte dokumentet."
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "'_rev'-ominaisuus on tyhjä tai puuttuu annetussa asiakirjassa."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De '_rev'-eigenschap is leeg of ontbreekt in het opgegeven document."
           }
         },
-        "no": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "'_rev'-egenskapen er tom eller mangler i det oppgitte dokumentet."
+        "nl-BE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De '_rev'-eigenschap is leeg of ontbreekt in het opgegeven document."
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "'_rev'-egenskaben er tom eller mangler i det leverede dokument."
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Właściwość '_rev' jest pusta lub brakuje jej w dostarczonym dokumencie."
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Właściwość '_rev' jest pusta lub brakuje jej w dostarczonym dokumencie."
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A propriedade '_rev' está vazia ou ausente no documento fornecido."
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Thuộc tính '_rev' trống hoặc thiếu trong tài liệu được cung cấp."
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proprietatea '_rev' este goală sau lipsă din documentul furnizat."
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "'_rev' गुण प्रदान किए गए दस्तावेज़ में खाली या गायब है।"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Свойство '_rev' отсутствует или пусто в предоставленном документе."
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "'_rev' پراپرٹی فراہم کردہ دستاویز میں خالی یا غائب ہے۔"
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vlastnosť '_rev' je prázdna alebo chýba v poskytnutom dokumente."
           }
         },
-        "nl-be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "De '_rev'-eigenschap is leeg of ontbreekt in het opgegeven document."
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lastnost '_rev' je prazna ali manjka v predloženem dokumentu."
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Свойството '_rev' е празно или липсва в предоставения документ."
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Својство '_rev' је празно или недостаје у датом документу."
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Η ιδιότητα '_rev' είναι κενή ή λείπει στο παρεχόμενο έγγραφο."
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Egenskapen '_rev' är tom eller saknas i det angivna dokumentet."
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Proprietatea '_rev' este goală sau lipsă din documentul furnizat."
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คุณสมบัติ '_rev' ว่างหรือหายไปในเอกสารที่ให้มา"
           }
         },
-        "ky": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Берилген документте '_rev' касиети бош же жок."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sağlanan belgede '_rev' özelliği boş veya eksik."
           }
         },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ta'minlangan hujjatda '_rev' xususiyati bo'sh yoki yo'q."
+        "tt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тәкъдим ителгән документта '_rev' үзенчәлеге буш яки юк."
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Svojstvo '_rev' je prazno ili nedostaje u dostavljenom dokumentu."
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Властивість '_rev' порожня або відсутня в наданому документі."
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vlastnosť '_rev' je prázdna alebo chýba v poskytnutom dokumente."
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'_rev' پراپرٹی فراہم کردہ دستاویز میں خالی یا غائب ہے۔"
           }
         },
-        "sl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lastnost '_rev' je prazna ali manjka v predloženem dokumentu."
+        "uz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta'minlangan hujjatda '_rev' xususiyati bo'sh yoki yo'q."
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Properti '_rev' kosong atau tidak ada dalam dokumen yang diberikan."
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thuộc tính '_rev' trống hoặc thiếu trong tài liệu được cung cấp."
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ang '_rev' property ay walang laman o nawawala sa ibinigay na dokumento."
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提供的文档中 '_rev' 属性为空或缺失。"
           }
         }
       }
     },
-    "UNAUTHORIZED_ERROR": {
-      "comment": "Unauthorized access message",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Authentication failed due to an incorrect username or password."
+    "UNAUTHORIZED_ERROR" : {
+      "comment" : "Unauthorized access message",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فشل المصادقة بسبب اسم مستخدم أو كلمة مرور غير صحيحة."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ошибка аутентификации из-за неправильного имени пользователя или пароля."
+        "ba" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дөрөҫ булмаған ҡулланыусы исеме йәки серһүҙ сәбәпле аутентификация уңышһыҙ булды."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L'authentification a échoué en raison d'un nom d'utilisateur ou d'un mot de passe incorrect."
+        "be" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аўтэнтыфікацыя не ўдалася з-за няправільнага імя карыстальніка або пароля."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Autenticazione fallita a causa di un nome utente o una password non corretti."
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удостоверяването не бе успешно поради неправилно потребителско име или парола."
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Authentifizierung aufgrund eines falschen Benutzernamens oder Passworts fehlgeschlagen."
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ověření selhalo kvůli nesprávnému uživatelskému jménu nebo heslu."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La autenticación falló debido a un nombre de usuario o contraseña incorrectos."
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Godkendelse mislykkedes på grund af et forkert brugernavn eller adgangskode."
           }
         },
-        "zh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "由于用户名或密码不正确，认证失败。"
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authentifizierung aufgrund eines falschen Benutzernamens oder Passworts fehlgeschlagen."
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "فشل المصادقة بسبب اسم مستخدم أو كلمة مرور غير صحيحة."
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Η πιστοποίηση απέτυχε λόγω εσφαλμένου ονόματος χρήστη ή κωδικού πρόσβασης."
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ユーザー名またはパスワードが間違っているため、認証に失敗しました。"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authentication failed due to an incorrect username or password."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yanlış kullanıcı adı veya şifre nedeniyle kimlik doğrulama başarısız oldu."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La autenticación falló debido a un nombre de usuario o contraseña incorrectos."
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "잘못된 사용자 이름 또는 비밀번호로 인해 인증에 실패했습니다."
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tunnistautuminen epäonnistui väärän käyttäjätunnuksen tai salasanan vuoksi."
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A autenticação falhou devido a um nome de usuário ou senha incorretos."
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nabigo ang authentication dahil sa maling username o password."
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ověření selhalo kvůli nesprávnému uživatelskému jménu nebo heslu."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'authentification a échoué en raison d'un nom d'utilisateur ou d'un mot de passe incorrect."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Authenticatie mislukt vanwege een onjuiste gebruikersnaam of wachtwoord."
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "गलत उपयोगकर्ता नाम या पासवर्ड के कारण प्रमाणीकरण विफल हुआ।"
           }
         },
-        "be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Аўтэнтыфікацыя не ўдалася з-за няправільнага імя карыстальніка або пароля."
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autentifikacija nije uspjela zbog netočnog korisničkog imena ili lozinke."
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Помилка аутентифікації через неправильне ім'я користувача або пароль."
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autentikasi gagal karena nama pengguna atau kata sandi salah."
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Қате пайдаланушы аты немесе құпия сөз себебінен аутентификация сәтсіз аяқталды."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autenticazione fallita a causa di un nome utente o una password non corretti."
           }
         },
-        "tt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Дөрес булмаган кулланучы исеме яки серсүз сәбәпле аутентификация уңышсыз булды."
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ユーザー名またはパスワードが間違っているため、認証に失敗しました。"
           }
         },
-        "ba": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Дөрөҫ булмаған ҡулланыусы исеме йәки серһүҙ сәбәпле аутентификация уңышһыҙ булды."
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Қате пайдаланушы аты немесе құпия сөз себебінен аутентификация сәтсіз аяқталды."
           }
         },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Аутентификација није успела због нетачног корисничког имена или лозинке."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잘못된 사용자 이름 또는 비밀번호로 인해 인증에 실패했습니다."
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Autentisering misslyckades på grund av ett felaktigt användarnamn eller lösenord."
+        "ky" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Туура эмес колдонуучу аты же сырсөз себебинен аутентификация ийгиликсиз болду."
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "การตรวจสอบสิทธิ์ล้มเหลวเนื่องจากชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autentisering mislyktes på grunn av feil brukernavn eller passord."
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tunnistautuminen epäonnistui väärän käyttäjätunnuksen tai salasanan vuoksi."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authenticatie mislukt vanwege een onjuiste gebruikersnaam of wachtwoord."
           }
         },
-        "no": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Autentisering mislyktes på grunn av feil brukernavn eller passord."
+        "nl-BE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authenticatie mislukt vanwege een onjuiste gebruikersnaam of wachtwoord."
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Godkendelse mislykkedes på grund af et forkert brugernavn eller adgangskode."
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uwierzytelnienie nie powiodło się z powodu nieprawidłowej nazwy użytkownika lub hasła."
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Uwierzytelnienie nie powiodło się z powodu nieprawidłowej nazwy użytkownika lub hasła."
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A autenticação falhou devido a um nome de usuário ou senha incorretos."
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Xác thực thất bại do tên người dùng hoặc mật khẩu không chính xác."
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autentificarea a eșuat din cauza unui nume de utilizator sau parolă incorectă."
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "गलत उपयोगकर्ता नाम या पासवर्ड के कारण प्रमाणीकरण विफल हुआ।"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ошибка аутентификации из-за неправильного имени пользователя или пароля."
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "غلط صارف نام یا پاس ورڈ کی وجہ سے تصدیق ناکام ہو گئی۔"
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overenie zlyhalo kvôli nesprávnemu používateľskému menu alebo heslu."
           }
         },
-        "nl-be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Authenticatie mislukt vanwege een onjuiste gebruikersnaam of wachtwoord."
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preverjanje pristnosti ni uspelo zaradi napačnega uporabniškega imena ali gesla."
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Удостоверяването не бе успешно поради неправилно потребителско име или парола."
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аутентификација није успела због нетачног корисничког имена или лозинке."
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Η πιστοποίηση απέτυχε λόγω εσφαλμένου ονόματος χρήστη ή κωδικού πρόσβασης."
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autentisering misslyckades på grund av ett felaktigt användarnamn eller lösenord."
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Autentificarea a eșuat din cauza unui nume de utilizator sau parolă incorectă."
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การตรวจสอบสิทธิ์ล้มเหลวเนื่องจากชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
           }
         },
-        "ky": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Туура эмес колдонуучу аты же сырсөз себебинен аутентификация ийгиликсиз болду."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yanlış kullanıcı adı veya şifre nedeniyle kimlik doğrulama başarısız oldu."
           }
         },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Noto'g'ri foydalanuvchi nomi yoki parol tufayli autentifikatsiya muvaffaqiyatsiz tugadi."
+        "tt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дөрес булмаган кулланучы исеме яки серсүз сәбәпле аутентификация уңышсыз булды."
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Autentifikacija nije uspjela zbog netočnog korisničkog imena ili lozinke."
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Помилка аутентифікації через неправильне ім'я користувача або пароль."
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Overenie zlyhalo kvôli nesprávnemu používateľskému menu alebo heslu."
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غلط صارف نام یا پاس ورڈ کی وجہ سے تصدیق ناکام ہو گئی۔"
           }
         },
-        "sl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preverjanje pristnosti ni uspelo zaradi napačnega uporabniškega imena ali gesla."
+        "uz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noto'g'ri foydalanuvchi nomi yoki parol tufayli autentifikatsiya muvaffaqiyatsiz tugadi."
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Autentikasi gagal karena nama pengguna atau kata sandi salah."
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xác thực thất bại do tên người dùng hoặc mật khẩu không chính xác."
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nabigo ang authentication dahil sa maling username o password."
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由于用户名或密码不正确，认证失败。"
           }
         }
       }
     },
-    "UNKNOWN_RESPONSE_ERROR": {
-      "comment": "Unknown response message",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The response from CouchDB was unrecognized or invalid."
+    "UNKNOWN_RESPONSE_ERROR" : {
+      "comment" : "Unknown response message",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الاستجابة من CouchDB غير معروفة أو غير صالحة."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ответ от CouchDB не распознан или недействителен."
+        "ba" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CouchDB яуабы танылманы йәки дөрөҫ түгел."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La réponse de CouchDB n'a pas été reconnue ou est invalide."
+        "be" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Адказ ад CouchDB не быў распазнаны альбо несапраўдны."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La risposta da CouchDB non è stata riconosciuta o è invalida."
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отговорът от CouchDB беше неразпознат или невалиден."
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Die Antwort von CouchDB wurde nicht erkannt oder ist ungültig."
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odpověď z CouchDB nebyla rozpoznána nebo je neplatná."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La respuesta de CouchDB no fue reconocida o no es válida."
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svaret fra CouchDB blev ikke genkendt eller er ugyldigt."
           }
         },
-        "zh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "来自 CouchDB 的响应无法识别或无效。"
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Antwort von CouchDB wurde nicht erkannt oder ist ungültig."
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الاستجابة من CouchDB غير معروفة أو غير صالحة."
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Η απάντηση από το CouchDB δεν αναγνωρίστηκε ή ήταν άκυρη."
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CouchDBからの応答が認識できないか無効です。"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The response from CouchDB was unrecognized or invalid."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CouchDB'den gelen yanıt tanınmadı veya geçersiz."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La respuesta de CouchDB no fue reconocida o no es válida."
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CouchDB의 응답을 인식할 수 없거나 유효하지 않습니다."
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CouchDB:n vastaus oli tunnistamaton tai virheellinen."
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A resposta do CouchDB não foi reconhecida ou é inválida."
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang response mula sa CouchDB ay hindi nakilala o hindi wasto."
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Odpověď z CouchDB nebyla rozpoznána nebo je neplatná."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La réponse de CouchDB n'a pas été reconnue ou est invalide."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Het antwoord van CouchDB was niet herkend of ongeldig."
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CouchDB से प्रतिक्रिया अपरिचित या अमान्य थी।"
           }
         },
-        "be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Адказ ад CouchDB не быў распазнаны альбо несапраўдны."
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odgovor iz CouchDB-a nije prepoznat ili je nevažeći."
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Відповідь від CouchDB не розпізнана або недійсна."
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanggapan dari CouchDB tidak dikenali atau tidak valid."
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CouchDB жауабы танылмады немесе жарамсыз."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La risposta da CouchDB non è stata riconosciuta o è invalida."
           }
         },
-        "tt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CouchDB җавабы танылмады яки дөрес түгел."
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CouchDBからの応答が認識できないか無効です。"
           }
         },
-        "ba": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CouchDB яуабы танылманы йәки дөрөҫ түгел."
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CouchDB жауабы танылмады немесе жарамсыз."
           }
         },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Одговор од CouchDB није препознат или је неважећи."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CouchDB의 응답을 인식할 수 없거나 유효하지 않습니다."
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Svaret från CouchDB var okänt eller ogiltigt."
+        "ky" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CouchDB жообу таанылган эмес же жараксыз болгон."
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "การตอบกลับจาก CouchDB ไม่เป็นที่รู้จักหรือไม่ถูกต้อง"
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svaret fra CouchDB ble ikke gjenkjent eller var ugyldig."
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CouchDB:n vastaus oli tunnistamaton tai virheellinen."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het antwoord van CouchDB was niet herkend of ongeldig."
           }
         },
-        "no": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Svaret fra CouchDB ble ikke gjenkjent eller var ugyldig."
+        "nl-BE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het antwoord van CouchDB was niet herkend of ongeldig."
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Svaret fra CouchDB blev ikke genkendt eller er ugyldigt."
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odpowiedź z CouchDB była nierozpoznana lub nieprawidłowa."
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Odpowiedź z CouchDB była nierozpoznana lub nieprawidłowa."
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A resposta do CouchDB não foi reconhecida ou é inválida."
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Phản hồi từ CouchDB không được nhận dạng hoặc không hợp lệ."
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Răspunsul de la CouchDB a fost nerecunoscut sau invalid."
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CouchDB से प्रतिक्रिया अपरिचित या अमान्य थी।"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ответ от CouchDB не распознан или недействителен."
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CouchDB کا جواب غیر معروف یا غلط تھا۔"
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odpoveď z CouchDB nebola rozpoznaná alebo je neplatná."
           }
         },
-        "nl-be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Het antwoord van CouchDB was niet herkend of ongeldig."
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odgovor iz CouchDB ni bil prepoznan ali je neveljaven."
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Отговорът от CouchDB беше неразпознат или невалиден."
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Одговор од CouchDB није препознат или је неважећи."
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Η απάντηση από το CouchDB δεν αναγνωρίστηκε ή ήταν άκυρη."
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svaret från CouchDB var okänt eller ogiltigt."
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Răspunsul de la CouchDB a fost nerecunoscut sau invalid."
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การตอบกลับจาก CouchDB ไม่เป็นที่รู้จักหรือไม่ถูกต้อง"
           }
         },
-        "ky": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CouchDB жообу таанылган эмес же жараксыз болгон."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CouchDB'den gelen yanıt tanınmadı veya geçersiz."
           }
         },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CouchDB dan javob tanilmagan yoki yaroqsiz edi."
+        "tt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CouchDB җавабы танылмады яки дөрес түгел."
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Odgovor iz CouchDB-a nije prepoznat ili je nevažeći."
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відповідь від CouchDB не розпізнана або недійсна."
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Odpoveď z CouchDB nebola rozpoznaná alebo je neplatná."
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CouchDB کا جواب غیر معروف یا غلط تھا۔"
           }
         },
-        "sl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Odgovor iz CouchDB ni bil prepoznan ali je neveljaven."
+        "uz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CouchDB dan javob tanilmagan yoki yaroqsiz edi."
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tanggapan dari CouchDB tidak dikenali atau tidak valid."
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phản hồi từ CouchDB không được nhận dạng hoặc không hợp lệ."
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ang response mula sa CouchDB ay hindi nakilala o hindi wasto."
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "来自 CouchDB 的响应无法识别或无效。"
           }
         }
       }
     },
-    "UPDATE_ERROR": {
-      "comment": "UPDATE request failure message",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The UPDATE request wasn't successful: %@"
+    "UPDATE_ERROR" : {
+      "comment" : "UPDATE request failure message",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فشل طلب UPDATE: %@"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE-запрос не был выполнен успешно: %@"
+        "ba" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE һорауы уңышһыҙ булды: %@"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La requête UPDATE n'a pas abouti : %@"
+        "be" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запыт UPDATE не быў паспяховым: %@"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La richiesta UPDATE non è riuscita: %@"
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE заявката не бе успешна: %@"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Die UPDATE-Anfrage war nicht erfolgreich: %@"
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Požadavek UPDATE nebyl úspěšný: %@"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La solicitud UPDATE no fue exitosa: %@"
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE-anmodningen var ikke succesfuld: %@"
           }
         },
-        "zh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE 请求未成功：%@"
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die UPDATE-Anfrage war nicht erfolgreich: %@"
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "فشل طلب UPDATE: %@"
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το αίτημα UPDATE δεν ήταν επιτυχές: %@"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATEリクエストが失敗しました：%@"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The UPDATE request wasn't successful: %@"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE isteği başarısız oldu: %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La solicitud UPDATE no fue exitosa: %@"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE 요청이 성공하지 못했습니다: %@"
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE-pyyntö epäonnistui: %@"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A requisição UPDATE não foi bem-sucedida: %@"
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang UPDATE request ay hindi matagumpay: %@"
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Požadavek UPDATE nebyl úspěšný: %@"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La requête UPDATE n'a pas abouti : %@"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Het UPDATE-verzoek was niet succesvol: %@"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE अनुरोध सफल नहीं था: %@"
           }
         },
-        "be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Запыт UPDATE не быў паспяховым: %@"
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE zahtjev nije uspio: %@"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Запит UPDATE не був успішним: %@"
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permintaan UPDATE tidak berhasil: %@"
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE сұрауы сәтсіз аяқталды: %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La richiesta UPDATE non è riuscita: %@"
           }
         },
-        "tt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE үтенече уңышсыз булды: %@"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATEリクエストが失敗しました：%@"
           }
         },
-        "ba": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE һорауы уңышһыҙ булды: %@"
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE сұрауы сәтсіз аяқталды: %@"
           }
         },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE захтев није успео: %@"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE 요청이 성공하지 못했습니다: %@"
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE-begäran lyckades inte: %@"
+        "ky" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE сурамы ийгиликсиз болду: %@"
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "คำขอ UPDATE ไม่สำเร็จ: %@"
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE-forespørselen var ikke vellykket: %@"
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE-pyyntö epäonnistui: %@"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het UPDATE-verzoek was niet succesvol: %@"
           }
         },
-        "no": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE-forespørselen var ikke vellykket: %@"
+        "nl-BE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het UPDATE-verzoek was niet succesvol: %@"
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE-anmodningen var ikke succesfuld: %@"
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Żądanie UPDATE nie powiodło się: %@"
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Żądanie UPDATE nie powiodło się: %@"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A requisição UPDATE não foi bem-sucedida: %@"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yêu cầu UPDATE không thành công: %@"
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cererea UPDATE nu a reușit: %@"
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE अनुरोध सफल नहीं था: %@"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE-запрос не был выполнен успешно: %@"
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE درخواست کامیاب نہیں ہوئی: %@"
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Požiadavka UPDATE nebola úspešná: %@"
           }
         },
-        "nl-be": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Het UPDATE-verzoek was niet succesvol: %@"
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zahteva UPDATE ni uspela: %@"
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE заявката не бе успешна: %@"
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE захтев није успео: %@"
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Το αίτημα UPDATE δεν ήταν επιτυχές: %@"
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE-begäran lyckades inte: %@"
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cererea UPDATE nu a reușit: %@"
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำขอ UPDATE ไม่สำเร็จ: %@"
           }
         },
-        "ky": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE сурамы ийгиликсиз болду: %@"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE isteği başarısız oldu: %@"
           }
         },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE so'rovi muvaffaqiyatsiz yakunlandi: %@"
+        "tt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE үтенече уңышсыз булды: %@"
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UPDATE zahtjev nije uspio: %@"
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запит UPDATE не був успішним: %@"
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Požiadavka UPDATE nebola úspešná: %@"
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE درخواست کامیاب نہیں ہوئی: %@"
           }
         },
-        "sl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zahteva UPDATE ni uspela: %@"
+        "uz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE so'rovi muvaffaqiyatsiz yakunlandi: %@"
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permintaan UPDATE tidak berhasil: %@"
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yêu cầu UPDATE không thành công: %@"
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ang UPDATE request ay hindi matagumpay: %@"
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPDATE 请求未成功：%@"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }
