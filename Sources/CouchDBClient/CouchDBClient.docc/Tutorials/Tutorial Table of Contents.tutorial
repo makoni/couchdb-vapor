@@ -13,6 +13,7 @@
         @TutorialReference(tutorial: "doc:macOSTutorial")
 		@TutorialReference(tutorial: "doc:SwiftUITutorial")
 		@TutorialReference(tutorial: "doc:VaporTutorial")
+        @TutorialReference(tutorial: "doc:Hummingbird")
     }
 	
 	@Chapter(name: "Errors handling") {
