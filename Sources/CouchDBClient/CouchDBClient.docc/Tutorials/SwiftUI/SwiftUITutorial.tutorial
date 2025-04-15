@@ -1,65 +1,65 @@
 @Tutorial(time: 10) {
-    @Intro(title: "Using with a SwiftUI app") {
-		A SwiftUI app example
+    @Intro(title: "Using CouchDBClient with a SwiftUI App") {
+        Learn how to integrate CouchDBClient into a SwiftUI app for seamless database interactions.
         
-		@Image(source: curlybraces.square.fill.svg, alt: "Application icon")
+        @Image(source: curlybraces.square.fill.svg, alt: "SwiftUI app integration illustration")
     }
     
     @Section(title: "Initialization") {
         @ContentAndMedia {
-			Adding CouchDBClient to your project.
+            Add CouchDBClient to your project and set up the necessary configurations.
             
-            @Image(source: swift.svg, alt: "Swift icon")
+            @Image(source: swift.svg, alt: "Swift logo")
         }
         
         @Steps {
             @Step {
-				Open the "Package Dependencies" tab in Xcode.
+                Open the "Package Dependencies" tab in Xcode.
                 
-                @Image(source: swiftui-example-1.png, alt: "Xcode")
+                @Image(source: swiftui-example-1.png, alt: "Xcode Package Dependencies tab")
             }
-			
-			@Step {
-				Add `CouchDBClient` as a Swift Package dependency.
-				
-				@Image(source: swiftui-example-2.png, alt: "Add CouchDBClient as a Swift Package dependency.")
-			}
-			
-			@Step {
-				Open your View file.
-				
-				@Code(name: "ContentView.swift", file: SwiftUITutorial-1.swift)
-			}
-			
-			@Step {
-				Import `CouchDBClient`.
-				
-				@Code(name: "ContentView.swift", file: SwiftUITutorial-2.swift)
-			}
-			
-			@Step {
-				Create a CouchDBClient object, define connection settings and database name.
-				
-				@Code(name: "ContentView.swift", file: SwiftUITutorial-3.swift)
-			}
-			
-			@Step {
-				Define a model for your CouchDB document. It should conform to the `CouchDBRepresentable` and `Identifiable`  protocols.
-				
-				@Code(name: "ContentView.swift", file: SwiftUITutorial-4.swift)
-			}
-			
-			@Step {
-				Add a data source for your View.
-				
-				@Code(name: "ContentView.swift", file: SwiftUITutorial-5.swift)
-			}
-			
-			@Step {
-				Add getting the data and displaying it in the UI.
-				
-				@Code(name: "ContentView.swift", file: SwiftUITutorial-6.swift)
-			}
+            
+            @Step {
+                Add `CouchDBClient` as a Swift Package dependency.
+                
+                @Image(source: swiftui-example-2.png, alt: "Adding CouchDBClient as a Swift Package dependency")
+            }
+            
+            @Step {
+                Open your SwiftUI View file.
+                
+                @Code(name: "ContentView.swift", file: SwiftUITutorial-1.swift)
+            }
+            
+            @Step {
+                Import `CouchDBClient` into your View file.
+                
+                @Code(name: "ContentView.swift", file: SwiftUITutorial-2.swift)
+            }
+            
+            @Step {
+                Create a `CouchDBClient` object, define connection settings, and specify the database name.
+                
+                @Code(name: "ContentView.swift", file: SwiftUITutorial-3.swift)
+            }
+            
+            @Step {
+                Define a model for your CouchDB document. Ensure it conforms to the `CouchDBRepresentable` and `Identifiable` protocols.
+                
+                @Code(name: "ContentView.swift", file: SwiftUITutorial-4.swift)
+            }
+            
+            @Step {
+                Add a data source for your SwiftUI View.
+                
+                @Code(name: "ContentView.swift", file: SwiftUITutorial-5.swift)
+            }
+            
+            @Step {
+                Fetch data from CouchDB and display it in the UI.
+                
+                @Code(name: "ContentView.swift", file: SwiftUITutorial-6.swift)
+            }
         }
     }
 }
