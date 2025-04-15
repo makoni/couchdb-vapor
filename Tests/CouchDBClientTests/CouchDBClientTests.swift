@@ -337,6 +337,16 @@ final class CouchDBClientTests: XCTestCase {
 		}
 	}
 
+    func test10_provide_HTTPClient() async throws {
+        let client = CouchDBClient(config: config, httpClient: HTTPClient.shared)
+
+        let httpClient = await client.httpClient
+        XCTAssertNotNil(httpClient)
+
+        let httpClient2 = await client.createHTTPClientIfNeed()
+        XCTAssertTrue(httpClient === httpClient2)
+    }
+
 	func test99_deleteDB() async throws {
 		do {
 			try await couchDBClient.deleteDB(testsDB)
