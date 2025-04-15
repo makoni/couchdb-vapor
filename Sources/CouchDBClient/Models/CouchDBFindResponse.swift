@@ -5,7 +5,11 @@
 //  Created by Gregorio Gevartosky Torrezan on 2023-11-15.
 //
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// A model that represents the response from a CouchDB `_find` query.
 /// This structure is generic, allowing it to represent documents of any type conforming to `CouchDBRepresentable`.

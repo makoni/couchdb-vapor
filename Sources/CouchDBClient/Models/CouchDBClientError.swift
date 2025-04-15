@@ -5,7 +5,11 @@
 //  Created by Sergei Armodin on 05.04.2025.
 //
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// An enumeration representing the various errors that can occur when interacting with CouchDB through a client.
 /// This enum conforms to both `Error` and `Sendable`, making it suitable for error handling and thread-safe operations.

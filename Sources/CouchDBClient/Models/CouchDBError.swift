@@ -5,7 +5,11 @@
 //  Created by Sergey Armodin on 01.09.2022.
 //
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// A model that represents errors that CouchDB might return.
 /// This structure conforms to `Error`, `Codable`, and `Sendable` protocols for flexibility,

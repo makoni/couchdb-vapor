@@ -5,7 +5,11 @@
 //  Created by Sergei Armodin on 07.04.2024.
 //
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// A response model for CouchDB query results organized in rows.
 /// This structure is generic, allowing it to represent documents of any type conforming to `CouchDBRepresentable`.

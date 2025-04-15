@@ -5,7 +5,11 @@
 //  Created by Sergey Armodin on 15.05.2020.
 //
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// A response model for a create session request.
 /// This structure represents the data returned by the server upon a session creation request
