@@ -1295,7 +1295,7 @@ internal extension CouchDBClient {
 
 	/// Get authorization cookie in didn't yet. This cookie will be added automatically to requests that require authorization.
 	/// API reference: https://docs.couchdb.org/en/stable/api/server/authn.html#session
-	/// - Parameter eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
+	/// - Parameter eventLoopGroup: NIO's EventLoopGroup object. NIO's shared will be used if nil value provided.
 	/// - Returns: Authorization response.
 	@discardableResult
 	func authIfNeed(eventLoopGroup: EventLoopGroup? = nil) async throws -> CreateSessionResponse? {
