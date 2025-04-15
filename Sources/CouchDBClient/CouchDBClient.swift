@@ -152,6 +152,17 @@ public actor CouchDBClient {
         self.httpClient = httpClient
 	}
 
+	/// Shuts down the HTTP client used by the CouchDB client.
+    ///
+    /// This asynchronous function ensures that the `HTTPClient` instance is properly shut down,
+    /// releasing any resources it holds. It is important to call this method when the `CouchDBClient`
+    /// is no longer needed to avoid resource leaks.
+    ///
+    /// - Throws: An error if the shutdown process fails.
+    public func shutdown() async throws {
+        try await httpClient?.shutdown()
+    }
+
 	// MARK: - Public methods
 
 	/// Retrieves a list of all database names from the CouchDB server.
@@ -365,7 +376,7 @@ public actor CouchDBClient {
 	/// 4. Sends a `DELETE` request to the CouchDB server to delete the database.
 	/// 5. Processes the server's response, throwing errors for unauthorized access or missing data.
 	/// 6. Decodes the response body into an `UpdateDBResponse` object if successful.
-	/// 7. If decoding fails, attempts to decode the response into a `CouchDBError` object and throws it as an `.deleteError`.
+	/// 7. If decoding fails, attempts to decode the response into a `CouchDBError` object and throws it as `.deleteError`.
 	///
 	/// ### Example Usage:
 	/// ```swift
