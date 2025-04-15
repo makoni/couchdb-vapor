@@ -1,6 +1,6 @@
 //
 //  CouchDBClientError.swift
-//  couchdb-vapor
+//  couchdb-swift
 //
 //  Created by Sergei Armodin on 05.04.2025.
 //

@@ -17,7 +17,7 @@ let package = Package(
 	dependencies: [
 		.package(url: "https://github.com/hummingbird-project/hummingbird.git", from: "2.0.0"),
 		.package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0"),
-		.package(url: "https://github.com/makoni/couchdb-vapor", from: "2.0.0")
+		.package(url: "https://github.com/makoni/couchdb-swift", from: "2.0.0")
 	],
 	targets: [
 		// Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -27,7 +27,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "ArgumentParser", package: "swift-argument-parser"),
 				.product(name: "Hummingbird", package: "hummingbird"), .product(name: "Hummingbird", package: "hummingbird"),
-				.product(name: "CouchDBClient", package: "couchdb-vapor")
+				.product(name: "CouchDBClient", package: "couchdb-swift")
 			]),
 		.testTarget(
 			name: "HummingbirdTestTests",

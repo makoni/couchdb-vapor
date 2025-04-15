@@ -1,6 +1,6 @@
 //
 //  couchdb_vapor.swift
-//  couchdb-vapor
+//  couchdb-swift
 //
 //  Created by Sergey Armodin on 06/03/2019.
 //

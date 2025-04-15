@@ -10,7 +10,7 @@ let package = Package(
 		// 💧 A server-side Swift web framework.
 		.package(url: "https://github.com/vapor/vapor", from: "4.0.0"),
 		.package(url: "https://github.com/vapor/leaf", from: "4.0.0"),
-		.package(url: "https://github.com/makoni/couchdb-vapor", from: "2.0.0")
+		.package(url: "https://github.com/makoni/couchdb-swift", from: "2.0.0")
 	],
 	targets: [
 		.target(
@@ -18,7 +18,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "Leaf", package: "leaf"),
 				.product(name: "Vapor", package: "vapor"),
-				.product(name: "CouchDBClient", package: "couchdb-vapor")
+				.product(name: "CouchDBClient", package: "couchdb-swift")
 			]
 		),
 		.executableTarget(name: "Run", dependencies: [.target(name: "App")]),
