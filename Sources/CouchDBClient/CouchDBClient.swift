@@ -105,43 +105,46 @@ public actor CouchDBClient {
 	// MARK: - Initializer
 
 	/// Initializes a new instance of the CouchDB client using the provided configuration.
-	/// This initializer sets up the client with connection parameters and handles the user password securely,
-	/// supporting environment variable fallback for sensitive data.
 	///
-	/// This initializer sets up the client with default values for connecting to a CouchDB server. It allows for optional customization of the connection parameters such as protocol, host and port.
+	/// This initializer sets up the client with connection parameters and securely handles the user password,
+	/// supporting environment variable fallback for sensitive data. It allows for optional customization of the
+	/// connection parameters such as protocol, host, and port.
 	///
 	/// - Parameters:
-	///   - config: A `CouchDBClient.Config` instance containing the configuration details.
+	///   - config: A `CouchDBClient.Config` instance containing the configuration details, including protocol, host, port, username, and password.
+	///   - httpClient: An optional `HTTPClient` instance. If not provided, a shared instance will be used.
 	///
-	///	Example usage:
-	///  ```swift
-	///  // Create a cofig:
-	///  let config = CouchDBClient.Config(
+	/// ### Example Usage:
+	/// ```swift
+	/// // Create a configuration:
+	/// let config = CouchDBClient.Config(
 	///     couchProtocol: .http,
 	///     couchHost: "127.0.0.1",
 	///     couchPort: 5984,
 	///     userName: "user",
 	///     userPassword: "myPassword",
 	///     requestsTimeout: 30
-	///  )
+	/// )
 	///
-	///  // Create a client istance:
-	///  let couchDBClient = CouchDBClient(config: config)
-	///  ```
-	///  If you don't want to have your password in the code you can pass `COUCHDB_PASS` param in your command line.
-	///  For example you can run your Server Side Swift project:
-	///  ```bash
-	///  COUCHDB_PASS=myPassword /path/.build/x86_64-unknown-linux-gnu/release/Run
-	///  ```
-	///  Just use config without `userPassword` param:
-	///  ```swift
-	///  let config = CouchDBClient.Config(
+	/// // Create a client instance:
+	/// let couchDBClient = CouchDBClient(config: config)
+	/// ```
+	///
+	/// If you prefer not to include your password in the code, you can pass the `COUCHDB_PASS` environment variable
+	/// in your command line. For example:
+	/// ```bash
+	/// COUCHDB_PASS=myPassword /path/.build/x86_64-unknown-linux-gnu/release/Run
+	/// ```
+	/// In this case, you can omit the `userPassword` parameter in the configuration:
+	/// ```swift
+	/// let config = CouchDBClient.Config(
 	///     userName: "user"
-	///  )
-	///  let couchDBClient = CouchDBClient(config: config)
-	///  ```
+	/// )
+	/// let couchDBClient = CouchDBClient(config: config)
+	/// ```
 	///
-	/// - Note: It's important to ensure that the CouchDB server is running and accessible at the specified `couchHost` and `couchPort` before attempting to connect.
+	/// - Note: Ensure that the CouchDB server is running and accessible at the specified `couchHost` and `couchPort`
+	/// before attempting to connect.
 	public init(config: CouchDBClient.Config, httpClient: HTTPClient? = nil) {
 		self.couchProtocol = config.couchProtocol
 		self.couchHost = config.couchHost
