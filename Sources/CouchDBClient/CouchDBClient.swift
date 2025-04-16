@@ -5,12 +5,7 @@
 //  Created by Sergey Armodin on 06/03/2019.
 //
 
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-import Dispatch
-#else
 import Foundation
-#endif
 
 import NIO
 import NIOHTTP1

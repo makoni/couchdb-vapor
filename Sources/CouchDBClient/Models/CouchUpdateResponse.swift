@@ -5,11 +5,7 @@
 //  Created by Sergey Armodin on 06/03/2019.
 //
 
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
 import Foundation
-#endif
 
 /// A model for the response returned by CouchDB after performing insert, update, or delete operations.
 /// This structure conforms to `Codable` and `Sendable` for serialization and thread safety.

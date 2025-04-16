@@ -5,11 +5,7 @@
 //  Created by Sergey Armodin on 30.08.2022.
 //
 
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
 import Foundation
-#endif
 
 /// A protocol representing an object that can be stored in a CouchDB database.
 /// Conforming types must support Codable and Sendable for serialization and thread safety.
