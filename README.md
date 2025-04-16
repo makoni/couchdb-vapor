@@ -41,7 +41,7 @@ Add the following to the `dependencies` section of your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/makoni/couchdb-swift.git", from: "1.6.0"),
+    .package(url: "https://github.com/makoni/couchdb-swift.git", from: "2.1.0"),
 ]
 
 ---
