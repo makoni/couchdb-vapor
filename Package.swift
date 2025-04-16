@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-	name: "couchdb-vapor",
+	name: "couchdb-swift",
 	defaultLocalization: "en",
 	platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6)],
 	products: [

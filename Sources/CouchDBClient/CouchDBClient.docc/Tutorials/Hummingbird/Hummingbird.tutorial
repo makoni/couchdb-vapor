@@ -1,0 +1,76 @@
+@Tutorial(time: 15) {
+    @Intro(title: "Using CouchDBClient with Hummingbird in a Server-Side App") {
+        Learn how to use `CouchDBClient` for developing server-side apps built with Hummingbird.
+        
+        @Image(source: curlybraces.square.fill.svg, alt: "CouchDBClient and Hummingbird integration illustration")
+    }
+    
+    @Section(title: "Integrating CouchDBClient with Hummingbird") {
+        @ContentAndMedia {
+            Hummingbird is a lightweight, flexible, modern web application framework that runs on top of a SwiftNIO-based server implementation. It is designed to require the minimum number of dependencies. `CouchDBClient` is fully compatible with SwiftNIO and can be seamlessly used for server-side development.
+            
+            @Image(source: vapor.svg, alt: "Hummingbird framework logo")
+        }
+        
+        @Steps {
+            @Step {
+                Open the `Package.swift` file in your project.
+                
+                @Code(name: "Package.swift", file: Hummingbird-package-1.swift)
+            }
+
+            @Step {
+                Add `CouchDBClient` as a Swift Package dependency.
+                
+                @Code(name: "Package.swift", file: Hummingbird-package-2.swift)
+            }
+            
+            @Step {
+                Open the `Application+build.swift` file in your project.
+                
+                @Code(name: "Application+build.swift", file: Hummingbird-1.swift)
+            }
+            
+            @Step {
+                Import `CouchDBClient` and `ServiceLifecycle`.
+                
+                @Code(name: "Application+build.swift", file: Hummingbird-2.swift)
+            }
+            
+            @Step {
+                Create a new service for CouchDB.
+                
+                @Code(name: "Application+build.swift", file: Hummingbird-3.swift)
+            }
+            
+            @Step {
+                Create a `CouchDBService` and add it to the services list.
+                
+                @Code(name: "Application+build.swift", file: Hummingbird-4.swift)
+            }
+            
+            @Step {
+                Create a `DatabaseController` as an example controller.
+                
+                @Code(name: "DatabaseController.swift", file: Hummingbird-5.swift)
+            }
+            
+            @Step {
+                Go back to `Application+build.swift`.
+                
+                @Code(name: "Application+build.swift", file: Hummingbird-6.swift)
+            }
+            
+            @Step {
+                Add `DatabaseController` routes to the app router.
+                
+                @Code(name: "Application+build.swift", file: Hummingbird-7.swift)
+            }
+            
+            @Step {
+                Done! Run the project and test it by running the following command in the Terminal: 
+                `curl http://127.0.0.1:8080/databases`
+            }
+        }
+    }
+}

@@ -1,25 +1,41 @@
 # ``CouchDBClient``
 
-A simple CouchDB client written in Swift.
+A lightweight and powerful CouchDB client written in Swift.
 
 ## Overview
 
-Source code is available on [GitHub](https://github.com/makoni/couchdb-vapor).
+The source code is available on [GitHub](https://github.com/makoni/couchdb-swift).
 
-CouchDBClient allows you to make simple requests to CouchDB. It's using Swift Concurrency (async/await) and supports Linux, iOS 13+, iPadOS 13+, tvOS 13+, watchOS 6+, visionOS 1.0+ and macOS 10.15+.
+`CouchDBClient` simplifies interactions with CouchDB by providing an easy-to-use API built with Swift Concurrency (`async/await`). It supports a wide range of platforms, including:
 
-It's using [AsyncHTTPClient](https://github.com/swift-server/async-http-client) which makes it easy to use CouchDBClient for server-side development with Vapor 4. But it's easy to use it with any iOS or macOS app. Check the Essentials section for examples.
+- **Linux**
+- **iOS 13+**
+- **iPadOS 13+**
+- **tvOS 13+**
+- **watchOS 6+**
+- **visionOS 1.0+**
+- **macOS 10.15+**
 
-Currently CouchDBClient supports:
-- Check if DB exists.
-- Create DB.
-- Delete DB.
-- Get databases list.
-- Get a document by id or documents using a view.
-- Insert/update documents.
-- Find documents by selector.
-- Delete documents.
-- CouchDB authorization.
+Built on top of [AsyncHTTPClient](https://github.com/swift-server/async-http-client), `CouchDBClient` is ideal for server-side development with Vapor and Hummingbird but is equally suitable for iOS and macOS applications. Check the **Essentials** section for usage examples.
+
+### Features
+
+`CouchDBClient` currently supports the following operations:
+
+- **Database Management**:
+  - Check if a database exists.
+  - Create a database.
+  - Delete a database.
+  - Retrieve a list of all databases.
+
+- **Document Operations**:
+  - Get a document by ID or retrieve documents using a view.
+  - Insert or update documents.
+  - Find documents using a selector.
+  - Delete documents.
+
+- **Authorization**:
+  - Authenticate with CouchDB.
 
 ## Topics
 

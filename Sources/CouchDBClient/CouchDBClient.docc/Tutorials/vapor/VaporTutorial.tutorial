@@ -1,65 +1,65 @@
 @Tutorial(time: 15) {
-	@Intro(title: "Using with Vapor in server-side app") {
-		Use CouchDBClient for developing server-side apps built with Vapor.
-		
-		@Image(source: curlybraces.square.fill.svg, alt: "Application icon")
-	}
-	
-	@Section(title: "Use CouchDBClient with Vapor") {
-		@ContentAndMedia {
-			Vapor is built on top of  Apple's [SwiftNIO](https://github.com/apple/swift-nio). `CouchDBClient` is compatible with SwiftNIO and can be used for server-side development.
-			
-			@Image(source: vapor.svg, alt: "Application icon")
-		}
-		
-		@Steps {
-			@Step {
-				Open the `Package.swift` file.
-				
-				@Code(name: "Package.swift", file: VaporTutorial-package-1.swift)
-			}
+    @Intro(title: "Using CouchDBClient with Vapor in a Server-Side App") {
+        Learn how to use CouchDBClient for developing server-side apps built with Vapor.
+        
+        @Image(source: curlybraces.square.fill.svg, alt: "CouchDBClient and Vapor integration illustration")
+    }
+    
+    @Section(title: "Integrating CouchDBClient with Vapor") {
+        @ContentAndMedia {
+            Vapor is built on top of Apple's [SwiftNIO](https://github.com/apple/swift-nio). `CouchDBClient` is fully compatible with SwiftNIO and can be seamlessly used for server-side development.
+            
+            @Image(source: vapor.svg, alt: "Vapor framework logo")
+        }
+        
+        @Steps {
+            @Step {
+                Open the `Package.swift` file in your Vapor project.
+                
+                @Code(name: "Package.swift", file: VaporTutorial-package-1.swift)
+            }
 
-			@Step {
-				Add `CouchDBClient` as a Swift Package dependency.
-				
-				@Code(name: "Package.swift", file: VaporTutorial-package-2.swift)
-			}
-			
-			@Step {
-				Open `routes.swift` in your Vapor project.
-				
-				@Code(name: "routes.swift", file: VaporTutorial-1.swift)
-			}
-			
-			@Step {
-				Import `CouchDBClient` and create a client instance.
-				
-				@Code(name: "routes.swift", file: VaporTutorial-2.swift)
-			}
-			
-			@Step {
-				Define your data model for CouchDB documents. `RowsResponse` model from the `CouchDBClient` library will be used to parse CouchDB responses.
-				
-				@Code(name: "routes.swift", file: VaporTutorial-3.swift)
-			}
-			
-			@Step {
-				Get your document from a database. That example is using `CouchDB View` to find the document by the url field. Its map function needs a `key` param which is `appUrl` in our case.
-				
-				@Code(name: "routes.swift", file: VaporTutorial-4.swift)
-			}
-			
-			@Step {
-				Parse the response into our data model.
-				
-				@Code(name: "routes.swift", file: VaporTutorial-5.swift)
-			}
-			
-			@Step {
-				Finally pass the data to Leaf for template rendering.
-				
-				@Code(name: "routes.swift", file: VaporTutorial-6.swift)
-			}
-		}
-	}
+            @Step {
+                Add `CouchDBClient` as a Swift Package dependency.
+                
+                @Code(name: "Package.swift", file: VaporTutorial-package-2.swift)
+            }
+            
+            @Step {
+                Open the `routes.swift` file in your Vapor project.
+                
+                @Code(name: "routes.swift", file: VaporTutorial-1.swift)
+            }
+            
+            @Step {
+                Import `CouchDBClient` and create a client instance.
+                
+                @Code(name: "routes.swift", file: VaporTutorial-2.swift)
+            }
+            
+            @Step {
+                Define your data model for CouchDB documents. Use the `RowsResponse` model from the `CouchDBClient` library to parse CouchDB responses.
+                
+                @Code(name: "routes.swift", file: VaporTutorial-3.swift)
+            }
+            
+            @Step {
+                Retrieve a document from a database. This example uses a `CouchDB View` to find the document by the `url` field. The map function requires a `key` parameter, which is `appUrl` in this case.
+                
+                @Code(name: "routes.swift", file: VaporTutorial-4.swift)
+            }
+            
+            @Step {
+                Parse the response into your data model.
+                
+                @Code(name: "routes.swift", file: VaporTutorial-5.swift)
+            }
+            
+            @Step {
+                Finally, pass the data to Leaf for template rendering.
+                
+                @Code(name: "routes.swift", file: VaporTutorial-6.swift)
+            }
+        }
+    }
 }

@@ -1,25 +1,26 @@
 @Tutorials(name: "CouchDBClient") {
-    @Intro(title: "Getting started") {
-        Check tutorials for using the lib in a macOS app or with Vapor for server-side development.
+    @Intro(title: "Getting Started") {
+        Explore tutorials for using the library in a macOS app or in a Server-Side Swift project.
         
         @Image(source: logo.svg, alt: "CouchDBClient logo")
     }
     
-    @Chapter(name: "Getting started") {
-		Learn how to use CouchDBClient.
+    @Chapter(name: "Getting Started") {
+        Learn how to use CouchDBClient effectively.
         
-		@Image(source: curlybraces.square.fill.svg, alt: "CouchDBClient logo")
+        @Image(source: curlybraces.square.fill.svg, alt: "CouchDBClient illustration")
         
         @TutorialReference(tutorial: "doc:macOSTutorial")
-		@TutorialReference(tutorial: "doc:SwiftUITutorial")
-		@TutorialReference(tutorial: "doc:VaporTutorial")
+        @TutorialReference(tutorial: "doc:SwiftUITutorial")
+        @TutorialReference(tutorial: "doc:VaporTutorial")
+        @TutorialReference(tutorial: "doc:Hummingbird")
     }
-	
-	@Chapter(name: "Errors handling") {
-		Examples of handling CouchDBClient errors and errors from CouchDB.
-		
-		@Image(source: errors.svg, alt: "CouchDBClient logo")
-		
-		@TutorialReference(tutorial: "doc:ErrorsHandlingTutorial")
-	}
+    
+    @Chapter(name: "Error Handling") {
+        Discover examples of handling errors from CouchDBClient and CouchDB itself.
+        
+        @Image(source: errors.svg, alt: "Error handling illustration")
+        
+        @TutorialReference(tutorial: "doc:ErrorsHandlingTutorial")
+    }
 }

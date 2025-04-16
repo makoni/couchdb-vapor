@@ -28,6 +28,8 @@ final class CouchDBClientTests: XCTestCase {
 
 	lazy var couchDBClient = CouchDBClient(config: config)
 
+	let httpClient = HTTPClient()
+
 	override func setUp() async throws {
 		try await super.setUp()
 	}
@@ -332,6 +334,30 @@ final class CouchDBClientTests: XCTestCase {
 				uri: docs.first!._id,
 				rev: docs.first!._rev!
 			)
+		} catch {
+			XCTFail(error.localizedDescription)
+		}
+	}
+
+	func test10_provide_HTTPClient() async throws {
+		let couchDBClient = CouchDBClient(config: config, httpClient: self.httpClient)
+
+		let httpClientProvided = await couchDBClient.httpClient
+		XCTAssertNotNil(httpClientProvided)
+
+		let httpClientCreatedIfNeed = await couchDBClient.createHTTPClientIfNeed()
+		XCTAssertTrue(httpClientProvided === httpClientCreatedIfNeed)
+		XCTAssertTrue(httpClientProvided === self.httpClient)
+	}
+
+	func test11_shutdown() async throws {
+		let client = CouchDBClient(
+			config: config,
+			httpClient: HTTPClient()
+		)
+
+		do {
+			try await client.shutdown()
 		} catch {
 			XCTFail(error.localizedDescription)
 		}

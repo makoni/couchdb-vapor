@@ -1,18 +1,18 @@
 # CouchDB Client for Swift
 
 <p align="center">
-	<a href="https://github.com/makoni/couchdb-vapor">
+	<a href="https://github.com/makoni/couchdb-swift">
         <img src="https://spaceinbox.me/images/appicons/5cff134d1bb4a2e90faea5cf4e0002a2.svg?31-a992eba6ad7e189f4b3e0988936056ca" height="200">
     </a>
 </p>
 
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmakoni%2Fcouchdb-vapor%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/makoni/couchdb-vapor)
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmakoni%2Fcouchdb-vapor%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/makoni/couchdb-vapor)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmakoni%2Fcouchdb-swift%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/makoni/couchdb-swift)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmakoni%2Fcouchdb-swift%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/makoni/couchdb-swift)
 [![Vapor 4](https://img.shields.io/badge/vapor-4-blue.svg?style=flat)](https://vapor.codes)
 
-[![Build on macOS](https://github.com/makoni/couchdb-vapor/actions/workflows/build-macos.yml/badge.svg?branch=master)](https://github.com/makoni/couchdb-vapor/actions/workflows/build-macos.yml)
-[![Build on Ubuntu](https://github.com/makoni/couchdb-vapor/actions/workflows/build-ubuntu.yml/badge.svg?branch=master)](https://github.com/makoni/couchdb-vapor/actions/workflows/build-ubuntu.yml)
-[![Test on Ubuntu](https://github.com/makoni/couchdb-vapor/actions/workflows/test-ubuntu.yml/badge.svg?branch=master)](https://github.com/makoni/couchdb-vapor/actions/workflows/test-ubuntu.yml)
+[![Build on macOS](https://github.com/makoni/couchdb-swift/actions/workflows/build-macos.yml/badge.svg?branch=master)](https://github.com/makoni/couchdb-swift/actions/workflows/build-macos.yml)
+[![Build on Ubuntu](https://github.com/makoni/couchdb-swift/actions/workflows/build-ubuntu.yml/badge.svg?branch=master)](https://github.com/makoni/couchdb-swift/actions/workflows/build-ubuntu.yml)
+[![Test on Ubuntu](https://github.com/makoni/couchdb-swift/actions/workflows/test-ubuntu.yml/badge.svg?branch=master)](https://github.com/makoni/couchdb-swift/actions/workflows/test-ubuntu.yml)
 
 
 
@@ -41,7 +41,7 @@ Add the following to the `dependencies` section of your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/makoni/couchdb-vapor.git", from: "1.6.0"),
+    .package(url: "https://github.com/makoni/couchdb-swift.git", from: "1.6.0"),
 ]
 
 ---

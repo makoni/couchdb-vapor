@@ -1,11 +1,12 @@
 //
 //  couchdb_vapor.swift
-//  couchdb-vapor
+//  couchdb-swift
 //
 //  Created by Sergey Armodin on 06/03/2019.
 //
 
 import Foundation
+
 import NIO
 import NIOHTTP1
 import NIOFoundationCompat
@@ -94,54 +95,71 @@ public actor CouchDBClient {
 	private let userPassword: String
 	/// Authorization response from CouchDB.
 	private var authData: CreateSessionResponse?
+	/// HTTP client
+	internal let httpClient: HTTPClient?
 
 	// MARK: - Initializer
 
 	/// Initializes a new instance of the CouchDB client using the provided configuration.
-	/// This initializer sets up the client with connection parameters and handles the user password securely,
-	/// supporting environment variable fallback for sensitive data.
 	///
-	/// This initializer sets up the client with default values for connecting to a CouchDB server. It allows for optional customization of the connection parameters such as protocol, host and port.
+	/// This initializer sets up the client with connection parameters and securely handles the user password,
+	/// supporting environment variable fallback for sensitive data. It allows for optional customization of the
+	/// connection parameters such as protocol, host, and port.
 	///
 	/// - Parameters:
-	///   - config: A `CouchDBClient.Config` instance containing the configuration details.
+	///   - config: A `CouchDBClient.Config` instance containing the configuration details, including protocol, host, port, username, and password.
+	///   - httpClient: An optional `HTTPClient` instance. If not provided, a shared instance will be used.
 	///
-	///	Example usage:
-	///  ```swift
-	///  // Create a cofig:
-	///  let config = CouchDBClient.Config(
+	/// ### Example Usage:
+	/// ```swift
+	/// // Create a configuration:
+	/// let config = CouchDBClient.Config(
 	///     couchProtocol: .http,
 	///     couchHost: "127.0.0.1",
 	///     couchPort: 5984,
 	///     userName: "user",
 	///     userPassword: "myPassword",
 	///     requestsTimeout: 30
-	///  )
+	/// )
 	///
-	///  // Create a client istance:
-	///  let couchDBClient = CouchDBClient(config: config)
-	///  ```
-	///  If you don't want to have your password in the code you can pass `COUCHDB_PASS` param in your command line.
-	///  For example you can run your Server Side Swift project:
-	///  ```bash
-	///  COUCHDB_PASS=myPassword /path/.build/x86_64-unknown-linux-gnu/release/Run
-	///  ```
-	///  Just use config without `userPassword` param:
-	///  ```swift
-	///  let config = CouchDBClient.Config(
+	/// // Create a client instance:
+	/// let couchDBClient = CouchDBClient(config: config)
+	/// ```
+	///
+	/// If you prefer not to include your password in the code, you can pass the `COUCHDB_PASS` environment variable
+	/// in your command line. For example:
+	/// ```bash
+	/// COUCHDB_PASS=myPassword /path/.build/x86_64-unknown-linux-gnu/release/Run
+	/// ```
+	/// In this case, you can omit the `userPassword` parameter in the configuration:
+	/// ```swift
+	/// let config = CouchDBClient.Config(
 	///     userName: "user"
-	///  )
-	///  let couchDBClient = CouchDBClient(config: config)
-	///  ```
+	/// )
+	/// let couchDBClient = CouchDBClient(config: config)
+	/// ```
 	///
-	/// - Note: It's important to ensure that the CouchDB server is running and accessible at the specified `couchHost` and `couchPort` before attempting to connect.
-	public init(config: CouchDBClient.Config) {
+	/// - Note: Ensure that the CouchDB server is running and accessible at the specified `couchHost` and `couchPort`
+	/// before attempting to connect.
+	public init(config: CouchDBClient.Config, httpClient: HTTPClient? = nil) {
 		self.couchProtocol = config.couchProtocol
 		self.couchHost = config.couchHost
 		self.couchPort = config.couchPort
 		self.userName = config.userName
 		self.userPassword = config.userPassword
 		self.requestsTimeout = config.requestsTimeout
+		self.httpClient = httpClient
+	}
+
+	/// Shuts down the HTTP client used by the CouchDB client.
+	///
+	/// This asynchronous function ensures that the `HTTPClient` instance is properly shut down,
+	/// releasing any resources it holds. It is important to call this method when the `CouchDBClient`
+	/// is no longer needed to avoid resource leaks.
+	///
+	/// - Throws: An error if the shutdown process fails.
+	public func shutdown() async throws {
+		try await httpClient?.shutdown()
 	}
 
 	// MARK: - Public methods
@@ -177,12 +195,7 @@ public actor CouchDBClient {
 	public func getAllDBs(eventLoopGroup: EventLoopGroup? = nil) async throws -> [String] {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
-		let httpClient: HTTPClient
-		if let eventLoopGroup = eventLoopGroup {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-		} else {
-			httpClient = HTTPClient.shared
-		}
+		let httpClient = createHTTPClientIfNeed(eventLoopGroup: eventLoopGroup)
 
 		defer {
 			if eventLoopGroup != nil {
@@ -245,12 +258,7 @@ public actor CouchDBClient {
 	public func dbExists(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> Bool {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
-		let httpClient: HTTPClient
-		if let eventLoopGroup = eventLoopGroup {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-		} else {
-			httpClient = HTTPClient.shared
-		}
+		let httpClient = createHTTPClientIfNeed(eventLoopGroup: eventLoopGroup)
 
 		defer {
 			if eventLoopGroup != nil {
@@ -305,12 +313,7 @@ public actor CouchDBClient {
 	@discardableResult public func createDB(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> UpdateDBResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
-		let httpClient: HTTPClient
-		if let eventLoopGroup = eventLoopGroup {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-		} else {
-			httpClient = HTTPClient.shared
-		}
+		let httpClient = createHTTPClientIfNeed(eventLoopGroup: eventLoopGroup)
 
 		defer {
 			if eventLoopGroup != nil {
@@ -372,7 +375,7 @@ public actor CouchDBClient {
 	/// 4. Sends a `DELETE` request to the CouchDB server to delete the database.
 	/// 5. Processes the server's response, throwing errors for unauthorized access or missing data.
 	/// 6. Decodes the response body into an `UpdateDBResponse` object if successful.
-	/// 7. If decoding fails, attempts to decode the response into a `CouchDBError` object and throws it as an `.deleteError`.
+	/// 7. If decoding fails, attempts to decode the response into a `CouchDBError` object and throws it as `.deleteError`.
 	///
 	/// ### Example Usage:
 	/// ```swift
@@ -385,12 +388,7 @@ public actor CouchDBClient {
 	@discardableResult public func deleteDB(_ dbName: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> UpdateDBResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
-		let httpClient: HTTPClient
-		if let eventLoopGroup = eventLoopGroup {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-		} else {
-			httpClient = HTTPClient.shared
-		}
+		let httpClient = createHTTPClientIfNeed(eventLoopGroup: eventLoopGroup)
 
 		defer {
 			if eventLoopGroup != nil {
@@ -516,12 +514,7 @@ public actor CouchDBClient {
 	public func get(fromDB dbName: String, uri: String, queryItems: [URLQueryItem]? = nil, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
-		let httpClient: HTTPClient
-		if let eventLoopGroup = eventLoopGroup {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-		} else {
-			httpClient = HTTPClient.shared
-		}
+		let httpClient = createHTTPClientIfNeed(eventLoopGroup: eventLoopGroup)
 
 		defer {
 			if eventLoopGroup != nil {
@@ -743,12 +736,7 @@ public actor CouchDBClient {
 	public func find(inDB dbName: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> HTTPClientResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
-		let httpClient: HTTPClient
-		if let eventLoopGroup = eventLoopGroup {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-		} else {
-			httpClient = HTTPClient.shared
-		}
+		let httpClient = createHTTPClientIfNeed(eventLoopGroup: eventLoopGroup)
 
 		defer {
 			if eventLoopGroup != nil {
@@ -853,12 +841,7 @@ public actor CouchDBClient {
 	public func update(dbName: String, uri: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
-		let httpClient: HTTPClient
-		if let eventLoopGroup = eventLoopGroup {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-		} else {
-			httpClient = HTTPClient.shared
-		}
+		let httpClient = createHTTPClientIfNeed(eventLoopGroup: eventLoopGroup)
 
 		defer {
 			if eventLoopGroup != nil {
@@ -1038,12 +1021,7 @@ public actor CouchDBClient {
 	public func insert(dbName: String, body: HTTPClientRequest.Body, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
 		try await authIfNeed(eventLoopGroup: eventLoopGroup)
 
-		let httpClient: HTTPClient
-		if let eventLoopGroup = eventLoopGroup {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-		} else {
-			httpClient = HTTPClient.shared
-		}
+		let httpClient = createHTTPClientIfNeed(eventLoopGroup: eventLoopGroup)
 
 		defer {
 			if eventLoopGroup != nil {
@@ -1191,12 +1169,7 @@ public actor CouchDBClient {
 	/// - Note: Ensure that the CouchDB server is running and accessible before calling this function.
 	///   Handle thrown errors appropriately, especially for authentication issues or unexpected server responses.
 	public func delete(fromDb dbName: String, uri: String, rev: String, eventLoopGroup: EventLoopGroup? = nil) async throws -> CouchUpdateResponse {
-		let httpClient: HTTPClient
-		if let eventLoopGroup = eventLoopGroup {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-		} else {
-			httpClient = HTTPClient.shared
-		}
+		let httpClient = createHTTPClientIfNeed(eventLoopGroup: eventLoopGroup)
 
 		defer {
 			if eventLoopGroup != nil {
@@ -1293,9 +1266,24 @@ internal extension CouchDBClient {
 		return components.url?.absoluteString ?? ""
 	}
 
+	/// Create an HTTPClient instance if not provided during init method.
+	/// - Parameter eventLoopGroup: NIO's EventLoopGroup object. NIO's shared will be used if nil value provided.
+	/// - Returns: HTTP client.
+	func createHTTPClientIfNeed(eventLoopGroup: EventLoopGroup? = nil) -> HTTPClient {
+		if let httpClient {
+			return httpClient
+		}
+
+		if let eventLoopGroup = eventLoopGroup {
+			return HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
+		} else {
+			return HTTPClient.shared
+		}
+	}
+
 	/// Get authorization cookie in didn't yet. This cookie will be added automatically to requests that require authorization.
 	/// API reference: https://docs.couchdb.org/en/stable/api/server/authn.html#session
-	/// - Parameter eventLoopGroup: NIO's EventLoopGroup object. New will be created if nil value provided.
+	/// - Parameter eventLoopGroup: NIO's EventLoopGroup object. NIO's shared will be used if nil value provided.
 	/// - Returns: Authorization response.
 	@discardableResult
 	func authIfNeed(eventLoopGroup: EventLoopGroup? = nil) async throws -> CreateSessionResponse? {
@@ -1304,12 +1292,7 @@ internal extension CouchDBClient {
 			return authData
 		}
 
-		let httpClient: HTTPClient
-		if let eventLoopGroup = eventLoopGroup {
-			httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-		} else {
-			httpClient = HTTPClient.shared
-		}
+		let httpClient = createHTTPClientIfNeed(eventLoopGroup: eventLoopGroup)
 
 		defer {
 			if eventLoopGroup != nil {
